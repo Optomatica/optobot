@@ -1,0 +1,54 @@
+[N:buy_flowers:purchase_flowers]
+[V:flowers_budget:number] Lovely! What is your budget?
+[F:flowers_count:number:in_session] int_division(flowers_budget,2)
+
+[C:low_budget] flowers_budget=[2-30] & flowers_count
+[C:medium_budget] flowers_budget=[31-70]
+[C:high_budget] flowers_budget=[71-]
+
+
+[N:low_budget] Great!, you can buy {{flowers_count}} rose(s)
+image@https://images.pexels.com/photos/736230/pexels-photo-736230.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=750&w=1260
+
+[N:medium_budget]
+[V:flower_type_medium] Please choose what kind of flowers you would like in your flower arrangement?
+[O]Roses
+[O]Tulipes
+[O]Sunflowers
+
+[C:roses_option] flower_type_medium=Roses
+[C:tulipes_option] flower_type_medium=Tulipes
+[C:sunflowers_option] flower_type_medium=Sunflowers
+
+[N:roses_option] Great choice! You have selected a flower bouquet consisting of 18 Long Stemmed Red Roses.
+image@https://s7img.ftdi.com/is/image/ProvideCommerce/30047878_40065_LOL?$proflowers-hero-lv-new$&qlt=80,0&resMode=trilin
+
+[N:tulipes_option] Great choice! Nothing beats a big bunch of tulips fresh from the fields. These 30 tulips deliver an undeniably bright burst of color into any setting, whether it's a window sill or a country table.
+image@https://s7img.ftdi.com/is/image/ProvideCommerce/3669_TOP?$proflowers-hero-lv-new$&qlt=80,0&resMode=trilin
+
+[N:sunflowers_option]  Great choice! Ten sunflowers with big, bright heads just change the feeling of a room: suddenly, everything seems a bit brighter.
+image@https://s7img.ftdi.com/is/image/ProvideCommerce/41220_30213783_LOL?$proflowers-hero-lv-new$&qlt=80,0&resMode=trilin
+
+
+[N:high_budget]
+[V:flower_type_high] Please choose what kind of flowers you would like in your flower arrangement?
+[O]White Roses
+[O]Lilies
+[O]Orchid
+
+[C:white_roses_option] flower_type_high=White Roses
+[C:lilies_option] flower_type_high=Lilies
+[C:orchid_option] flower_type_high=Orchid
+
+
+[N:white_roses_option] Great choice! the beauty of white roses is unchallenged. Representing innocence, their versatility makes them a favorite gift to offer congratulations for graduation, engagements, bridal showers, new baby, or even a gift of sympathy.
+image@https://s7img.ftdi.com/is/image/ProvideCommerce/30184713_LOL?$proflowers-hero-lv-new$&qlt=80,0&resMode=trilin
+
+[N:lilies_option]  Great choice! Let them know how much you care with a gorgeous bouquet that features carnations, stock, roses, lilies and Fuji mums. Each bloom is a thoughtful reminder of your support and love, while sitting in a beautifully crafted basket.
+image@https://s7img.ftdi.com/is/image/ProvideCommerce/S5272P_LOL?$proflowers-hero-lv-new$&qlt=80,0&resMode=trilin
+
+[N:orchid_option]  Great choice! The Glowing Strong Orchid Plant offers a fresh warmth and beauty that your special recipient will treasure.
+image@https://s7img.ftdi.com/is/image/ProvideCommerce/PO58_LOL?$proflowers-hero-lv-new$&qlt=80,0&resMode=trilin
+
+
+[N:buy_flowers2:purchase_flowers] buying flowers !!

@@ -1,0 +1,30 @@
+[I:Greeting]
+Hi
+Hey
+Hello
+
+[E:wit$number]
+1000
+-56
+5.369
+10,000
+30%
+
+[I:purchase_flowers]
+flower
+flowers
+buy flowers
+purchase flowers
+bouquet
+
+[I:weather]
+weather
+Forecast
+How cold
+climate
+
+[E:wit$location]
+cairo
+egypt
+paris
+france
