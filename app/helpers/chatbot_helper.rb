@@ -19,9 +19,10 @@ module ChatbotHelper
     return entities["intent"][0] if !entities["intent"].nil?
   end
 
-  def handle_form_response(params)
+  def handle_form_response(params, user_chatbot_session)
     @to_render = {}
-    p "params[:formResponse] == " ,params[:formResponse]
+    @user_chatbot_session = user_chatbot_session
+    p 'params[:formResponse] == ', params[:formResponse]
     params[:formResponse].each{ |variable_name, response|
       if response.class == Array
         response.each {|res|
@@ -31,12 +32,12 @@ module ChatbotHelper
         create_or_update_user_data(@project.variables.find_by_name(variable_name), response)
       end
     }
-    p "data saved. "
+    p 'data saved'
     go_to_next_dialogue(@user_chatbot_session.dialogue)
     @next_context = @user_chatbot_session.context
     save_session
     set_session_response if params[:debug_mode]
-    return @to_render
+    @to_render
   end
 
   def chat_process(current_user, project, user_project, params)
@@ -106,11 +107,10 @@ module ChatbotHelper
       new_intent_process_d
       increase_quick_response
     end
-    puts "saving user session"
-
+    p 'saving user session'
     p @next_variable
     save_session
-    puts "user session saved"
+    p 'user session saved'
     if params[:debug_mode]
       set_session_response
     else
@@ -123,7 +123,7 @@ module ChatbotHelper
         end
       end
     end
-    return @to_render
+    @to_render
   end
 
   def set_session_response

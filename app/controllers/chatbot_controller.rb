@@ -120,8 +120,8 @@ class ChatbotController < ApplicationController
       p " session destroyed! chat ends, bye "
       render json: {body: "session destroyed! chat ends, bye"}
     else
-      if (params[:formResponse].present?)
-        render json: handle_form_response(params)
+      if params[:formResponse].present?
+        render json: handle_form_response(params, @user_project.user_chatbot_session)
       else
         render json: chat_process(current_user, @project, @user_project, params)
       end

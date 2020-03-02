@@ -297,7 +297,6 @@ class Project < ApplicationRecord
   end
 
   def import_context_dialogues_data (file , context_id , language)
-    self.user_projects.each{|up| up.user_chatbot_session&.destroy!}
     if context_id && Context.find_by(id: context_id)
       raise "Invalid Context" if Context.find_by(id: context_id).project_id != self.id
       Context.find_by(id: context_id).dialogues.destroy_all
@@ -327,17 +326,22 @@ class Project < ApplicationRecord
     arcs.default = {}
     prev_dialogue = nil
     prev_variable = nil
+    form_node = nil
     start_index = 0
     start_index = 1 if arr[0].empty?
     (start_index...arr.length).step(2).each do |i|
       if arr[i][1].upcase == 'N'
         # dialogue node
-        responses_arr, _, _ = get_all_responses(arr[i+1], i)
-        tmp = arr[i].strip.slice(3..-2).gsub(/\s+/,'_')
-        dialogue_name, intent_value = tmp.gsub(/\s+/,'_').split(':')
+        responses_arr, _, _ = get_all_responses(arr[i + 1], i)
+        tmp = arr[i].strip.slice(3..-2).gsub(/\s+/, '_')
+        dialogue_name, intent_value, form_node = tmp.gsub(/\s+/, '_').split(':')
+        if form_node || intent_value == 'form_node'
+          form_node = true
+        end
         dialogues[dialogue_name] = {
           context_id: context_id,
           Intent_value: intent_value,
+          form_node: form_node,
           options: [],
           variables: {},
           responses: responses_arr
@@ -358,10 +362,10 @@ class Project < ApplicationRecord
         end
 
       elsif arr[i][1].upcase == 'V'
-        responses_arr, min, max = get_all_responses(arr[i+1], i, true)
+        responses_arr, min, max = get_all_responses(arr[i + 1], i, true)
         tmp = arr[i].strip.slice(3..-2)
         variable_name, entity_type, storage_type, expire_after, save_text = get_variable_information(tmp)
-        
+
         dialogues[prev_dialogue][:variables][variable_name] = {
           entity: entity_type,
           options: [],
@@ -464,7 +468,6 @@ class Project < ApplicationRecord
     require 'net/http'
     url = URI("http://localhost:3000/projects/#{project_id}/chatbot")
     http = Net::HTTP.new(url.host, url.port)
-    
     request = Net::HTTP::Post.new(url)
     request["Access-Token"] = access_Token
     request["Token-Type"] = 'Bearer'
@@ -474,7 +477,6 @@ class Project < ApplicationRecord
     request["Content-Type"] = 'application/json'
     formResponse = formResponse.to_json unless formResponse.present?
     request.body = "{\"debug_mode\": true ,\"text\":\"#{text}\" ,\"formResponse\":#{formResponse} ,\"language\":\"en\" , \"email\":\"#{uid}\"}\n"
-    
     response = http.request(request)
     res = JSON.parse(response.read_body)
     
