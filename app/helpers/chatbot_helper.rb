@@ -692,7 +692,7 @@ module ChatbotHelper
 
       response = Mustache.render(response, replacements)
     end
-    return response
+    response
   end
 
   def set_to_render_response(reply_owner, overwrite = true)
@@ -700,19 +700,17 @@ module ChatbotHelper
     p "reply_owner.class == " , reply_owner.class
     kind = reply_owner.class == Array ? :form : ((reply_owner.class == Dialogue) ? :dialogue : :variable)
     p "kind == " , kind
-    if !overwrite and @to_render[kind]
-      return
-    end
+    return if !overwrite && @to_render[kind]
 
     if reply_owner.class == Array
       p "reply_owner.class = Array (for variables)"
-      @to_render[kind]= reply_owner.map{|variable|
-        v = {name: variable.name, type: variable.entity}
+      @to_render[kind] = reply_owner.map{|variable|
+        v = { name: variable.name, type: variable.entity }
         all_responses = variable.get_responses(@lang)
         all_responses.each do |response_type, response_content|
           fix_response_text response_content unless response_content == []
         end
-        v.merge(all_responses)
+        v.merge!(all_responses)
         v[:options] = variable.get_options(@lang)
         v[:dialogue_name] = variable.dialogue.name
         v

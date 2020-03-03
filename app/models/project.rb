@@ -488,12 +488,7 @@ class Project < ApplicationRecord
       res['variable']['options'].length.times do |i|
         p " => #{res['variable']['options'][i]['text']} "
       end
-      
-    elsif  res['dialogue'].present?
-      res['dialogue']['responses'].each do | response_type, response_content |
-        puts "#{response_type}: #{response_content}"
-      end
-      
+
     elsif res['form'].present?
       res['form'].length.times do |i|
         res['form'][i]['responses'].length.times do |j|
@@ -503,6 +498,11 @@ class Project < ApplicationRecord
         res['form'][i]['options'].length.times do |j|
           p res['form'][i]['options'][j]['text']
         end
+      end
+      
+    elsif  res['dialogue'].present?
+      res['dialogue']['responses'].each do | response_type, response_content |
+        p "#{response_type}: #{response_content}"
       end
     end
   end
