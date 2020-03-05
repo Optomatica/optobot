@@ -129,9 +129,9 @@ class ChatbotController < ApplicationController
   end
 
   api :GET, '/initial_node'
-  description 'set initial node to allow start/initiate chat with user.
+  description 'get initial node to start/initiate chat with user.
                an initial node is set by specifing its name as "initial_node"
-               ex.. [N:initial_node]type your response here '
+               ex.. [N:start_node]type your response here '
   def start_chating
     project = Project.find_by_id(params[:id])
     node = project.dialogues.where('name = ?', 'start_node')[0]
