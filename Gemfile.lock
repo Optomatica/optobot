@@ -167,7 +167,7 @@ GEM
       activesupport (>= 4.2)
       arel (>= 6)
     public_suffix (3.0.2)
-    puma (3.11.3)
+    puma (3.12.4)
     rack (2.2.2)
     rack-cors (1.0.5)
       rack (>= 1.6.0)
@@ -341,7 +341,7 @@ DEPENDENCIES
   mustache (~> 1.0)
   pg (>= 0.18, < 2.0)
   pg_search
-  puma (~> 3.7)
+  puma (~> 3.12)
   rack-cors
   rails (~> 5.1.5)
   rails-erd
