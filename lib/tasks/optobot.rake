@@ -33,7 +33,7 @@ namespace :optobot do
         puts "training wit ...."
         wfile = File.new(Rails.root.join("train/wit_training.optonlp"))
         file = wfile.read
-        Project.last.training_wit(file ,"en")
+        Project.where(test_project_id: nil).last.training_wit(file ,"en")
 
     end
 
@@ -42,9 +42,10 @@ namespace :optobot do
     desc "destroy"
     task :destroy do
         puts "destroying...."
-        Project.last.contexts.destroy_all
-        Project.last.dialogues.where(tag: nil).destroy_all
-        Project.last.variables.destroy_all
+        project = Project.where(test_project_id: nil).last
+        project.contexts.destroy_all
+        project.dialogues.where(tag: nil).destroy_all
+        project.last.variables.destroy_all
 
         p "destroyed"
     end
@@ -53,10 +54,11 @@ namespace :optobot do
     desc "Train"
     task :Train do
         puts "destroying...."
-        Project.last.user_projects.each{|up| up.user_chatbot_session && up.user_chatbot_session.destroy}
-        Project.last.contexts.destroy_all
-        Project.last.dialogues.where(tag: nil).destroy_all
-        Project.last.variables.destroy_all
+        project = Project.where(test_project_id: nil).last
+        project.user_projects.each{|up| up.user_chatbot_session && up.user_chatbot_session.destroy}
+        project.contexts.destroy_all
+        project.dialogues.where(tag: nil).destroy_all
+        project.variables.destroy_all
         puts "Training task.... "
 
         Dir.foreach("train/") do |item|
@@ -66,12 +68,12 @@ namespace :optobot do
                 file = wfile.read
 
                 if File.extname(item) == ".optonlp"
-                    Project.last.training_wit( file ,"en" )
+                    project.training_wit( file ,"en" )
                 elsif File.basename(item).include? "no_context" and File.extname(item) == ".optodsl"
-                    Project.last.import_context_dialogues_data( file , nil, "en" )
+                    project.import_context_dialogues_data( file , nil, "en" )
                 elsif File.extname(item) == ".optodsl"
-                    context = Context.create!(project_id: Project.last.id, name: "my_context")
-                    Project.last.import_context_dialogues_data( file , context.id, "en" )
+                    context = Context.create!(project_id: project.id, name: "my_context")
+                    project.import_context_dialogues_data( file , context.id, "en" )
 
                 end
             end

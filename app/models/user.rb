@@ -7,18 +7,12 @@ class User < ActiveRecord::Base
   has_many :projects, through: :user_projects
 
   def self.get_or_create_users(user_emails)
-    return [] if user_emails.nil?
+    return [] if user_emails&.empty?
 
-    users = []
-    user_emails.each do |email|
+    user_emails.map do |email|
       user = self.find_by_email(email)
-      if user.nil?
-        user = User.create!(email: email, uid: email, provider: "project")
-      end
-      users.push(user)
+      user || User.create!(email: email, uid: email, provider: "project")
     end
-
-    users
   end
 
   def self.create_anonymous_user
@@ -26,9 +20,8 @@ class User < ActiveRecord::Base
       random_email = "#{SecureRandom.hex(8)}@anonymous.an"
       break random_email unless self.exists?("email": random_email)
     end
-    password = SecureRandom.hex(4)
 
-    self.create!(email: anonymous_email, password: password)
+    self.create!(email: anonymous_email, password: SecureRandom.hex(4))
   end
 
   def create_wit_app(token, app_name)

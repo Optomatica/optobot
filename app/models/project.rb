@@ -221,12 +221,12 @@ class Project < ApplicationRecord
     return response_type, content, content_type
   end
 
-  def get_response(res, order=1)
+  def get_response(res, language, order=1)
     response_type, content, content_type = get_response_content(res)  
-    return {order: order, response_type: response_type , response_contents: [{content: {en: content}, content_type: content_type}]}
+    return {order: order, response_type: response_type , response_contents: [{content: {language => content}, content_type: content_type}]}
   end
 
-  def get_all_responses(data, i, is_variable=false)
+  def get_all_responses(data, i, language, is_variable=false)
     responses_arr = []
     min = max = nil
     tmp_arr = data.strip.split("\n")
@@ -239,9 +239,9 @@ class Project < ApplicationRecord
         content.gsub!("\\n", "\n")
         if response_type == "alt"
           raise "Alternative response cannot be the first response in DSL file line #{(i+1)/2}" if responses_arr.length == 0
-          responses_arr.last[:response_contents].push({content: {en: content}, content_type: content_type})
+          responses_arr.last[:response_contents].push({content: {language => content}, content_type: content_type})
         else
-          responses_arr.push ( get_response(res, index+1) )
+          responses_arr.push ( get_response(res, language, index+1) )
         end
       end
     }
@@ -289,7 +289,7 @@ class Project < ApplicationRecord
       else
         intent_name = condition[1]
         train_text(condition[1].strip, intent_name , language)
-        arc = {variable_name: condition[0], option: {response: get_response(condition[1].strip) }, parameter: {value: intent_name}}
+        arc = {variable_name: condition[0], option: {response: get_response(condition[1].strip, language) }, parameter: {value: intent_name}}
       end
     else
       arc = {variable_name: condition[0]}
@@ -333,7 +333,7 @@ class Project < ApplicationRecord
     (start_index...arr.length).step(2).each do |i|
       if arr[i][1].upcase == 'N'
         # dialogue node
-        responses_arr, _, _ = get_all_responses(arr[i+1], i)
+        responses_arr, _, _ = get_all_responses(arr[i+1], i, language)
         tmp = arr[i].strip.slice(3..-2).gsub(/\s+/,'_')
         dialogue_name, intent_value = tmp.gsub(/\s+/,'_').split(':')
         dialogues[dialogue_name] = {
@@ -348,7 +348,7 @@ class Project < ApplicationRecord
         arcs[prev_dialogue] = {}
 
       elsif arr[i][1].upcase == 'O'
-        responses_arr, _, _ = get_all_responses(arr[i+1], i)
+        responses_arr, _, _ = get_all_responses(arr[i+1], i, language)
         raise "Option can't have more than one response in DSL file line #{(i+1)/2}. Option defined as #{arr[i+1]}" if responses_arr.length > 1
         if prev_variable and prev_dialogue
           dialogues[prev_dialogue][:variables][prev_variable][:options].push({response: responses_arr.first})
@@ -359,7 +359,7 @@ class Project < ApplicationRecord
         end
 
       elsif arr[i][1].upcase == 'V'
-        responses_arr, min, max = get_all_responses(arr[i+1], i, true)
+        responses_arr, min, max = get_all_responses(arr[i+1], i, language, true)
         tmp = arr[i].strip.slice(3..-2)
         variable_name, entity_type, storage_type, expire_after, save_text = get_variable_information(tmp)
         
@@ -460,49 +460,4 @@ class Project < ApplicationRecord
     dialogues
   end
   
-  def send_request(text, formResponse, project_id, access_Token, client, expiry, uid)
-    require 'uri'
-    require 'net/http'
-    url = URI("http://localhost:3000/projects/#{project_id}/chatbot")
-    http = Net::HTTP.new(url.host, url.port)
-    
-    request = Net::HTTP::Post.new(url)
-    request["Access-Token"] = access_Token
-    request["Token-Type"] = 'Bearer'
-    request["Client"] = client
-    request["Expiry"] = expiry
-    request["Uid"] = uid
-    request["Content-Type"] = 'application/json'
-    formResponse = formResponse.to_json unless formResponse.present?
-    request.body = "{\"debug_mode\": true ,\"text\":\"#{text}\" ,\"formResponse\":#{formResponse} ,\"language\":\"en\" , \"email\":\"#{uid}\"}\n"
-    
-    response = http.request(request)
-    res = JSON.parse(response.read_body)
-    
-    if  res['variable'].present?
-      res['variable']['responses'].each do | response_type, response_content |
-        puts "#{response_type}: #{response_content}"
-      end
-      
-      res['variable']['options'].length.times do |i|
-        p " => #{res['variable']['options'][i]['text']} "
-      end
-      
-    elsif  res['dialogue'].present?
-      res['dialogue']['responses'].each do | response_type, response_content |
-        puts "#{response_type}: #{response_content}"
-      end
-      
-    elsif res['form'].present?
-      res['form'].length.times do |i|
-        res['form'][i]['responses'].length.times do |j|
-          p res['form'][i]['responses'][j]['text']
-        end
-        
-        res['form'][i]['options'].length.times do |j|
-          p res['form'][i]['options'][j]['text']
-        end
-      end
-    end
-  end
 end

@@ -33,7 +33,7 @@ class ProjectsController < ApplicationController
           response = current_user.create_wit_app( ENV['WIT_SERVER_TOKEN'] , current_user.email.split('@')[0] + "_" + project_params[:name] )
           p response
           response = JSON.parse(response.body)
-          cur_project_params[:nlp_engine] = {en: response['access_token'] || ENV['WIT_SERVER_TOKEN']}
+          cur_project_params[:nlp_engine] = project_params[:nlp_engine].merge({en: response['access_token'] || ENV['WIT_SERVER_TOKEN']})
         end
         project = Project.create!(cur_project_params)
 				user_project = current_user.user_projects.build(project:project)
@@ -284,7 +284,7 @@ class ProjectsController < ApplicationController
 	param :lang , String, required: true
 	def train_wit
 		file = params[:file].read
-		train = @project.training_wit(file ,params[:lang] || "en")
+		train = @project.training_wit(file, params[:lang] || "en")
 		render json: train, status: :ok
 
 	end

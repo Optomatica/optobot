@@ -1,70 +1,53 @@
 class Response < ApplicationRecord
-	belongs_to :response_owner, polymorphic: true
-	has_many :response_contents, dependent: :destroy
+  enum response_type: [:response, :hint, :supplementary, :title, :note]
 
-	before_save :only_one_for_option
+  belongs_to :response_owner, polymorphic: true
+  has_many :response_contents, dependent: :destroy
 
-	enum response_type: [:response, :hint, :supplementary, :title, :note]
-	
-	def get_contents(lang, count = 1)
-		" in get_contents ====== with lang == #{lang} and count = #{count}"
-		responses = {}
-		ResponseContent.content_types.each do |content_type, _|
-			responses[content_type] = self.response_contents.where(content_type: content_type).where("content ->> '#{lang}' is not NULL")
-		end
-		if self.response_owner_type == "Option"
-			return format_options(responses, lang, count)
-		end
-		return format_response(responses, lang)
-	end
-	
-	def export
-		tmp_response_contents = []
-		self.response_contents.each do |response_content|
-			tmp_response_contents.push response_content.export
-		end
-		self.attributes.except!("id", "created_at", "updated_at", "response_owner_id", "response_owner_type").merge({
-			response_contents: tmp_response_contents
-		})
-	end
+  before_save :only_one_for_option
 
-	def import(associations_data)
-		# self.response_type = associations_data[:response_type]
+  def get_contents(lang, count = 1)
+    p " in get_contents ====== with lang == #{lang} and count = #{count}"
 
-		self.save!
-		associations_data[:response_contents].each do |response_content|
-			self.response_contents.create!(response_content)
-		end
-	end
+    responses = {}
+    ResponseContent.content_types.each do |content_type, _|
+      responses[content_type] = self.response_contents.where(content_type: content_type).where("content ->> '#{lang}' is not NULL")
+    end
 
-	private
+    self.response_owner_type == "Option" ? format_options(responses, lang, count) : format_response(responses, lang)
+  end
 
-	def only_one_for_option
-		Response.where(response_owner: self.response_owner).length == 0
-	end
+  def export
+    exempted_keys = ["id", "created_at", "updated_at", "response_owner_id", "response_owner_type"]
+    tmp_response_contents = self.response_contents.map(&:export)
+    self.attributes.except!(exempted_keys).merge({ response_contents: tmp_response_contents })
+  end
 
-	def format_response(responses, lang)
-		formated_responses = {}
-		keys = ["text", "image", "video", "interactive_image", "title", "button", "icon"]
+  def import(associations_data)
+    self.save!
+    self.response_contents.create!(associations_data[:response_contents])
+  end
 
-		keys.each do |key|
-			index = rand(0...responses[key].length)
-			if responses.keys.include?(key) and responses[key].present?
-				formated_responses[key.to_sym] = responses[key][index].content[lang]
-			end
-		end
-		
-		return formated_responses
-	end
+  private
 
-	def format_options(responses, lang, count)
-		formated_responses = []
-		while count > 0 do
-			formated_responses << format_response(responses, lang)
-			count -= 1
-		end
-		return formated_responses
-	end
+  def only_one_for_option
+    Response.where(response_owner: self.response_owner).empty?
+  end
 
+  def format_response(responses, lang)
+    p responses
+    formated_responses = responses.map do |key, response|
+      next if response.empty?
+      rand_index = rand(0...response.length)
+      p response[rand_index], lang
+      [key.to_sym, response[rand_index].content[lang]]
+    end
+
+    return formated_responses.compact.to_h
+  end
+
+  def format_options(responses, lang, count)
+    # todo get unique counts. There is a chance an option get selected twice
+    (0...count).to_a.map { format_response(responses, lang) }
+  end
 end
-

@@ -10,14 +10,15 @@ class Variable < ApplicationRecord
 
   def get_responses(lang)
     my_responses = {}
-    Response.response_types.each {|k, _| my_responses[k.pluralize.to_sym] = []}
-    tmp = self.responses.order(:created_at)
-    tmp.each do |response|
+    Response.response_types.each { |k, _| my_responses[k.pluralize.to_sym] = [] }
+
+    self.responses.order(:created_at).each do |response|
       res_hash = response.get_contents(lang)
       res_type = response.response_type.pluralize.to_sym
       my_responses[res_type].push(res_hash)
     end
-      return my_responses
+
+    return my_responses
   end
 
   def get_options(lang)
@@ -29,53 +30,42 @@ class Variable < ApplicationRecord
   end
 
   def export
-    tmp_responses = []
-    tmp_options = {}
-    self.responses.each do |response|
-      tmp_responses.push response.export
-    end
-    self.options.each do |option|
-      tmp_options[option.id] = option.export
-    end
-    self.attributes.except!("id", "created_at", "updated_at", "dialogue_id", "project_id").merge({
-      responses: tmp_responses,
-      options: tmp_options,
-    })
+    tmp_responses = {responses: self.responses.map(&:export) }
+    tmp_options = { options: self.options.map { |o| [o.id, o.export] }.to_h }
+
+    exempted_keys = ["id", "created_at", "updated_at", "dialogue_id", "project_id"]
+    self.attributes.except!(exempted_keys).merge(tmp_responses, tmp_options)
   end
 
-	def import(associations_data)
-		p " in var import with  associations_data === " , associations_data
-		associations_data[:options].each do |old_id, option|
-			tmp = {
-				response: option[:response]
-			}
-			new_option = self.options.create!(option.except(:response))
-			associations_data[:options][old_id][:new_id] = new_option.id
-			new_option.import(tmp)
-		end
-		associations_data[:responses].each do |response|
-			tmp = {response_contents: response[:response_contents]}
-			self.responses.create!(response.except(:response_contents)).import(tmp)
-		end
-	end
+  def import(associations_data)
+    p " in var import with  associations_data === " , associations_data
 
-	def import_dsl(associations_data)
-		p " in var import_dsl with  associations_data === " , associations_data
-		options_ids = {}
-		p "pass"
-		associations_data[:options].each do |option|
-			tmp = {
-				response: option[:response]
-			}
-			op = self.options.create!(option.except(:response))
-			options_ids.merge!({op.id => option})
-			op.import(tmp)
-		end
-		associations_data[:responses].each do |response|
-			tmp = {response_contents: response[:response_contents], response_type: response[:response_type]}
-			self.responses.create!(response.except(:response_contents)).import(tmp)
-		end
-		return options_ids
-	end
+    associations_data[:options].each do |_, option|
+      new_option = self.options.create!(option.except(:response))
+      option[:new_id] = new_option.id
+      new_option.import(response: option[:response])
+    end
 
+    associations_data[:responses].each do |response|
+      new_response = self.responses.create!(response.except(:response_contents))
+      new_response.import(response_contents: response[:response_contents])
+    end
+  end
+
+  def import_dsl(associations_data)
+    p " in var import_dsl with  associations_data === " , associations_data, "pass"
+
+    options = associations_data[:options].map do |option|
+      new_option = self.options.create!(option.except(:response))
+      new_option.import(response: option[:response])
+      [new_option.id, option]
+    end
+
+    associations_data[:responses].each do |response|
+      new_response = self.responses.create!(response.except(:response_contents))
+      new_response.import(response_contents: response[:response_contents], response_type: response[:response_type])
+    end
+
+    return options.to_h
+  end
 end

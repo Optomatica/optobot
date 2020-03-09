@@ -75,7 +75,7 @@ class ContextsController < ApplicationController
     end
 
     def is_context_admin_or_author?
-      unless @context.is_user_admin_or_author(current_user)
+      unless @context.project.is_user_admin_or_author(current_user)
         render body: nil, status: :unauthorized and return
       end
     end

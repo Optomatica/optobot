@@ -645,14 +645,14 @@ module ChatbotHelper
       option = x if x.response.response_contents.index{|z| z.content[@lang].downcase == params[:text].downcase}
     end
     if option
-      create_or_update_user_data(variable, option.response.response_contents.last.content['en'], option.id)
+      create_or_update_user_data(variable, option.response.response_contents.last.content[@lang], option.id)
       @entities = {}
     end
     return option
   end
 
   def see_in_knowledge_base
-    diaogues = @project.dialogues.get_knowledge_base_dialogues(@intent)
+    dialogues = @project.dialogues.get_knowledge_base_dialogues(@intent)
     @problem = @project.problems.new(problem_type: :multiple_intent_in_same_context) if dialogues.length > 1
     return dialogues.first
   end

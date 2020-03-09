@@ -22,7 +22,9 @@ class UserProject < ApplicationRecord
 
   def delete_expired_data
     p "in delete_expired_data"
-    ud =  self.user_data.joins(:variable).where("(extract(day from current_date-user_data.updated_at)*24) +extract(hour from current_date-user_data.updated_at) +extract(min from current_date-user_data.updated_at)  >= variables.expire_after" , Variable.storage_types["timeseries"])
+    ud =  self.user_data.joins(:variable).where("(extract(day from current_date-user_data.updated_at)*24) + 
+      extract(hour from current_date-user_data.updated_at) + 
+      extract(min from current_date-user_data.updated_at)  >= variables.expire_after" , Variable.storage_types["timeseries"])
     ud.destroy_all
   end
 
