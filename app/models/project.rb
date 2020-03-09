@@ -236,6 +236,7 @@ class Project < ApplicationRecord
         min, max = result[1].split('-', 2)
       else
         response_type, content, content_type = get_response_content(res)
+        content.gsub!("\\n", "\n")
         if response_type == "alt"
           raise "Alternative response cannot be the first response in DSL file line #{(i+1)/2}" if responses_arr.length == 0
           responses_arr.last[:response_contents].push({content: {en: content}, content_type: content_type})
