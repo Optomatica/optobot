@@ -20,7 +20,7 @@ class Response < ApplicationRecord
   def export
     exempted_keys = ["id", "created_at", "updated_at", "response_owner_id", "response_owner_type"]
     tmp_response_contents = self.response_contents.map(&:export)
-    self.attributes.except(exempted_keys).merge({ response_contents: tmp_response_contents })
+    self.attributes.except(*exempted_keys).merge({ response_contents: tmp_response_contents })
   end
 
   def import(associations_data)

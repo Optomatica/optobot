@@ -34,7 +34,7 @@ class Variable < ApplicationRecord
     tmp_options = { options: self.options.map { |o| [o.id, o.export] }.to_h }
 
     exempted_keys = ["id", "created_at", "updated_at", "dialogue_id", "project_id"]
-    self.attributes.except(exempted_keys).merge(tmp_responses, tmp_options)
+    self.attributes.except(*exempted_keys).merge(tmp_responses, tmp_options)
   end
 
   def import(associations_data)

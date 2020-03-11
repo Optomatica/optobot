@@ -65,7 +65,7 @@ class Dialogue < ApplicationRecord
     tmp_variables = self.variables.map { |variable| [variable.id, variable.export] }.to_h
     exempted_keys = ["id", "created_at", "updated_at", "project_id"]
 
-    self.attributes.except(exempted_keys).merge(intent: tmp_intent, responses: tmp_responses, variables: tmp_variables)
+    self.attributes.except(*exempted_keys).merge(intent: tmp_intent, responses: tmp_responses, variables: tmp_variables)
   end
 
   def import(associations_data)
