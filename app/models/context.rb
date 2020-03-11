@@ -6,6 +6,6 @@ class Context < ApplicationRecord
   validates :name, presence: true
 
   def export
-    self.attributes.except!("id", "created_at", "updated_at", "project_id")
+    self.attributes.except("id", "created_at", "updated_at", "project_id")
   end
 end

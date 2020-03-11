@@ -12,7 +12,7 @@ class Option < ApplicationRecord
 
   def export
     exempted_keys = ["id", "created_at", "updated_at", "variable_id"]
-    self.attributes.except!(exempted_keys).merge(response: self.response.export)
+    self.attributes.except(exempted_keys).merge(response: self.response.export)
   end
 
   def import(associations_data)

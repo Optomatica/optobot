@@ -3,6 +3,6 @@ class ResponseContent < ApplicationRecord
   belongs_to :response
 
   def export
-    self.attributes.except!("id", "created_at", "updated_at", "response_id")
+    self.attributes.except("id", "created_at", "updated_at", "response_id")
   end
 end

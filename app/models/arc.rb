@@ -43,7 +43,7 @@ class Arc < ApplicationRecord
 
   def export
     conditions = { conditions: self.conditions.map(&:export) }
-    self.attributes.except!('id', 'created_at', 'updated_at').merge(conditions)
+    self.attributes.except('id', 'created_at', 'updated_at').merge(conditions)
   end
 
   def import(associations_data, dialogues_and_arcs_data)

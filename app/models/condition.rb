@@ -11,7 +11,7 @@ class Condition < ApplicationRecord
   def export
     exempted_keys = ["id", "created_at", "updated_at", "arc_id", "parameter_id"]
     exported_parameter = self.parameter.export unless self.parameter.nil?
-    self.attributes.except!(exempted_keys).merge(parameter: exported_parameter)
+    self.attributes.except(exempted_keys).merge(parameter: exported_parameter)
   end
 
 end

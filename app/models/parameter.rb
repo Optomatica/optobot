@@ -8,7 +8,7 @@ class Parameter < ApplicationRecord
   after_destroy :destroy_condition
 
   def export
-    self.attributes.except!("id", "created_at", "updated_at", "dialogue_id", "project_id")
+    self.attributes.except("id", "created_at", "updated_at", "dialogue_id", "project_id")
   end
 
   private
