@@ -13,8 +13,7 @@ module Myapp
 
     config.middleware.insert_before 0, Rack::Cors do
       allow do
-        origins 'http://localhost:8888', 'http://localhost:3000', 'http://localhost:3001', 'https://chat.optobot.ai'
-        # origins '*'
+        origins 'http://localhost:8888', 'http://localhost:3000', 'http://localhost:3001', 'https://chat.optobot.ai', 'https://optobot-test.now.sh', 'https://beta.optobot.ai'
         resource '*',
           :headers => :any,
           :expose => ['access-token', 'expiry', 'token-type', 'uid', 'client'],
@@ -22,22 +21,6 @@ module Myapp
           :credentials => true
       end
     end
-
-    # Settings in config/environments/* take precedence over those specified here.
-    # Application configuration should go into files in config/initializers
-    # -- all .rb files in that directory are automatically loaded.
-
-    # config.middleware.insert_before 0, Rack::Cors do
-    #   allow do
-    #     origins '*'
-    #     resource(
-    #       '*',
-    #       headers: :any,
-    #       expose:  ['access-token', 'expiry', 'token-type', 'uid', 'client'],
-    #       methods: [:get, :patch, :put, :delete, :post, :options]
-    #       )
-    #   end
-    # end
 
 
   end
