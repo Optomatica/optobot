@@ -1,0 +1,96 @@
+# inherit_from: ../.rubocop.yml
+require:
+  - rubocop-rails
+  - rubocop-performance
+
+Rails/DynamicFindBy:
+  Whitelist:
+    - find_by_id
+
+AllCops:
+  TargetRubyVersion: 2.6
+  Exclude:
+    - 'node_modules/**/*'
+    - 'bin/*'
+    - 'db/seeds.rb'
+    - 'db/schema.rb'
+    - 'db/migrate/*'
+
+Style/SymbolArray:
+  EnforcedStyle: brackets
+
+Style/WordArray:
+  EnforcedStyle: brackets
+
+Style/FrozenStringLiteralComment:
+  EnforcedStyle: never
+
+Layout/LineLength:
+  Enabled: false
+  Max: 160
+
+Metrics/MethodLength:
+  Enabled: false
+  Max: 20
+  Exclude:
+    - 'db/migrate/*.rb'
+
+Style/EmptyMethod:
+  EnforcedStyle: expanded
+
+Style/RedundantReturn:
+  AllowMultipleReturnValues: true
+  Enabled: false
+
+Style/Documentation:
+  Enabled: false
+
+Metrics/BlockLength:
+  Exclude:
+    - 'lib/tasks/*.rake'
+    - 'config/routes.rb'
+
+Metrics/AbcSize:
+  Enabled: false
+
+Metrics/PerceivedComplexity:
+  Enabled: false
+
+Naming/HeredocDelimiterNaming:
+  Enabled: false
+
+Metrics/ClassLength:
+  Exclude:
+
+Naming/MethodParameterName:
+  Enabled: false
+
+Rails/HasManyOrHasOneDependent:
+  Enabled: false
+
+Style/ClassAndModuleChildren:
+  Enabled: false
+
+Rails/CreateTableWithTimestamps:
+  Enabled: false
+
+Metrics/CyclomaticComplexity:
+  Enabled: false
+
+Lint/RescueException:
+  Enabled: false
+
+Rails/TimeZone:
+  Enabled: false
+
+Style/NumericLiterals:
+  MinDigits: 7
+
+Style/HashEachMethods:
+  Enabled: false
+
+Style/HashTransformKeys:
+  Enabled: false
+
+Style/HashTransformValues:
+  Enabled: false
