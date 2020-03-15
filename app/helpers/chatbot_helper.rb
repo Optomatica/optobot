@@ -657,7 +657,7 @@ module ChatbotHelper
   end
 
   def fix_response_text(responses, replacements={})
-    p 'in fix_response_text with  responses ==', responses, responses.class
+    p 'in fix_response_text with  responses ==', responses, replacements
     if [URI::HTTPS, URI::HTTP, String].include?(responses.class)
       get_mustache_value responses.to_s, replacements
     elsif responses.is_a?(Array)
@@ -672,7 +672,7 @@ module ChatbotHelper
     end
   end
 
-  def get_mustache_value(response, replacements)
+  def get_mustache_value(response, replacements={})
     spaces_replaced = response.nil? ? "" : response.gsub(/\{\{(.*?)\}\}/) {|x| "{{#{x[2...-2].strip.gsub(/\s+/,'_')}}}"}
     matches = spaces_replaced.scan(/\{\{(.*?)\}\}/)
     if matches.present?
@@ -711,7 +711,7 @@ module ChatbotHelper
         v = {name: variable.name, type: variable.entity}
         all_responses = variable.get_responses(@lang)
         all_responses.each do |response_type, response_content|
-          fix_response_text response_content unless response_content == []
+          fix_response_text response_content if response_content != [] && !response_content.any?{|c| c[:list_template]}
         end
         v.merge(all_responses)
         v[:options] = variable.get_options(@lang)
@@ -721,7 +721,7 @@ module ChatbotHelper
     else
       all_responses = reply_owner.get_responses(@lang)
       all_responses.each do |response_type, response_content|
-        fix_response_text response_content unless response_content == []
+        fix_response_text response_content if response_content != [] && !response_content.any?{|c| c[:list_template]}
       end
       if @to_render[kind]
         all_responses.each {|key, value| 

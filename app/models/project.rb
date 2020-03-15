@@ -215,7 +215,7 @@ class Project < ApplicationRecord
     response_content = result[2]
     content = response_content
     content_type = 0
-    content_type, content = response_content.strip.gsub(/\s+/,'_').split('@') if content.include? "@"
+    content_type, content = response_content.strip.split('@') if content.include? "@"
     content_type = 1 if content_type == "image"
     content_type = 2 if content_type == "video"
     return response_type, content, content_type

@@ -21,7 +21,7 @@ module MessengerHelper
                 @body["message"] = self.get_media_message(page_access_token, response)
             elsif response.keys.length > 1 && response[:button]
                 @body["message"] = button_template(response)
-            elsif responses[:list_url] || response[:list_template]
+            elsif response[:list_url] || response[:list_template]
                 self.add_list!(response[:list_url], response[:list_template], response[:list_url_headers] || {})
             elsif response.keys.length > 1
                 self.generic_template(response)
@@ -60,7 +60,7 @@ module MessengerHelper
 
     def self.get_text_message(text)
         {
-            "text" => text
+            "text" => text.gsub!("\\n", "\n")
         }
     end
 
@@ -112,10 +112,10 @@ module MessengerHelper
         end
     end
 
-    def add_list!(url, template, headers = {})
+    def self.add_list!(url, template, headers = {})
         if url
             elements = []
-            uri = URI.parse(URI.encode(fix_response_text(uri)))
+            uri = URI.parse(URI.encode(fix_response_text(url)))
             request = Net::HTTP::Get.new(uri)
             headers.keys.each{|k|
                 request[k] = fix_response_text(headers[k])
@@ -129,7 +129,7 @@ module MessengerHelper
                 http.request(request)
             end
             response = JSON.parse(response.body) rescue response.body
-            response = [responses] if response.is_a? Hash
+            response = [response] if response.is_a? Hash
             return unless response.is_a? Array
             response.each{|response| 
                 elements << JSON.parse(fix_response_text(template, response))
