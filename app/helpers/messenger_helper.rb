@@ -1,9 +1,11 @@
 include APICalls
+include ChatbotHelper
 
 module MessengerHelper
 
-    def self.send_responses(page_access_token, responses, user_psid, variable) # type:, value:
+    def self.send_responses(page_access_token, responses, user_psid, variable, project, user_project) # type:, value:
         p "in MessengerHelper in send_message  given responses ======  " , responses
+        set_user_project(project, user_project)
         requestes_responses = []
         url = "https://graph.facebook.com/v2.6/me/messages?access_token=#{page_access_token}"
 

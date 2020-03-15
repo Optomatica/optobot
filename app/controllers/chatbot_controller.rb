@@ -67,7 +67,7 @@ class ChatbotController < ApplicationController
         responses = []
         responses += bot_will_say[:dialogue][:responses] if (bot_will_say[:dialogue] and bot_will_say[:dialogue][:responses])
         responses += bot_will_say[:variable][:responses] if bot_will_say[:variable] and bot_will_say[:variable][:responses]
-        requestes_responses += MessengerHelper.send_responses(page_access_token, responses, user_psid, bot_will_say[:variable])
+        requestes_responses += MessengerHelper.send_responses(page_access_token, responses, user_psid, bot_will_say[:variable], @project, @user_project)
 
         p requestes_responses
       end
@@ -94,8 +94,8 @@ class ChatbotController < ApplicationController
       user_message = ChatbotMessage.create!(user_project_id: user_project.id, message: params[:text], is_user_message: false)
       page_access_token = @project.facebook_page_access_token
       if page_access_token
-        @user_project.connections.each{|c|
-          MessengerHelper.send_responses(page_access_token, {text: params[:text]}, c.connection_value, bot_will_say[:variable])
+        user_project.connections.each{|c|
+          MessengerHelper.send_responses(page_access_token, {text: params[:text]}, c.connection_value, bot_will_say[:variable], @project, user_project)
         }
       end
       render json: "Message sent!".to_json , status: 200

@@ -656,6 +656,11 @@ module ChatbotHelper
     return dialogues.first
   end
 
+  def set_user_project(project, user_project)
+    @project = project
+    @user_project = user_project
+  end
+
   def fix_response_text(responses, replacements={})
     p 'in fix_response_text with  responses ==', responses, replacements
     if [URI::HTTPS, URI::HTTP, String].include?(responses.class)
