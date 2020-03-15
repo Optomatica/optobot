@@ -62,7 +62,7 @@ module MessengerHelper
 
     def self.get_text_message(text)
         {
-            "text" => text.gsub!("\\n", "\n")
+            "text" => text.gsub("\\n", "\n")
         }
     end
 
