@@ -100,6 +100,10 @@ module MainHelper
     num_arr.first.to_i / num_arr.last.to_i
   end
 
+  def less_than(num_arr)
+    num_arr.first.to_i < num_arr.last.to_i ? "true" : "false"
+  end
+
   private
 
   def role_projs_cnt(project_id)

@@ -577,16 +577,14 @@ module ChatbotHelper
     value = nil
     if variable.fetch_info['url']
       "variable.fetch_info ================= URL "
-      uri = URI.parse(variable.fetch_info['url'])
+      uri = URI.parse(URI.encode(fix_response_text(variable.fetch_info['url'])))
       headers = variable.fetch_info['headers']
       body = variable.fetch_info['body']
       method_type = variable.fetch_info['method_type']
       key = variable.fetch_info['key']
       p "uri === " , uri
-      uri = fix_response_text(uri)
       body = fix_response_text(body) if body
       p "uri_Mustache === " , uri
-      uri = URI.parse(URI.encode(uri))
       request = method_type == 'post' ? Net::HTTP::Post.new(uri) : Net::HTTP::Get.new(uri)
       headers.keys.each{|k|
         request[k] = fix_response_text(headers[k])
