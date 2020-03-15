@@ -33,8 +33,12 @@ class ChatbotController < ApplicationController
       p "ok"
 
       message = params['entry'].first['messaging'][0]['message']
-      params[:text] = message['quick_reply']['payload'] if message['quick_reply']
-      params[:text] = message['text'] if params[:text].nil?
+      post_back = params['entry'].first['messaging'][0]["postback"]
+
+      params[:text] = message['quick_reply']['payload'] if message && message['quick_reply']
+      params[:text] = message['text'] if message && params[:text].nil?
+      params[:text] = post_back['payload'] if post_back && params[:text].nil?
+
 
       p params[:text]
       bot_page_id = params['entry'].first['messaging'][0]["recipient"]["id"]
