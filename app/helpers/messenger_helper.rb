@@ -6,24 +6,25 @@ module MessengerHelper
         p "in MessengerHelper in send_message  given responses ======  " , responses
         requestes_responses = []
         url = "https://graph.facebook.com/v2.6/me/messages?access_token=#{page_access_token}"
-        @body = {
-            "messaging_type" => "response",
-            "message" => {},
-            "recipient" => {
-                "id" => user_psid
-            }
-        }
 
         responses.each_with_index do |response, index|
-          if response.keys.length == 1 and response[:text]
-              @body["message"] = self.add_text_message(response[:text])
-          elsif response.keys.length == 1 and response[:image] or response[:video]
-              @body["message"] = self.add_media_message(page_access_token, response)
-          elsif response.keys.length > 1 and response[:text] or response[:image] or response[:video]
-              self.add_card!(response[:text], response[:title], response[:image], response[:button])
-              next
-          end
-          requestes_responses << APICalls.postRequest(url, nil, @body.to_json) if index != responses.length - 1
+            @body = {
+                "messaging_type" => "response",
+                "message" => {},
+                "recipient" => {
+                    "id" => user_psid
+                }
+            }
+            if response.keys.length == 1 and response[:text]
+                @body["message"] = self.get_text_message(response[:text])
+            elsif response.keys.length == 1 and (response[:image] or response[:video])
+                @body["message"] = self.get_media_message(page_access_token, response)
+            elsif response.keys.length > 1 and response[:text] or response[:image] or response[:video]
+                self.add_card!(response[:text], response[:title], response[:image], response[:button])
+            elsif responses[:list_url] || response[:list_template]
+                self.add_list!(response[:list_url], response[:list_template], response[:list_url_headers] || {})
+            end
+            requestes_responses << APICalls.postRequest(url, nil, @body.to_json) if index != responses.length - 1
         end
 
         self.send_options(page_access_token, variable, user_psid) if variable
@@ -55,13 +56,13 @@ module MessengerHelper
         p " OPTIONS - @body.to_json ========== " , @body.to_json
     end
 
-    def self.add_text_message(text)
+    def self.get_text_message(text)
         {
             "text" => text
         }
     end
 
-    def self.add_media_message(page_access_token, media_type, attachment_url)
+    def self.get_media_message(page_access_token, media_type, attachment_url)
         url = "https://graph.facebook.com/v2.6/me/message_attachments?access_token=#{page_access_token}"
         body = {
             "message" => {
@@ -107,6 +108,41 @@ module MessengerHelper
           @body["message"]["quick_replies"].last["payload"] = ''
           @body["message"]["quick_replies"].last["image_url"] = icon
         end
+    end
+
+    def add_list!(url, template, headers = {})
+        if url
+            elements = []
+            uri = URI.parse(URI.encode(fix_response_text(uri)))
+            request = Net::HTTP::Get.new(uri)
+            headers.keys.each{|k|
+                request[k] = fix_response_text(headers[k])
+            }
+            request.content_type = "application/json"
+            request["Cache-Control"] = "no-cache"
+            req_options = {
+                use_ssl: uri.scheme == "https",
+            }
+            response = Net::HTTP.start(uri.hostname, uri.port, req_options) do |http|
+                http.request(request)
+            end
+            response = JSON.parse(response.body) rescue response.body
+            response = [responses] if response.is_a? Hash
+            return unless response.is_a? Array
+            response.each{|response| 
+                elements << JSON.parse(fix_response_text(template, response))
+            }
+        else
+            elements = fix_response_text(template)
+        end
+
+        @body["message"]["attachment"] = {
+            "type" => "template",
+            "payload" => {
+                "template_type" => "generic",
+                "elements" => elements
+            }
+        }
     end
 
 

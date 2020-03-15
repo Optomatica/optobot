@@ -584,13 +584,13 @@ module ChatbotHelper
       key = variable.fetch_info['key']
       p "uri === " , uri
       uri = fix_response_text(uri)
-      headers.keys.each{|k|
-        headers[k] = fix_response_text(headers[k])
-      }
       body = fix_response_text(body) if body
       p "uri_Mustache === " , uri
       uri = URI.parse(URI.encode(uri))
       request = method_type == 'post' ? Net::HTTP::Post.new(uri) : Net::HTTP::Get.new(uri)
+      headers.keys.each{|k|
+        request[k] = fix_response_text(headers[k])
+      }
       request.content_type = "application/json"
       request["Cache-Control"] = "no-cache"
       request.body = body if method_type == 'post'
@@ -657,23 +657,22 @@ module ChatbotHelper
     return dialogues.first
   end
 
-  def fix_response_text responses
+  def fix_response_text responses, replacements={}
     p " in fix_response_text with  responses == " , responses , responses.class
     if [URI::HTTPS, URI::HTTP, String].include?(responses.class)
-      get_mustache_value responses.to_s
+      get_mustache_value responses.to_s, replacements
     else
       responses.each do |response|
         p "response === " , response , response[:text]
-        response[:text] = get_mustache_value response[:text]
+        response[:text] = get_mustache_value response[:text], replacements
         p "response after replacment ====== " , response[:text]
       end
     end
   end
 
-  def get_mustache_value(response)
+  def get_mustache_value(response, replacements)
     spaces_replaced = response.nil? ? "" : response.gsub(/\{\{(.*?)\}\}/) {|x| "{{#{x[2...-2].strip.gsub(/\s+/,'_')}}}"}
     matches = spaces_replaced.scan(/\{\{(.*?)\}\}/)
-    replacements = {}
     if matches.present?
       p " your text contain curly brackets ............."
       puts "matches", matches.to_json ,".........."
