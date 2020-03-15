@@ -546,7 +546,8 @@ module ChatbotHelper
       is_all = var_name.ends_with?(".all")
       var_name = var_name[0...-4] if is_all
       var = @project.variables.find_by_name(var_name)
-      user_data = @user_project.user_data.where(variable_id: var.id) unless var.nil?
+      return if var.nil?
+      user_data = @user_project.user_data.where(variable_id: var.id) 
       return nil if user_data.empty?
       if is_all
         return user_data.pluck(:value).map{|value| is_number?(value) ? value.to_f : value}
