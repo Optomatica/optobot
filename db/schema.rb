@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20200225123930) do
+ActiveRecord::Schema.define(version: 20200316112741) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -65,6 +65,7 @@ ActiveRecord::Schema.define(version: 20200225123930) do
     t.datetime "updated_at", null: false
     t.bigint "project_id"
     t.bigint "identifier"
+    t.string "facebook_persona_id"
     t.index ["project_id"], name: "index_contexts_on_project_id"
   end
 

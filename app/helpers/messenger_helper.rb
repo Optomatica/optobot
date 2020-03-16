@@ -3,7 +3,7 @@ include ChatbotHelper
 
 module MessengerHelper
 
-    def self.send_responses(page_access_token, responses, user_psid, variable, project, user_project) # type:, value:
+    def self.send_responses(page_access_token, responses, user_psid, variable, project, user_project, persona_id) # type:, value:
         p "in MessengerHelper in send_message  given responses ======  " , responses
         set_user_project(project, user_project)
         requestes_responses = []
@@ -28,6 +28,8 @@ module MessengerHelper
             elsif response.keys.length > 1
                 self.generic_template(response)
             end
+
+            @body["persona_id"] = persona_id if persona_id
             requestes_responses << APICalls.postRequest(url, nil, @body.to_json) if index != responses.length - 1
         end
 

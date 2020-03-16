@@ -68,10 +68,17 @@ class ChatbotController < ApplicationController
         MessengerHelper.send_action(page_access_token, user_psid, "typing_off")
 
         p "bot_will_say == " , bot_will_say
+
+        persona_id = nil
+        if(bot_will_say[:dialogue])
+          dialogue = Dialogue.find(bot_will_say[:dialogue][:id])
+          persona_id = dialogue.context.facebook_persona_id if dialogue
+        end
+
         responses = []
         responses += bot_will_say[:dialogue][:responses] if (bot_will_say[:dialogue] and bot_will_say[:dialogue][:responses])
         responses += bot_will_say[:variable][:responses] if bot_will_say[:variable] and bot_will_say[:variable][:responses]
-        requestes_responses += MessengerHelper.send_responses(page_access_token, responses, user_psid, bot_will_say[:variable], @project, @user_project)
+        requestes_responses += MessengerHelper.send_responses(page_access_token, responses, user_psid, bot_will_say[:variable], @project, @user_project, persona_id)
 
         p requestes_responses
       end

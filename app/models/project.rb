@@ -450,7 +450,7 @@ class Project < ApplicationRecord
           end
         end
       else
-        render "Format error in line #{(i+1)/2}", status: :bad_request and return
+        raise "Format error in line #{(i+1)/2}" and return
       end
     end
       
