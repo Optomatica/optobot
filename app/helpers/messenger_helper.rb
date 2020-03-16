@@ -135,7 +135,10 @@ module MessengerHelper
             response = JSON.parse(response.body) rescue response.body
             response = [response] if response.is_a? Hash
             return unless response.is_a? Array
-            response.each{|response| 
+            response.each{|response|
+                response.each{ |k,v|
+                    response[k] = v.each_with_index.map{|v,index| [index.to_s, v]}.to_h if v.is_a?(Array)
+                }
                 elements << JSON.parse(fix_response_text(template, response))
             }
         else
