@@ -21,7 +21,7 @@ module MessengerHelper
                 @body["message"] = self.get_text_message(response[:text])
             elsif response.keys.length == 1 and (response[:image] or response[:video])
                 @body["message"] = self.get_media_message(page_access_token, response)
-            elsif response.keys.length > 1 && response[:button]
+            elsif response.keys.length > 1 && response[:button_type]
                 @body["message"] = button_template(response)
             elsif response[:list_url] || response[:list_template]
                 self.add_list!(response[:list_url], response[:list_template], response[:list_url_headers] || {})
@@ -178,18 +178,19 @@ module MessengerHelper
     end
 
   def button_template(response)
+    buttons = []
+    buttons << add_button(response[:button_type], response[:button_payload], response[:button_title])
+
+    # if response.keys.length > 3
+
+    # else
+    # end
     @body["message"]["attachment"] = {
       "type":"template",
       "payload":{
         "template_type":"button",
         "text": response[:text] ,
-        "buttons":[
-          {
-            "type": response[:button],
-            "url": response[:payload],
-            "title": response[:title]
-          }
-        ]
+        "buttons": buttons
       }
     }
   end

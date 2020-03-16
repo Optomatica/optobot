@@ -228,6 +228,7 @@ class Project < ApplicationRecord
 
   def get_all_responses(data, i, language, is_variable=false)
     responses_arr = []
+    appended_contents = ['title', 'sub_title', 'button_type', 'button_title', 'button_payload', 'list_headers']
     min = max = nil
     tmp_arr = data.strip.split("\n")
     tmp_arr.each_with_index{ |res, index|
@@ -237,8 +238,7 @@ class Project < ApplicationRecord
       else
         response_type, content, content_type = get_response_content(res)
         content.gsub!("\\n", "\n")
-        if response_type == "alt" || content_type == "button" ||
-            content_type == "title" || content_type == "payload" || content_type == "list_headers" || 
+        if response_type == "alt" || appended_contents.any?(content_type) || 
             (content_type == "list_template" && responses_arr.length > 0 && responses_arr.last[:response_contents].first[:content_type] == 'list_url')
           raise "Alternative response cannot be the first response in DSL file line #{(i+1)/2}" if responses_arr.length == 0
           responses_arr.last[:response_contents].push({content: {language => content}, content_type: content_type})
