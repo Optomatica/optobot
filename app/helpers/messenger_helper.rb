@@ -9,28 +9,44 @@ module MessengerHelper
         requestes_responses = []
         url = "https://graph.facebook.com/v2.6/me/messages?access_token=#{page_access_token}"
 
-        responses.each_with_index do |response, index|
-            @body = {
-                "messaging_type" => "response",
-                "message" => {},
-                "recipient" => {
-                    "id" => user_psid
-                }
+        @body = {
+            "messaging_type" => "response",
+            "message" => {},
+            "recipient" => {
+                "id" => user_psid
             }
+        }
+        button_or_generic_tem = responses.select{ |res| res[:title] || res[:button_type]}
+        p '********this is filtered responses'
+        p responses
+        p '*****************'
+        responses.select{ |res| res[:title] || res[:button_type]}
+        p button_or_generic_tem
+        p '******************************'
+        p '****************************'
+        responses.each_with_index do |response, index|
             if response.keys.length == 1 and response[:text]
                 @body["message"] = self.get_text_message(response[:text])
             elsif response.keys.length == 1 and (response[:image] or response[:video])
                 @body["message"] = self.get_media_message(page_access_token, response)
-            elsif response.keys.length > 1 && response[:button_type]
-                @body["message"] = button_template(response)
             elsif response[:list_url] || response[:list_template]
-                self.add_list!(response[:list_url], response[:list_template], response[:list_url_headers] || {})
-            elsif response.keys.length > 1
-                self.generic_template(response)
+                @body["message"] = self.get_list!(response[:list_url], response[:list_template], response[:list_url_headers] || {})
             end
-
             @body["persona_id"] = persona_id if persona_id
             requestes_responses << APICalls.postRequest(url, nil, @body.to_json) if index != responses.length - 1
+        end
+
+        if button_or_generic_tem.count > 0
+          if button_or_generic_tem.find{ |res| res[:title] }.nil?
+            @body["message"] = self.button_template(button_or_generic_tem)
+          else 
+            @body["message"] = generic_template(button_or_generic_tem)
+          end
+          p '**********************************'
+          p 'here is the body'
+          p @body
+          p '**********************************'
+          requestes_responses << APICalls.postRequest(url, nil, @body.to_json)
         end
 
         self.send_options(page_access_token, variable, user_psid) if variable
@@ -116,7 +132,7 @@ module MessengerHelper
         end
     end
 
-    def self.add_list!(url, template, headers = {})
+    def self.get_list!(url, template, headers = {})
         if url
             elements = []
             uri = URI.parse(URI.encode(fix_response_text(url)))
@@ -145,17 +161,20 @@ module MessengerHelper
             elements = fix_response_text(template)
         end
 
-        @body["message"]["attachment"] = {
+        return {
+          "attachment" => {
             "type" => "template",
             "payload" => {
                 "template_type" => "generic",
                 "elements" => elements
             }
+          }
         }
     end
 
-    def generic_template(response)
-        p "in add_card with response == #{response}"
+    def generic_template(responses)
+        card_response = responses.find{|res| res['title']}
+        button_response = responses.select{|res| res['button_type']}
         if @body["message"]["attachment"].nil?
             @body["message"]["attachment"] = {
                 "type" => "template",
@@ -163,44 +182,40 @@ module MessengerHelper
                     "template_type" => "generic",
                     "elements" => [
                         {
-                            "title" => title,
-                            "image_url" => image,
-                            "subtitle" => subtitle
+                            "title" => card_response['title'],
+                            "image_url" => card_response['card_image'],
+                            "subtitle" => card_response['sub_title']
                         }
                     ]
                 }
             }
         end
-        if button
-            @body["message"]["attachment"]["payload"]["elements"][0]["buttons"] = [
-                {
-                    "type" => "postback",
-                    "title" => button,
-                    "payload" => text
-                }
-            ]
+        if button_response
+          buttons = []
+          button_response.each do |button|
+            buttons << add_button(button[:button_type], button[:button_payload], button[:button_title])
+          end
+            @body["message"]["attachment"]["payload"]["elements"][0]["buttons"] = buttons
         end
     end
 
-  def button_template(response)
+  def self.button_template(responses)
     buttons = []
-    buttons << add_button(response[:button_type], response[:button_payload], response[:button_title])
-
-    # if response.keys.length > 3
-
-    # else
-    # end
-    @body["message"]["attachment"] = {
-      "type":"template",
-      "payload":{
-        "template_type":"button",
-        "text": response[:text] ,
-        "buttons": buttons
+    responses.each do |response|
+      buttons << self.add_button(response[:button_type], response[:button_payload], response[:button_title])
+    end
+    return {"attachment" => {
+        "type" => "template",
+        "payload" => {
+          "template_type" => "button",
+          "text" => "this is button" ,
+          "buttons" => buttons
+        }
       }
     }
   end
 
-  def add_button(type, payload, title)
+  def self.add_button(type, payload, title)
     button = {}
     button['type'] = type
     button['title'] = title

@@ -72,7 +72,7 @@ class ChatbotController < ApplicationController
         persona_id = nil
         if(bot_will_say[:dialogue])
           dialogue = Dialogue.find(bot_will_say[:dialogue][:id])
-          persona_id = dialogue.context.facebook_persona_id if dialogue
+          persona_id = dialogue.context.facebook_persona_id if dialogue && dialogue.context
         end
 
         responses = []

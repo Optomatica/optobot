@@ -1,6 +1,7 @@
 class ResponseContent < ApplicationRecord
   enum content_type: [:text, :image, :video, :interactive_image, :title, :sub_title, :button_type,
-                      :icon, :list_url, :list_template, :list_headers, :button_title, :button_payload]
+                      :icon, :list_url, :list_template, :list_headers, :button_title,
+                      :button_payload, :card_image]
   belongs_to :response
   
   def export
