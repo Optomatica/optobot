@@ -657,16 +657,19 @@ module ChatbotHelper
     return dialogues.first
   end
 
-  def fix_response_text responses, replacements={}
-    p " in fix_response_text with  responses == " , responses , responses.class
+  def fix_response_text(responses, replacements={})
+    p 'in fix_response_text with  responses ==', responses, responses.class
     if [URI::HTTPS, URI::HTTP, String].include?(responses.class)
       get_mustache_value responses.to_s, replacements
-    else
+    elsif responses.is_a?(Array)
       responses.each do |response|
-        p "response === " , response , response[:text]
-        response[:text] = get_mustache_value response[:text], replacements
-        p "response after replacment ====== " , response[:text]
+        response.keys.each { |key| 
+          response[key] = get_mustache_value response[key], replacements 
+        }
+        p 'response after replacment ======', response
       end
+    else
+      get_mustache_value responses
     end
   end
 

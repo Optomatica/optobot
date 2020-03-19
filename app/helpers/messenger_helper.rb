@@ -19,10 +19,12 @@ module MessengerHelper
                 @body["message"] = self.get_text_message(response[:text])
             elsif response.keys.length == 1 and (response[:image] or response[:video])
                 @body["message"] = self.get_media_message(page_access_token, response)
-            elsif response.keys.length > 1 and response[:text] or response[:image] or response[:video]
-                self.add_card!(response[:text], response[:title], response[:image], response[:button])
+            elsif response.keys.length > 1 && response[:button]
+                @body["message"] = button_template(response)
             elsif responses[:list_url] || response[:list_template]
                 self.add_list!(response[:list_url], response[:list_template], response[:list_url_headers] || {})
+            elsif response.keys.length > 1
+                self.generic_template(response)
             end
             requestes_responses << APICalls.postRequest(url, nil, @body.to_json) if index != responses.length - 1
         end
@@ -49,7 +51,7 @@ module MessengerHelper
                     requestes_responses << APICalls.postRequest(url, nil, @body.to_json)
                     @body["message"] = nil
                 end
-                self.add_card!(option[:text], option[:title], option[:image], option[:button])
+                self.generic_template(option)
             end
         end
 
@@ -62,7 +64,7 @@ module MessengerHelper
         }
     end
 
-    def self.get_media_message(page_access_token, media_type, attachment_url)
+    def self.get_media_message(page_access_token, media_type)
         url = "https://graph.facebook.com/v2.6/me/message_attachments?access_token=#{page_access_token}"
         body = {
             "message" => {
@@ -70,7 +72,7 @@ module MessengerHelper
                     "type" => "image",
                     "payload" => {
                     "is_reusable" => true,
-                    "url" => attachment_url
+                    "url" => media_type.values[0]
                     }
                 }
             }
@@ -84,7 +86,7 @@ module MessengerHelper
                     "template_type" =>  "media",
                     "elements" =>  [
                         {
-                            "media_type" =>  media_type,
+                            "media_type" =>  media_type.keys[0].upcase,
                             "attachment_id" =>  parsed_response["attachment_id"]
                         }
                     ]
@@ -145,21 +147,8 @@ module MessengerHelper
         }
     end
 
-
-    def self.add_card!(text, title, image, button)
-        p "in add_card with text == #{text} ,title == #{title} , image == #{image} , and button == #{button}"
-        if title.nil?
-            title = text
-        end
-        if text.length > 20
-            subtitle = text
-        end
-
-        # @body["message"] = {
-        #     "text" => text
-        # }
-
-
+    def generic_template(response)
+        p "in add_card with response == #{response}"
         if @body["message"]["attachment"].nil?
             @body["message"]["attachment"] = {
                 "type" => "template",
@@ -174,12 +163,6 @@ module MessengerHelper
                     ]
                 }
             }
-        else
-            @body["message"]["attachment"]["payload"]["elements"] << {
-                "title" => title,
-                "image_url" => image,
-                "subtitle" => subtitle
-            }
         end
         if button
             @body["message"]["attachment"]["payload"]["elements"][0]["buttons"] = [
@@ -191,6 +174,31 @@ module MessengerHelper
             ]
         end
     end
+
+  def button_template(response)
+    @body["message"]["attachment"] = {
+      "type":"template",
+      "payload":{
+        "template_type":"button",
+        "text": response[:text] ,
+        "buttons":[
+          {
+            "type": response[:button],
+            "url": response[:payload],
+            "title": response[:title]
+          }
+        ]
+      }
+    }
+  end
+
+  def add_button(type, payload, title)
+    button = {}
+    button['type'] = type
+    button['title'] = title
+    type == 'web_url' ? button['url'] = payload : button['payload'] = payload
+    button
+  end
 
     def self.account_link(page_access_token, user_psid)
         url = "https://graph.facebook.com/v2.6/me/messages?access_token=#{page_access_token}"

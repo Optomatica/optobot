@@ -237,7 +237,8 @@ class Project < ApplicationRecord
       else
         response_type, content, content_type = get_response_content(res)
         content.gsub!("\\n", "\n")
-        if response_type == "alt" || content_type == "list_headers" || 
+        if response_type == "alt" || content_type == "button" ||
+            content_type == "title" || content_type == "payload" || content_type == "list_headers" || 
             (content_type == "list_template" && responses_arr.length > 0 && responses_arr.last[:response_contents].first.content_type == 'list_url')
           raise "Alternative response cannot be the first response in DSL file line #{(i+1)/2}" if responses_arr.length == 0
           responses_arr.last[:response_contents].push({content: {language => content}, content_type: content_type})
