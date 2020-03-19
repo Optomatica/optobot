@@ -228,7 +228,8 @@ class Project < ApplicationRecord
 
   def get_all_responses(data, i, language, is_variable=false)
     responses_arr = []
-    appended_contents = ['card_image', 'sub_title', 'button_type', 'button_payload', 'list_headers']
+    appended_contents = ['card_image', 'sub_title', 'button_type', 'button_text', 'button_url',
+                         'list_headers', 'button_payload']
     min = max = nil
     tmp_arr = data.strip.split("\n")
     tmp_arr.each_with_index{ |res, index|
