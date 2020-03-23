@@ -139,17 +139,26 @@ class ChatbotController < ApplicationController
     end
   end
 
+  api :GET, '/initial_node'
+  description 'get initial node to start/initiate chat with user.
+               an initial node is set by specifing its name as "initial_node"
+               ex.. [N:start_node]type your response here '
+  def start_chating
+    project = Project.find_by_id(params[:id])
+    node = project.dialogues.where('name = ?', 'start_node')[0]
+    render json: node.as_json(include: [responses: { include: :response_contents }]), status: :ok
+  end
+
   private
+
   def chatbot_params
-    return params.permit(:project_id, :text, :email, :language, :debug_mode, :speech, "Content-type", :encoding, :bits, :rate, :endian, :audio)
+    params.permit(:project_id, :text, :email, :language, :debug_mode,
+                  :speech, 'Content-type', :encoding, :bits, :rate, :endian, :audio)
   end
 
   def set_project
-    p  " in set_project given  params[:id] == #{params[:id]}"
     @project = Project.find_by_id(params[:id])
-    if @project.nil?
-      render json: 'Project not found.', status: 404
-    end
+    render json: 'Project not found.', status: 404 if @project.nil?
   end
 
   def swich_to_production?

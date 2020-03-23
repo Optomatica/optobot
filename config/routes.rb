@@ -81,7 +81,7 @@ Rails.application.routes.draw do
       post 'chatbot', to: 'chatbot#chat'
       post 'send_message_to_user', to: 'chatbot#send_message_to_user'
       post 'linkFacebook', to: 'chatbot#linkFacebook'
-      post 'go_to_session' , to: 'chatbot#go_to_session'
+      post 'go_to_session', to: 'chatbot#go_to_session'
       post 'get_chat_messages'
       get 'get_chat_problems'
       delete 'remove_problem'
@@ -91,6 +91,7 @@ Rails.application.routes.draw do
       post 'import_context_dialogues_data'
       post 'train_wit'
       get 'release'
+      get 'initial_node', to: 'chatbot#start_chating'
     end
 
     resources :user_data do

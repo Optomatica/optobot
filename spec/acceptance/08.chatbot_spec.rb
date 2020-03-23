@@ -38,6 +38,10 @@ resource "Chatbots" do
       #@response = Response.create!( response_owner_id: @variable.id , response_owner_type: "Variable")
       @response = Response.create!( response_owner_id: @dialogue.id , response_owner_type: "Dialogue")
       @response_content = ResponseContent.create(response_id: @response.id, content: {"en" => "first-reply"})
+
+      @initial_dialogue = Dialogue.create!(project_id: @project.id, context_id: @context.id , name: "start_node", tag: "start_node")
+      @d_response = Response.create!(response_owner_id: @initial_dialogue.id, response_owner_type: "Dialogue", response_type: 'response')
+      @r_content = ResponseContent.create(response_id: @d_response.id, content: {'en' => 'Hi, how can i help you?'})
   end
 
   before(:each) do
@@ -120,6 +124,13 @@ resource "Chatbots" do
     end
   end
 
-
-    
+  get '/projects/:id/initial_node' do
+    parameter :id, :number, required: true
+    let(:id) { @project.id }
+    example 'get initial node to start/initiate chat with user.
+             an initial node is set by specifing its name as "initial_node"
+             ex.. [N:start_node]type your response here' do
+      do_request
+    end
+  end
 end
