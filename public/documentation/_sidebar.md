@@ -5,4 +5,4 @@
 * [Quick Start](/Quick_Start)
 * [NLP Engine](/NLP_Engine)
 * [Detailed Overview](/Detailed_Overview)
-* [API documentation ](https://beta.optobot.ai/api/docs)
+* [API documentation ](https://docs.optobot.ai/api/docs)

@@ -225,7 +225,7 @@ module MessengerHelper
                     "buttons" => [
                         {
                             "type" => "account_link",
-                            "url" => ENV['ACCOUNT_LINK_URL']
+                            "url" => "https://beta.optobot.ai/"
                         }
                     ]
                 }

@@ -13,6 +13,6 @@ With easy deployment, you can add Optobot's open-source iFrame to your website t
 
 All that is required for you to train your bot and build the scenarios, add conditions and actions and your OptoBot will be ready for use. OptoBot incorporates several languages and Arabic as well.   
 
-For more advanced documentation, check the [ API documentation ](https://beta.optobot.ai/api/docs)
+For more advanced documentation, check the [ API documentation ](https://docs.optobot.ai/api/docs)
 
 

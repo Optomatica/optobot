@@ -1,4 +1,4 @@
-[<img src=https://beta.optobot.ai/assets/images/logo.png>](https://optobot.ai/)
+[<img src=https://docs.optobot.ai/assets/images/logo.png>](https://optobot.ai/)
 
 An Efficient & Light-weight Open-source Bot Authoring Tool by [Optomatica](https://optomatica.com/).
 
@@ -6,7 +6,7 @@ An Efficient & Light-weight Open-source Bot Authoring Tool by [Optomatica](https
   [Check out our Website](https://optobot.ai)
 
 - Getting started and how to use Optobot
-  [Optobot documentation](https://beta.optobot.ai/documentation#/)
+  [Optobot documentation](https://docs.optobot.ai/documentation#/)
 
 - Discussions
   [Optobot Community Forum](https://discourse.optobot.ai/)
