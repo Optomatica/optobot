@@ -331,17 +331,22 @@ class Project < ApplicationRecord
     arcs.default = {}
     prev_dialogue = nil
     prev_variable = nil
+    form_node = nil
     start_index = 0
     start_index = 1 if arr[0].empty?
     (start_index...arr.length).step(2).each do |i|
       if arr[i][1].upcase == 'N'
         # dialogue node
         responses_arr, _, _ = get_all_responses(arr[i+1], i, language)
-        tmp = arr[i].strip.slice(3..-2).gsub(/\s+/,'_')
-        dialogue_name, intent_value = tmp.gsub(/\s+/,'_').split(':')
+        tmp = arr[i].strip.slice(3..-2).gsub(/\s+/, '_')
+        dialogue_name, intent_value, form_node = tmp.gsub(/\s+/, '_').split(':')
+        if form_node || intent_value == 'form_node'
+          form_node = true
+        end
         dialogues[dialogue_name] = {
           context_id: context_id,
           Intent_value: intent_value,
+          form_node: form_node,
           options: [],
           variables: {},
           responses: responses_arr
@@ -365,7 +370,7 @@ class Project < ApplicationRecord
         responses_arr, min, max = get_all_responses(arr[i+1], i, language, true)
         tmp = arr[i].strip.slice(3..-2)
         variable_name, entity_type, storage_type, expire_after, save_text = get_variable_information(tmp)
-        
+
         dialogues[prev_dialogue][:variables][variable_name] = {
           entity: entity_type,
           options: [],

@@ -42,13 +42,13 @@ namespace :example do
         response = http.request(request)
         res = JSON.parse(response.read_body)
         
-        if  res['dialogue'].present?
+        if res['dialogue'].present?
             res['dialogue']['responses'].each do | response_type, response_content |
               puts "#{response_type}: #{response_content}"
             end
           
         end
-        if  res['variable'].present?
+        if res['variable'].present?
           res['variable']['responses'].each do | response_type, response_content |
             puts "#{response_type}: #{response_content}"
           end
