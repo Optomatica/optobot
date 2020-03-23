@@ -384,6 +384,17 @@ class ProjectsController < ApplicationController
     end
   end
 
+  def enable_get_started
+    get_started_node = @project.dialogues.where(name: 'get_started')
+    if get_started_node.empty?
+      render json: 'get started node not found in project', status: :unprocessable_entity
+    else
+      response = get_started_node[0].responses[0].response_contents[0].content['en']
+      # MessengerHelper.get_started(@project.facebook_page_access_token, response)
+      render body: nil, status: :ok
+    end
+  end
+
 	private
     def set_project
       @project = current_user.projects.find_by_id(params[:id])

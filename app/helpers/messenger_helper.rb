@@ -199,7 +199,7 @@ module MessengerHelper
         "type" => "template",
         "payload" => {
           "template_type" => "button",
-          "text" => text = responses.find{ |res| res[:button_text]}[:button_text],
+          "text" => responses.find{ |res| res[:button_text]}[:button_text],
           "buttons" => buttons
         }
       }
@@ -208,10 +208,46 @@ module MessengerHelper
 
   def self.add_button(response)
     button = {}
-    button['type'] = response[:button_type]
-    button['title'] = response[:button_title]
-    response[:button_type] == 'web_url' ? button['url'] = response[:button_url] : button['payload'] = response[:button_payload]
+    button['type'] = response[:button_type] || response['button_type']
+    button['title'] = response[:button_title] || response['button_title']
+    if response[:button_type] || response['button_type'] == 'web_url' 
+       button['url'] = response[:button_url]  || response['button_url']
+    else
+       button['payload'] = response[:button_payload] || response['button_payload']
+    end
     button
+  end
+
+  def self.get_started(page_access_token, response)
+    url = "https://graph.facebook.com/v6.0/me/messenger_profile?access_token=#{page_access_token}"
+    @body = { "get_started": { "payload": response } }
+    APICalls.postRequest(url, nil, @body.to_json)
+  end
+
+  def self.persistent_menu(page_access_token, responses)
+    url = "https://graph.facebook.com/v6.0/me/messenger_profile?access_token=#{page_access_token}"
+    buttons = []
+    responses.each do |response|
+      button = {}
+      contents = response[:response_contents]
+      contents.each do |content|
+       key = content[:content_type]
+       value = content[:content]['en']
+       button[key] = value
+      end
+      buttons << self.add_button(button)
+    end
+
+    body = {
+      "persistent_menu": [
+        {
+          "locale": 'default',
+          "composer_input_disabled": true,
+          "call_to_actions": buttons
+        }
+      ]
+    }
+    APICalls.postRequest(url, nil, body.to_json)
   end
 
     def self.account_link(page_access_token, user_psid)

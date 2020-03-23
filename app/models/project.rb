@@ -350,6 +350,9 @@ class Project < ApplicationRecord
         prev_variable = nil
         arcs[prev_dialogue] = {}
 
+      elsif arr[i][1].upcase == 'P'
+        responses_arr, _, _ = get_all_responses(arr[i+1], i, language)
+        MessengerHelper.persistent_menu(self.facebook_page_access_token, responses_arr)
       elsif arr[i][1].upcase == 'O'
         responses_arr, _, _ = get_all_responses(arr[i+1], i, language)
         raise "Option can't have more than one response in DSL file line #{(i+1)/2}. Option defined as #{arr[i+1]}" if responses_arr.length > 1
