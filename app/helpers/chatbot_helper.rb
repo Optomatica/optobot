@@ -222,7 +222,7 @@ module ChatbotHelper
       dialogues = @project.dialogues.get_dialogues_by(@intent, @user_chatbot_session.context_id)
       p "get_dialogues_by intent = #{@intent}  === ",dialogues
       @problem = @project.problems.new(problem_type: :multiple_intent_in_same_context) if dialogues.length > 1
-      return dialogues.first
+      return dialogues[rand(dialogues.length)]
     else
       # no intent
       @next_context = @user_chatbot_session.context
@@ -269,7 +269,7 @@ module ChatbotHelper
     return dialogues.first if dialogues.length == 1
     if !dialogues.blank? and Dialogue.in_same_context?(dialogues, dialogues.first.context_id)
       @problem = @project.problems.new(problem_type: :multiple_intent_in_same_context)
-      return dialogues.first
+      return dialogues[rand(dialogues.length)]
     elsif !dialogues.blank?
       # if number of roots matched > 1 and in different contexts, say fallback 
       # do you mean...
@@ -658,7 +658,7 @@ module ChatbotHelper
   def see_in_knowledge_base
     dialogues = @project.dialogues.get_knowledge_base_dialogues(@intent)
     @problem = @project.problems.new(problem_type: :multiple_intent_in_same_context) if dialogues.length > 1
-    return dialogues.first
+    return dialogues[rand(dialogues.length)]
   end
 
   def set_user_project(project, user_project)
