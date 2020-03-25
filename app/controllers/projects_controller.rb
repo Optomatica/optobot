@@ -97,8 +97,8 @@ class ProjectsController < ApplicationController
   api :GET, '/users/user_id/projects/list'
   description "list all user's projects as (Admin/author/subscriber)"
   def list
-		user_projects = current_user.projects.where(test_project_id: nil).select("projects.id, projects.name, projects.is_private, user_projects.role, projects.created_at")
-		public_projects = Project.where(is_private: false, test_project_id: nil).select(:id, :name, :is_private, :created_at)
+		user_projects = current_user.projects.where(prod_project_id: nil).select("projects.id, projects.name, projects.is_private, user_projects.role, projects.created_at")
+		public_projects = Project.where(is_private: false, prod_project_id: nil).select(:id, :name, :is_private, :created_at)
     render :json => {user_projects: user_projects, public_projects: public_projects-user_projects}
 	end
 
@@ -319,27 +319,47 @@ class ProjectsController < ApplicationController
 
 		data = JSON.parse(data,:symbolize_names => true)
 
-		begin
-			ActiveRecord::Base.transaction do
-				@project.user_projects.each{|up| up.user_chatbot_session&.destroy! } # for now delete all session
-				prod_project = @project.prod_project
-				#Delete all
-				prod_project.dialogues.destroy_all
-				prod_project.contexts.destroy_all
+		if UserChatbotSession.all.where(context_id: @project.context_ids)
+      @project.tmp_project.id = @project.prod_project.id
+      begin
+        ActiveRecord::Base.transaction do
+          prod_project = Project.create!(nlp_engine: @project.nlp_engine, name: @project.name,
+            external_backend: @project.external_backend, is_private: @project.is_private,
+            fallback_setting: @project.fallback_setting, facebook_page_id: @project.facebook_page_id,
+            version: @project.version)
+          prod_project.import_contexts(data[:contexts])
+          prod_project.import_dialogues(data[:contexts], data[:dialogues_and_arcs])
+          @project.version += 1
+          @project.prod_project_id = prod_project.id
+          @project.save!
+        end
+      rescue => e
+        ActiveRecord::Rollback
+			  return render plain: e.message, status: :bad_request
+      end
+    else
+      begin
+			  ActiveRecord::Base.transaction do
+          @project.user_projects.each{|up| up.user_chatbot_session&.destroy! } # for now delete all session
+          prod_project = @project.prod_project
+          #Delete all
+          prod_project.dialogues.destroy_all
+          prod_project.contexts.destroy_all
 
-				#import
-				prod_project.import_contexts(data[:contexts])
-				prod_project.import_dialogues(data[:contexts], data[:dialogues_and_arcs])
+          #import
+          prod_project.import_contexts(data[:contexts])
+          prod_project.import_dialogues(data[:contexts], data[:dialogues_and_arcs])
 
-				prod_project.update!(version: @project.version)
-				@project.version += 1
-				@project.save!
-			end
-		rescue => e
-			ActiveRecord::Rollback
-			return render plain: e.message, status: :bad_request
-		end
-		render plain: "Congratulations", status: :ok
+          prod_project.update!(version: @project.version)
+          @project.version += 1
+          @project.save!
+        end
+      rescue => e
+			  ActiveRecord::Rollback
+			  return render plain: e.message, status: :bad_request
+      end
+    end
+    render plain: "Congratulations", status: :ok
   end
 
   def set_facebook_access_token

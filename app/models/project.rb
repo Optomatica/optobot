@@ -9,15 +9,16 @@ class Project < ApplicationRecord
   
   after_create :fallback_dialogue
   
-  has_one :prod_project, foreign_key: :test_project_id, class_name: "Project", dependent: :destroy
-  
+  has_one :prod_project, foreign_key: :prod_project_id, class_name: "Project", dependent: :destroy
+  has_one :tmp_project, foreign_key: :tmp_project_id, class_name: "Project", dependent: :destroy
+
   def has_user(user)
     self.user_projects.where(user: user).exists?
   end
   
   def get_user_project(user)
     user_project = self.user_projects.where(user: user).first
-    user_project = self.user_projects.create!(user: user, role: 'subscriber') if !user_project && self.test_project_id.present?
+    user_project = self.user_projects.create!(user: user, role: 'subscriber') if !user_project && self.prod_project_id.present?
     return user_project
   end
   

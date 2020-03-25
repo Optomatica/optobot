@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20200316112741) do
+ActiveRecord::Schema.define(version: 20200324112449) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -133,9 +133,11 @@ ActiveRecord::Schema.define(version: 20200316112741) do
     t.string "facebook_page_id", limit: 20
     t.string "facebook_page_access_token"
     t.integer "version", default: 1
-    t.bigint "test_project_id"
+    t.bigint "prod_project_id"
+    t.boolean "get_started_node", default: false
+    t.integer "tmp_project_id"
     t.index ["facebook_page_id"], name: "index_projects_on_facebook_page_id", unique: true
-    t.index ["test_project_id"], name: "index_projects_on_test_project_id"
+    t.index ["prod_project_id"], name: "index_projects_on_prod_project_id"
   end
 
   create_table "response_contents", id: :serial, force: :cascade do |t|
