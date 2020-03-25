@@ -33,7 +33,7 @@ namespace :optobot do
         puts "training wit ...."
         wfile = File.new(Rails.root.join("train/wit_training.optonlp"))
         file = wfile.read
-        Project.where(test_project_id: nil).last.training_wit(file ,"en")
+        Project.where(prod_project_id: nil).last.training_wit(file ,"en")
 
     end
 
@@ -42,7 +42,7 @@ namespace :optobot do
     desc "destroy"
     task :destroy do
         puts "destroying...."
-        project = Project.where(test_project_id: nil).last
+        project = Project.where(prod_project_id: nil).last
         project.contexts.destroy_all
         project.dialogues.where(tag: nil).destroy_all
         project.last.variables.destroy_all
@@ -54,7 +54,7 @@ namespace :optobot do
     desc "Train"
     task :Train do
         puts "destroying...."
-        project = Project.where(test_project_id: nil).last
+        project = Project.where(prod_project_id: nil).last
         project.user_projects.each{|up| up.user_chatbot_session && up.user_chatbot_session.destroy}
         project.contexts.destroy_all
         project.dialogues.where(tag: nil).destroy_all
