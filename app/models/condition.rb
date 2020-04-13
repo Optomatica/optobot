@@ -2,7 +2,7 @@ class Condition < ApplicationRecord
   belongs_to :arc
   belongs_to :variable
   belongs_to :option, optional: true
-  belongs_to :parameter, optional: true
+  belongs_to :parameter, optional: true, dependent: :destroy
 
   def self.get_conditions_by(parent_id, children_ids)
     self.joins(:arc).where("arcs.parent_id = ? and arcs.child_id in (?)", parent_id, children_ids).select("conditions.*")
