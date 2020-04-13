@@ -68,6 +68,7 @@ Rails.application.routes.draw do
         post 'remove_users_from_project'
         get 'list_project_users'
         post 'set_facebook_access_token'
+        get 'enable_get_started'
       end
     end
     get 'webhook', action: 'vwebhook', on: :collection
