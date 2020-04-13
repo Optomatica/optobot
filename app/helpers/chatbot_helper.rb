@@ -471,7 +471,12 @@ module ChatbotHelper
       return
     end
     tmp = @user_project.user_data.where(variable_id: variable.id).last
-    if tmp and (tmp.variable.expire_after and tmp.variable.storage_type != "timeseries" and 
+    if value.class == 'Array'
+      value.each do |val|
+        @user_project.user_data.create!(variable_id: variable.id, value: val, option_id: option_id,
+                                        storage_type: 'timeseries_in_cache')
+      end
+    elsif tmp and (tmp.variable.expire_after and tmp.variable.storage_type != "timeseries" and 
       (Time.now - tmp.updated_at) >= tmp.variable.expire_after*60)
         # value exists but expired and not of type timeseries
         tmp.update_attributes(value: value, option_id: option_id)
