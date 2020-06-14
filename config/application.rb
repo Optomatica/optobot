@@ -18,7 +18,7 @@ module Myapp
           :headers => :any,
           :expose => ['access-token', 'expiry', 'token-type', 'uid', 'client'],
           :methods => [:get, :post, :options, :delete, :put, :head],
-          :credentials => true
+          :credentials => false
       end
     end
 
