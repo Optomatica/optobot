@@ -1,4 +1,6 @@
 include APICalls
+include FetchFunctionsHelper
+include ActionsHelper
 
 module ChatbotHelper
   def analyzeText(text, wit_api)
@@ -203,7 +205,8 @@ module ChatbotHelper
 =end
 
   def new_intent_process
-    if dialogue = new_intent_process_a
+    dialogue = new_intent_process_a
+    if dialogue.present?
       p "new_intent_process_a true"
       @next_dialogue = dialogue
       @user_project.delete_cached_user_data
@@ -341,6 +344,9 @@ module ChatbotHelper
   end
 
   def go_to_next_dialogue(dialogue)
+    if dialogue.action
+      send(dialogue.action['function'], @user_project, *dialogue.action['arguments']) rescue nil
+    end
     p "in go_to_next_dialogue given dialogue = " , dialogue
     if @next_variable.nil? and dialogue.children.count != 0
       set_missing_variables_table(dialogue)
