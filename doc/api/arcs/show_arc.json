@@ -1,0 +1,40 @@
+{
+  "resource": "Arcs",
+  "resource_explanation": null,
+  "http_method": "GET",
+  "route": "/arcs/:id",
+  "description": "show Arc",
+  "explanation": null,
+  "parameters": [
+    {
+      "required": true,
+      "name": "id",
+      "description": "number"
+    }
+  ],
+  "response_fields": [
+
+  ],
+  "requests": [
+    {
+      "request_method": "GET",
+      "request_path": "/arcs/161",
+      "request_body": null,
+      "request_headers": {
+        "Content-Type": "application/json",
+        "Host": "example.org"
+      },
+      "request_query_parameters": {
+      },
+      "request_content_type": "application/json",
+      "response_status": 200,
+      "response_status_text": "OK",
+      "response_body": "{\n  \"parent\": {\n    \"id\": 775,\n    \"context_id\": null,\n    \"created_at\": \"2020-02-02T09:58:16.705Z\",\n    \"updated_at\": \"2020-02-02T09:58:16.705Z\",\n    \"tag\": \"parent_test\",\n    \"name\": \"parent_dialogue\",\n    \"project_id\": 77,\n    \"action\": null,\n    \"identifier\": null,\n    \"form_node\": false\n  },\n  \"conditions\": [\n    {\n      \"id\": 58,\n      \"parameter\": null,\n      \"option\": {\n        \"id\": 53,\n        \"variable_id\": 89,\n        \"created_at\": \"2020-02-02T09:58:16.817Z\",\n        \"updated_at\": \"2020-02-02T09:58:16.817Z\",\n        \"value\": null,\n        \"display_count\": 1,\n        \"identifier\": null\n      }\n    }\n  ],\n  \"child\": {\n    \"id\": 776,\n    \"context_id\": null,\n    \"created_at\": \"2020-02-02T09:58:16.733Z\",\n    \"updated_at\": \"2020-02-02T09:58:16.733Z\",\n    \"tag\": \"child_test\",\n    \"name\": \"child_dialogue\",\n    \"project_id\": 77,\n    \"action\": null,\n    \"identifier\": null,\n    \"form_node\": false\n  }\n}",
+      "response_headers": {
+        "Content-Type": "application/json; charset=utf-8"
+      },
+      "response_content_type": "application/json; charset=utf-8",
+      "curl": "curl -g \"http://localhost:3000/arcs/161\" -X GET \\\n\t-H \"Access-Token: NFzJyH-lhSUz6OC7H7M7Ag\" \\\n\t-H \"Token-Type: Bearer\" \\\n\t-H \"Client: e_ps7Dr6IQLhGkSbDKbz3g\" \\\n\t-H \"Expiry: 2790237496\" \\\n\t-H \"Uid: test@example.com\" \\\n\t-H \"Content-Type: application/json\" \\\n\t-H \"Host: example.org\" \\\n\t-H \"Cookie: \""
+    }
+  ]
+}

@@ -1,0 +1,64 @@
+{
+  "resource": "Dialogues",
+  "resource_explanation": null,
+  "http_method": "POST",
+  "route": "/dialogues/create",
+  "description": "create dialogue",
+  "explanation": null,
+  "parameters": [
+    {
+      "name": "context_id",
+      "description": "number"
+    },
+    {
+      "required": true,
+      "name": "project_id",
+      "description": "number"
+    },
+    {
+      "name": "tag",
+      "description": "String"
+    },
+    {
+      "name": "intent",
+      "description": "String"
+    },
+    {
+      "required": true,
+      "allow_nil": false,
+      "name": "name",
+      "description": "String"
+    },
+    {
+      "of": "Integer",
+      "desc": "simple array of numbers (parents ids)",
+      "name": "parents_ids",
+      "description": "Array"
+    }
+  ],
+  "response_fields": [
+
+  ],
+  "requests": [
+    {
+      "request_method": "POST",
+      "request_path": "/dialogues/create",
+      "request_body": "{\"context_id\":44,\"project_id\":74,\"tag\":\"testtest\",\"name\":\"my dialogue\",\"parents_ids\":[734,735,736,737,738,739,740,741,742]}",
+      "request_headers": {
+        "Content-Type": "application/json",
+        "Host": "example.org"
+      },
+      "request_query_parameters": {
+      },
+      "request_content_type": "application/json",
+      "response_status": 201,
+      "response_status_text": "Created",
+      "response_body": "{\n  \"dialogue\": {\n    \"id\": 743,\n    \"context_id\": 44,\n    \"created_at\": \"2020-02-02T09:58:14.218Z\",\n    \"updated_at\": \"2020-02-02T09:58:14.218Z\",\n    \"tag\": \"testtest\",\n    \"name\": \"my dialogue\",\n    \"project_id\": 74,\n    \"action\": \"create\",\n    \"identifier\": null,\n    \"form_node\": false\n  },\n  \"arcs\": {\n    \"149\": {\n      \"parent_id\": 742,\n      \"conditions\": [\n\n      ]\n    },\n    \"148\": {\n      \"parent_id\": 741,\n      \"conditions\": [\n\n      ]\n    },\n    \"147\": {\n      \"parent_id\": 740,\n      \"conditions\": [\n\n      ]\n    },\n    \"146\": {\n      \"parent_id\": 739,\n      \"conditions\": [\n\n      ]\n    },\n    \"145\": {\n      \"parent_id\": 738,\n      \"conditions\": [\n\n      ]\n    },\n    \"144\": {\n      \"parent_id\": 737,\n      \"conditions\": [\n\n      ]\n    },\n    \"143\": {\n      \"parent_id\": 736,\n      \"conditions\": [\n\n      ]\n    },\n    \"142\": {\n      \"parent_id\": 735,\n      \"conditions\": [\n\n      ]\n    },\n    \"141\": {\n      \"parent_id\": 734,\n      \"conditions\": [\n\n      ]\n    }\n  }\n}",
+      "response_headers": {
+        "Content-Type": "application/json; charset=utf-8"
+      },
+      "response_content_type": "application/json; charset=utf-8",
+      "curl": "curl \"http://localhost:3000/dialogues/create\" -d '{\"context_id\":44,\"project_id\":74,\"tag\":\"testtest\",\"name\":\"my dialogue\",\"parents_ids\":[734,735,736,737,738,739,740,741,742]}' -X POST \\\n\t-H \"Access-Token: 9qlExpr3GMiOLoisLY7T3w\" \\\n\t-H \"Token-Type: Bearer\" \\\n\t-H \"Client: Xr6jj-cGyV3N1oQI9z5NLA\" \\\n\t-H \"Expiry: 2790237493\" \\\n\t-H \"Uid: test@example.com\" \\\n\t-H \"Content-Type: application/json\" \\\n\t-H \"Host: example.org\" \\\n\t-H \"Cookie: \""
+    }
+  ]
+}

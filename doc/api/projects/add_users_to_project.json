@@ -1,0 +1,61 @@
+{
+  "resource": "Projects",
+  "resource_explanation": null,
+  "http_method": "POST",
+  "route": "/users/:user_id/projects/:id/add_users_to_project",
+  "description": "add users to project",
+  "explanation": null,
+  "parameters": [
+    {
+      "required": true,
+      "name": "user_id",
+      "description": "number"
+    },
+    {
+      "required": true,
+      "name": "id",
+      "description": "number"
+    },
+    {
+      "name": "role",
+      "description": "auther or subscriber"
+    },
+    {
+      "name": "user_ids",
+      "description": "Array"
+    },
+    {
+      "name": "user_emails",
+      "description": "Array"
+    },
+    {
+      "name": "send_emails",
+      "description": "boolean"
+    }
+  ],
+  "response_fields": [
+
+  ],
+  "requests": [
+    {
+      "request_method": "POST",
+      "request_path": "/users/71/projects/69/add_users_to_project",
+      "request_body": "{\"role\":\"admin\",\"user_ids\":72,\"user_emails\":[\"add_test@example.com\"],\"send_emails\":true}",
+      "request_headers": {
+        "Content-Type": "application/json",
+        "Host": "example.org"
+      },
+      "request_query_parameters": {
+      },
+      "request_content_type": "application/json",
+      "response_status": 200,
+      "response_status_text": "OK",
+      "response_body": "users added successfully [#<User id: 72, provider: \"email\", uid: \"add_test@example.com\", allow_password_change: false, name: nil, nickname: nil, image: nil, email: \"add_test@example.com\", created_at: \"2020-02-02 09:57:46\", updated_at: \"2020-02-02 09:57:46\">]",
+      "response_headers": {
+        "Content-Type": "text/plain; charset=utf-8"
+      },
+      "response_content_type": "text/plain; charset=utf-8",
+      "curl": "curl \"http://localhost:3000/users/71/projects/69/add_users_to_project\" -d '{\"role\":\"admin\",\"user_ids\":72,\"user_emails\":[\"add_test@example.com\"],\"send_emails\":true}' -X POST \\\n\t-H \"Access-Token: 6bvsMIMkjLKtbyMzOHsLiA\" \\\n\t-H \"Token-Type: Bearer\" \\\n\t-H \"Client: 1AqTygBmOq50Cs9YF--Eqw\" \\\n\t-H \"Expiry: 2790237466\" \\\n\t-H \"Uid: test@example.com\" \\\n\t-H \"Content-Type: application/json\" \\\n\t-H \"Host: example.org\" \\\n\t-H \"Cookie: \""
+    }
+  ]
+}

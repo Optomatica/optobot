@@ -1,0 +1,44 @@
+{
+  "resource": "Contexts",
+  "resource_explanation": null,
+  "http_method": "POST",
+  "route": "/contexts/create",
+  "description": "create context",
+  "explanation": null,
+  "parameters": [
+    {
+      "required": true,
+      "name": "project_id",
+      "description": "number"
+    },
+    {
+      "name": "name",
+      "description": "String"
+    }
+  ],
+  "response_fields": [
+
+  ],
+  "requests": [
+    {
+      "request_method": "POST",
+      "request_path": "/contexts/create",
+      "request_body": "{\"project_id\":73,\"name\":\"my context\"}",
+      "request_headers": {
+        "Content-Type": "application/json",
+        "Host": "example.org"
+      },
+      "request_query_parameters": {
+      },
+      "request_content_type": "application/json",
+      "response_status": 201,
+      "response_status_text": "Created",
+      "response_body": "{\n  \"id\": 43,\n  \"name\": \"my context\",\n  \"created_at\": \"2020-02-02T09:58:13.669Z\",\n  \"updated_at\": \"2020-02-02T09:58:13.669Z\",\n  \"project_id\": 73,\n  \"identifier\": null,\n  \"description\": null\n}",
+      "response_headers": {
+        "Content-Type": "application/json; charset=utf-8"
+      },
+      "response_content_type": "application/json; charset=utf-8",
+      "curl": "curl \"http://localhost:3000/contexts/create\" -d '{\"project_id\":73,\"name\":\"my context\"}' -X POST \\\n\t-H \"Access-Token: QuQwhKiin7ZPeMhMOYA38g\" \\\n\t-H \"Token-Type: Bearer\" \\\n\t-H \"Client: A-M89jUqe3j1M_ad74VpwA\" \\\n\t-H \"Expiry: 2790237493\" \\\n\t-H \"Uid: test@example.com\" \\\n\t-H \"Content-Type: application/json\" \\\n\t-H \"Host: example.org\" \\\n\t-H \"Cookie: \""
+    }
+  ]
+}

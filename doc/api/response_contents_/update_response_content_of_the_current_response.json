@@ -1,0 +1,71 @@
+{
+  "resource": "Response Contents ",
+  "resource_explanation": null,
+  "http_method": "PUT",
+  "route": "/dialogues/:dialogue_id/variables/:variable_id/responses/:response_id/response_contents/:id/update",
+  "description": "update response content of the current response",
+  "explanation": null,
+  "parameters": [
+    {
+      "required": true,
+      "allow_nil": false,
+      "name": "dialogue_id",
+      "description": "number"
+    },
+    {
+      "required": true,
+      "allow_nil": false,
+      "name": "variable_id",
+      "description": "number"
+    },
+    {
+      "required": true,
+      "allow_nil": false,
+      "name": "response_id",
+      "description": "number"
+    },
+    {
+      "required": true,
+      "name": "id",
+      "description": "number"
+    },
+    {
+      "required": true,
+      "allow_nil": false,
+      "desc": "the content of the response. the hash keys is the language of the content",
+      "name": "content",
+      "description": "Hash"
+    },
+    {
+      "allow_nil": false,
+      "desc": "text, image or video (default: text)",
+      "name": "content_type",
+      "description": "String"
+    }
+  ],
+  "response_fields": [
+
+  ],
+  "requests": [
+    {
+      "request_method": "PUT",
+      "request_path": "/dialogues/763/variables/88/responses/742/response_contents/680/update",
+      "request_body": "{\"content\":{\"en\":\"english response\"},\"content_type\":\"text\"}",
+      "request_headers": {
+        "Content-Type": "application/json",
+        "Host": "example.org"
+      },
+      "request_query_parameters": {
+      },
+      "request_content_type": "application/json",
+      "response_status": 200,
+      "response_status_text": "OK",
+      "response_body": "{\n  \"id\": 680,\n  \"response_id\": 742,\n  \"content_type\": \"text\",\n  \"content\": {\n    \"en\": \"english response\"\n  },\n  \"created_at\": \"2020-02-02T09:58:16.059Z\",\n  \"updated_at\": \"2020-02-02T09:58:16.059Z\",\n  \"identifier\": null\n}",
+      "response_headers": {
+        "Content-Type": "application/json; charset=utf-8"
+      },
+      "response_content_type": "application/json; charset=utf-8",
+      "curl": "curl \"http://localhost:3000/dialogues/763/variables/88/responses/742/response_contents/680/update\" -d '{\"content\":{\"en\":\"english response\"},\"content_type\":\"text\"}' -X PUT \\\n\t-H \"Access-Token: Cu9nCHJkinDLKrNqrRvtyQ\" \\\n\t-H \"Token-Type: Bearer\" \\\n\t-H \"Client: Th-3gQPS3Me1b2kUS4sQOw\" \\\n\t-H \"Expiry: 2790237495\" \\\n\t-H \"Uid: test@example.com\" \\\n\t-H \"Content-Type: application/json\" \\\n\t-H \"Host: example.org\" \\\n\t-H \"Cookie: \""
+    }
+  ]
+}

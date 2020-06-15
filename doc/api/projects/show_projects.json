@@ -1,0 +1,43 @@
+{
+  "resource": "Projects",
+  "resource_explanation": null,
+  "http_method": "GET",
+  "route": "/users/:user_id/projects/:id/show",
+  "description": "show projects",
+  "explanation": null,
+  "parameters": [
+    {
+      "name": "id",
+      "description": "number"
+    },
+    {
+      "name": "user_id",
+      "description": "number"
+    }
+  ],
+  "response_fields": [
+
+  ],
+  "requests": [
+    {
+      "request_method": "GET",
+      "request_path": "/users/71/projects/69/show",
+      "request_body": null,
+      "request_headers": {
+        "Content-Type": "application/json",
+        "Host": "example.org"
+      },
+      "request_query_parameters": {
+      },
+      "request_content_type": "application/json",
+      "response_status": 200,
+      "response_status_text": "OK",
+      "response_body": "{\n  \"id\": 69,\n  \"created_at\": \"2020-02-02T09:57:46.645Z\",\n  \"updated_at\": \"2020-02-02T09:57:46.645Z\",\n  \"nlp_engine\": {\n    \"en\": \"TMMHDH7GEWYZOPTWASAL2KCJ2HAXOPLJ\"\n  },\n  \"name\": null,\n  \"external_backend\": null,\n  \"is_private\": false,\n  \"fallback_setting\": {\n    \"fallback_counter_limit\": 3\n  },\n  \"facebook_page_id\": null,\n  \"facebook_page_access_token\": null,\n  \"version\": 1,\n  \"test_project_id\": null\n}",
+      "response_headers": {
+        "Content-Type": "application/json; charset=utf-8"
+      },
+      "response_content_type": "application/json; charset=utf-8",
+      "curl": "curl -g \"http://localhost:3000/users/71/projects/69/show\" -X GET \\\n\t-H \"Access-Token: 6bvsMIMkjLKtbyMzOHsLiA\" \\\n\t-H \"Token-Type: Bearer\" \\\n\t-H \"Client: 1AqTygBmOq50Cs9YF--Eqw\" \\\n\t-H \"Expiry: 2790237466\" \\\n\t-H \"Uid: test@example.com\" \\\n\t-H \"Content-Type: application/json\" \\\n\t-H \"Host: example.org\" \\\n\t-H \"Cookie: \""
+    }
+  ]
+}

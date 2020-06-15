@@ -1,0 +1,50 @@
+{
+  "resource": "Projects",
+  "resource_explanation": null,
+  "http_method": "POST",
+  "route": "/projects/:id/import_context_dialogues_data",
+  "description": "import dialogues data from file",
+  "explanation": null,
+  "parameters": [
+    {
+      "required": true,
+      "name": "id",
+      "description": "number"
+    },
+    {
+      "name": "context_id",
+      "description": "Integer"
+    },
+    {
+      "required": true,
+      "default": " example file for description of a proposed language we can use directly to implement it easily\n ",
+      "name": "file",
+      "description": "File"
+    }
+  ],
+  "response_fields": [
+
+  ],
+  "requests": [
+    {
+      "request_method": "POST",
+      "request_path": "/projects/69/import_context_dialogues_data",
+      "request_body": "------------XnJLe9ZIbbGUYtzPQJ16u1\r\nContent-Disposition: form-data; name=\"context_id\"\r\n\r\n40\r\n------------XnJLe9ZIbbGUYtzPQJ16u1\r\nContent-Disposition: form-data; name=\"file\"; filename=\"weather.optodsl\"\r\nContent-Type: text/plain\r\nContent-Length: 593\r\n\r\n[uploaded data]\r\n------------XnJLe9ZIbbGUYtzPQJ16u1--\r",
+      "request_headers": {
+        "Content-Type": "multipart/form-data; boundary=----------XnJLe9ZIbbGUYtzPQJ16u1",
+        "Host": "example.org"
+      },
+      "request_query_parameters": {
+      },
+      "request_content_type": "multipart/form-data; boundary=----------XnJLe9ZIbbGUYtzPQJ16u1",
+      "response_status": 200,
+      "response_status_text": "OK",
+      "response_body": "{\n  \"weather_node\": {\n    \"context_id\": \"40\",\n    \"Intent_value\": \"weather\",\n    \"options\": [\n\n    ],\n    \"variables\": {\n      \"location_var\": {\n        \"entity\": \"location\",\n        \"options\": [\n\n        ],\n        \"storage_type\": \"timeseries_in_cache\",\n        \"expire_after\": null,\n        \"source\": \"collected\",\n        \"responses\": [\n          {\n            \"order\": 1,\n            \"response_type\": 0,\n            \"response_contents\": [\n              {\n                \"content\": {\n                  \"en\": \"which city ?\"\n                }\n              }\n            ]\n          }\n        ]\n      },\n      \"fetched_weather_var\": {\n        \"entity\": null,\n        \"options\": [\n\n        ],\n        \"storage_type\": \"in_cache\",\n        \"expire_after\": null,\n        \"source\": \"fetched\",\n        \"responses\": [\n\n        ],\n        \"fetch_info\": {\n          \"function\": \"weather\",\n          \"arguments\": [\n            \"location_var\"\n          ]\n        }\n      },\n      \"temp_var\": {\n        \"entity\": null,\n        \"options\": [\n          {\n            \"response\": {\n              \"order\": 1,\n              \"response_type\": \"response\",\n              \"response_contents\": [\n                {\n                  \"content\": {\n                    \"en\": \"yes\"\n                  }\n                }\n              ]\n            }\n          },\n          {\n            \"response\": {\n              \"order\": 1,\n              \"response_type\": \"response\",\n              \"response_contents\": [\n                {\n                  \"content\": {\n                    \"en\": \"no\"\n                  }\n                }\n              ]\n            }\n          }\n        ],\n        \"storage_type\": \"in_cache\",\n        \"expire_after\": null,\n        \"source\": \"collected\",\n        \"responses\": [\n          {\n            \"order\": 1,\n            \"response_type\": 0,\n            \"response_contents\": [\n              {\n                \"content\": {\n                  \"en\": \"the weather today in {{location_var}} is {{fetched_weather_var}} °C\"\n                }\n              }\n            ]\n          },\n          {\n            \"order\": 1,\n            \"response_type\": 0,\n            \"response_contents\": [\n              {\n                \"content\": {\n                  \"en\": \"Is there anything else I can help you with today ?\"\n                }\n              }\n            ]\n          }\n        ]\n      }\n    },\n    \"responses\": [\n\n    ],\n    \"new_dialogue\": {\n      \"id\": 721,\n      \"context_id\": 40,\n      \"created_at\": \"2020-02-02T09:57:50.342Z\",\n      \"updated_at\": \"2020-02-02T09:57:50.342Z\",\n      \"tag\": null,\n      \"name\": \"weather_node\",\n      \"project_id\": 69,\n      \"action\": null,\n      \"identifier\": null,\n      \"form_node\": false\n    },\n    \"children\": {\n      \"help\": {\n        \"conditions\": [\n          {\n            \"variable_name\": \"location_var\"\n          },\n          {\n            \"variable_name\": \"fetched_weather_var\"\n          },\n          {\n            \"variable_name\": \"temp_var\",\n            \"option\": {\n              \"response\": {\n                \"order\": 1,\n                \"response_type\": \"response\",\n                \"response_contents\": [\n                  {\n                    \"content\": {\n                      \"en\": \"yes\"\n                    }\n                  }\n                ]\n              }\n            },\n            \"parameter\": {\n              \"value\": \"yes\",\n              \"project_id\": 69\n            }\n          }\n        ],\n        \"id\": 724\n      },\n      \"bye\": {\n        \"conditions\": [\n          {\n            \"variable_name\": \"temp_var\",\n            \"option\": {\n              \"response\": {\n                \"order\": 1,\n                \"response_type\": \"response\",\n                \"response_contents\": [\n                  {\n                    \"content\": {\n                      \"en\": \"no\"\n                    }\n                  }\n                ]\n              }\n            },\n            \"parameter\": {\n              \"value\": \"no\",\n              \"project_id\": 69\n            }\n          }\n        ],\n        \"id\": 723\n      },\n      \"not_a_city\": {\n        \"conditions\": [\n          {\n            \"variable_name\": \"fetched_weather_var\",\n            \"parameter\": {\n              \"value\": \"error\",\n              \"project_id\": 69\n            }\n          }\n        ],\n        \"id\": 722\n      }\n    }\n  },\n  \"not_a_city\": {\n    \"context_id\": \"40\",\n    \"Intent_value\": null,\n    \"options\": [\n\n    ],\n    \"responses\": [\n      {\n        \"order\": 1,\n        \"response_type\": \"response\",\n        \"response_contents\": [\n          {\n            \"content\": {\n              \"en\": \"please enter a valid country/city name\"\n            }\n          }\n        ]\n      }\n    ],\n    \"new_dialogue\": {\n      \"id\": 722,\n      \"context_id\": 40,\n      \"created_at\": \"2020-02-02T09:57:50.375Z\",\n      \"updated_at\": \"2020-02-02T09:57:50.375Z\",\n      \"tag\": null,\n      \"name\": \"not_a_city\",\n      \"project_id\": 69,\n      \"action\": null,\n      \"identifier\": null,\n      \"form_node\": false\n    },\n    \"children\": {\n      \"weather_node\": {\n        \"conditions\": [\n          {\n            \"variable_name\": \"location_var\"\n          }\n        ],\n        \"id\": 721\n      }\n    }\n  },\n  \"bye\": {\n    \"context_id\": \"40\",\n    \"Intent_value\": null,\n    \"options\": [\n\n    ],\n    \"responses\": [\n      {\n        \"order\": 1,\n        \"response_type\": \"response\",\n        \"response_contents\": [\n          {\n            \"content\": {\n              \"en\": \"It was a great talking to you today , Have a nice day\"\n            }\n          }\n        ]\n      }\n    ],\n    \"new_dialogue\": {\n      \"id\": 723,\n      \"context_id\": 40,\n      \"created_at\": \"2020-02-02T09:57:50.386Z\",\n      \"updated_at\": \"2020-02-02T09:57:50.386Z\",\n      \"tag\": null,\n      \"name\": \"bye\",\n      \"project_id\": 69,\n      \"action\": null,\n      \"identifier\": null,\n      \"form_node\": false\n    },\n    \"children\": {\n    }\n  },\n  \"help\": {\n    \"context_id\": \"40\",\n    \"Intent_value\": null,\n    \"options\": [\n\n    ],\n    \"responses\": [\n      {\n        \"order\": 1,\n        \"response_type\": \"response\",\n        \"response_contents\": [\n          {\n            \"content\": {\n              \"en\": \"How can I help you ?\"\n            }\n          }\n        ]\n      }\n    ],\n    \"new_dialogue\": {\n      \"id\": 724,\n      \"context_id\": 40,\n      \"created_at\": \"2020-02-02T09:57:50.396Z\",\n      \"updated_at\": \"2020-02-02T09:57:50.396Z\",\n      \"tag\": null,\n      \"name\": \"help\",\n      \"project_id\": 69,\n      \"action\": null,\n      \"identifier\": null,\n      \"form_node\": false\n    },\n    \"children\": {\n    }\n  }\n}",
+      "response_headers": {
+        "Content-Type": "application/json; charset=utf-8"
+      },
+      "response_content_type": "application/json; charset=utf-8",
+      "curl": "curl \"http://localhost:3000/projects/69/import_context_dialogues_data\" -d '------------XnJLe9ZIbbGUYtzPQJ16u1\r\nContent-Disposition: form-data; name=\"context_id\"\r\n\r\n40\r\n------------XnJLe9ZIbbGUYtzPQJ16u1\r\nContent-Disposition: form-data; name=\"file\"; filename=\"weather.optodsl\"\r\nContent-Type: text/plain\r\nContent-Length: 593\r\n\r\n[uploaded data]\r\n------------XnJLe9ZIbbGUYtzPQJ16u1--\r' -X POST \\\n\t-H \"Content-Type: multipart/form-data; boundary=----------XnJLe9ZIbbGUYtzPQJ16u1\" \\\n\t-H \"Access-Token: 6bvsMIMkjLKtbyMzOHsLiA\" \\\n\t-H \"Token-Type: Bearer\" \\\n\t-H \"Client: 1AqTygBmOq50Cs9YF--Eqw\" \\\n\t-H \"Expiry: 2790237466\" \\\n\t-H \"Uid: test@example.com\" \\\n\t-H \"Host: example.org\" \\\n\t-H \"Cookie: \""
+    }
+  ]
+}

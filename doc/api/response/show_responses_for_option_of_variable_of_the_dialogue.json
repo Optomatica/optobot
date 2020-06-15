@@ -1,0 +1,57 @@
+{
+  "resource": "Response",
+  "resource_explanation": null,
+  "http_method": "GET",
+  "route": "/dialogues/:dialogue_id/variables/:variable_id/options/:option_id/responses/:id/show",
+  "description": "show responses for_option of variable of the dialogue",
+  "explanation": null,
+  "parameters": [
+    {
+      "required": true,
+      "name": "dialogue_id",
+      "description": "number"
+    },
+    {
+      "allow_nil": false,
+      "required": true,
+      "name": "variable_id",
+      "description": "number"
+    },
+    {
+      "allow_nil": false,
+      "required": true,
+      "name": "option_id",
+      "description": "number"
+    },
+    {
+      "required": true,
+      "name": "id",
+      "description": "number"
+    }
+  ],
+  "response_fields": [
+
+  ],
+  "requests": [
+    {
+      "request_method": "GET",
+      "request_path": "/dialogues/752/variables/87/options/51/responses/728/show",
+      "request_body": null,
+      "request_headers": {
+        "Content-Type": "application/json",
+        "Host": "example.org"
+      },
+      "request_query_parameters": {
+      },
+      "request_content_type": "application/json",
+      "response_status": 422,
+      "response_status_text": "Unprocessable Entity",
+      "response_body": "\"this Option doesn't have this response!\"",
+      "response_headers": {
+        "Content-Type": "application/json; charset=utf-8"
+      },
+      "response_content_type": "application/json; charset=utf-8",
+      "curl": "curl -g \"http://localhost:3000/dialogues/752/variables/87/options/51/responses/728/show\" -X GET \\\n\t-H \"Access-Token: 867vjrdQDlwXJK6g2guDeg\" \\\n\t-H \"Token-Type: Bearer\" \\\n\t-H \"Client: 6i2Xlwtdxw1xbQpETUqj9g\" \\\n\t-H \"Expiry: 2790237494\" \\\n\t-H \"Uid: test@example.com\" \\\n\t-H \"Content-Type: application/json\" \\\n\t-H \"Host: example.org\" \\\n\t-H \"Cookie: \""
+    }
+  ]
+}

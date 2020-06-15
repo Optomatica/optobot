@@ -1,0 +1,64 @@
+{
+  "resource": "Projects",
+  "resource_explanation": null,
+  "http_method": "POST",
+  "route": "/users/:user_id/projects/create",
+  "description": "create project",
+  "explanation": null,
+  "parameters": [
+    {
+      "required": true,
+      "name": "user_id",
+      "description": "number"
+    },
+    {
+      "name": "name",
+      "description": "String"
+    },
+    {
+      "name": "nlp_engine",
+      "description": "Hash"
+    },
+    {
+      "name": "external_backend",
+      "description": "Hash"
+    },
+    {
+      "name": "is_private",
+      "description": "boolean"
+    },
+    {
+      "name": "fallback_setting",
+      "description": "Hash"
+    },
+    {
+      "name": "facebook_page_access_token",
+      "description": "String"
+    }
+  ],
+  "response_fields": [
+
+  ],
+  "requests": [
+    {
+      "request_method": "POST",
+      "request_path": "/users/71/projects/create",
+      "request_body": "{\"name\":\"my_project\",\"nlp_engine\":{\"en\":\"BMFLM7L7XWZQN5MVMSWUGOHAWSTC4B5U\",\"sv\":\"CAPCDH3FHBE5USQMXAQA3RFF2L5FJAEU\"},\"external_backend\":{},\"is_private\":false,\"fallback_setting\":{\"fallback_counter_limit\":3},\"facebook_page_access_token\":\"string\"}",
+      "request_headers": {
+        "Content-Type": "application/json",
+        "Host": "example.org"
+      },
+      "request_query_parameters": {
+      },
+      "request_content_type": "application/json",
+      "response_status": 201,
+      "response_status_text": "Created",
+      "response_body": "{\n  \"id\": 71,\n  \"created_at\": \"2020-02-02T09:57:47.624Z\",\n  \"updated_at\": \"2020-02-02T09:57:47.624Z\",\n  \"nlp_engine\": {\n    \"en\": \"BMFLM7L7XWZQN5MVMSWUGOHAWSTC4B5U\",\n    \"sv\": \"CAPCDH3FHBE5USQMXAQA3RFF2L5FJAEU\"\n  },\n  \"name\": \"my_project\",\n  \"external_backend\": null,\n  \"is_private\": false,\n  \"fallback_setting\": {\n    \"fallback_counter_limit\": 3\n  },\n  \"facebook_page_id\": null,\n  \"facebook_page_access_token\": null,\n  \"version\": 1,\n  \"test_project_id\": null\n}",
+      "response_headers": {
+        "Content-Type": "application/json; charset=utf-8"
+      },
+      "response_content_type": "application/json; charset=utf-8",
+      "curl": "curl \"http://localhost:3000/users/71/projects/create\" -d '{\"name\":\"my_project\",\"nlp_engine\":{\"en\":\"BMFLM7L7XWZQN5MVMSWUGOHAWSTC4B5U\",\"sv\":\"CAPCDH3FHBE5USQMXAQA3RFF2L5FJAEU\"},\"external_backend\":{},\"is_private\":false,\"fallback_setting\":{\"fallback_counter_limit\":3},\"facebook_page_access_token\":\"string\"}' -X POST \\\n\t-H \"Access-Token: 6bvsMIMkjLKtbyMzOHsLiA\" \\\n\t-H \"Token-Type: Bearer\" \\\n\t-H \"Client: 1AqTygBmOq50Cs9YF--Eqw\" \\\n\t-H \"Expiry: 2790237466\" \\\n\t-H \"Uid: test@example.com\" \\\n\t-H \"Content-Type: application/json\" \\\n\t-H \"Host: example.org\" \\\n\t-H \"Cookie: \""
+    }
+  ]
+}

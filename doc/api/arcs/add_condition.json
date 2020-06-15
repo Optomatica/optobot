@@ -1,0 +1,49 @@
+{
+  "resource": "Arcs",
+  "resource_explanation": null,
+  "http_method": "POST",
+  "route": "/arcs/:arc_id/options/:id/add_to_condition",
+  "description": "add condition",
+  "explanation": null,
+  "parameters": [
+    {
+      "name": "arc_id",
+      "description": "number"
+    },
+    {
+      "required": true,
+      "name": "id",
+      "description": "number"
+    },
+    {
+      "required": false,
+      "name": "condition_id",
+      "description": "number"
+    }
+  ],
+  "response_fields": [
+
+  ],
+  "requests": [
+    {
+      "request_method": "POST",
+      "request_path": "/arcs/161/options/53/add_to_condition",
+      "request_body": "{\"condition_id\":58}",
+      "request_headers": {
+        "Content-Type": "application/json",
+        "Host": "example.org"
+      },
+      "request_query_parameters": {
+      },
+      "request_content_type": "application/json",
+      "response_status": 202,
+      "response_status_text": "Accepted",
+      "response_body": "{\n  \"option_id\": 53,\n  \"id\": 58,\n  \"arc_id\": 161,\n  \"variable_id\": 89,\n  \"parameter_id\": null,\n  \"created_at\": \"2020-02-02T09:58:16.868Z\",\n  \"updated_at\": \"2020-02-02T09:58:16.868Z\",\n  \"identifier\": null\n}",
+      "response_headers": {
+        "Content-Type": "application/json; charset=utf-8"
+      },
+      "response_content_type": "application/json; charset=utf-8",
+      "curl": "curl \"http://localhost:3000/arcs/161/options/53/add_to_condition\" -d '{\"condition_id\":58}' -X POST \\\n\t-H \"Access-Token: NFzJyH-lhSUz6OC7H7M7Ag\" \\\n\t-H \"Token-Type: Bearer\" \\\n\t-H \"Client: e_ps7Dr6IQLhGkSbDKbz3g\" \\\n\t-H \"Expiry: 2790237496\" \\\n\t-H \"Uid: test@example.com\" \\\n\t-H \"Content-Type: application/json\" \\\n\t-H \"Host: example.org\" \\\n\t-H \"Cookie: \""
+    }
+  ]
+}

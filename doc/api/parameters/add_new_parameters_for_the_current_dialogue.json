@@ -1,0 +1,75 @@
+{
+  "resource": "Parameters",
+  "resource_explanation": null,
+  "http_method": "POST",
+  "route": "/arcs/:arc_id/parameters/create",
+  "description": "add new parameters for the current dialogue",
+  "explanation": null,
+  "parameters": [
+    {
+      "required": true,
+      "allow_nil": false,
+      "name": "arc_id",
+      "description": "number"
+    },
+    {
+      "required": false,
+      "allow_nil": false,
+      "name": "condition_id",
+      "description": "number"
+    },
+    {
+      "required": false,
+      "allow_nil": false,
+      "name": "project_id",
+      "description": "number"
+    },
+    {
+      "required": false,
+      "allow_nil": false,
+      "desc": "required = true if no condition id",
+      "name": "variable_id",
+      "description": "number"
+    },
+    {
+      "desc": "required if and only if params(min and max) are not exist",
+      "name": "value",
+      "description": "String"
+    },
+    {
+      "desc": "required with param(max) if and only if param(value) is not exist",
+      "name": "min",
+      "description": "number"
+    },
+    {
+      "desc": "required with param(min) if and only if param(value) is not exist",
+      "name": "max",
+      "description": "number"
+    }
+  ],
+  "response_fields": [
+
+  ],
+  "requests": [
+    {
+      "request_method": "POST",
+      "request_path": "/arcs/162/parameters/create",
+      "request_body": "{\"project_id\":78,\"condition_id\":59,\"variable_id\":90,\"value\":\"value\",\"min\":\"\",\"max\":\"\"}",
+      "request_headers": {
+        "Content-Type": "application/json",
+        "Host": "example.org"
+      },
+      "request_query_parameters": {
+      },
+      "request_content_type": "application/json",
+      "response_status": 201,
+      "response_status_text": "Created",
+      "response_body": "{\n  \"parameter\": {\n    \"id\": 32,\n    \"value\": \"value\",\n    \"min\": null,\n    \"max\": null,\n    \"created_at\": \"2020-02-02T09:58:17.782Z\",\n    \"updated_at\": \"2020-02-02T09:58:17.782Z\",\n    \"unit\": null,\n    \"identifier\": null,\n    \"project_id\": 78\n  },\n  \"warning\": null\n}",
+      "response_headers": {
+        "Content-Type": "application/json; charset=utf-8"
+      },
+      "response_content_type": "application/json; charset=utf-8",
+      "curl": "curl \"http://localhost:3000/arcs/162/parameters/create\" -d '{\"project_id\":78,\"condition_id\":59,\"variable_id\":90,\"value\":\"value\",\"min\":\"\",\"max\":\"\"}' -X POST \\\n\t-H \"Access-Token: o06J9kiWW1fUjtQlrEausA\" \\\n\t-H \"Token-Type: Bearer\" \\\n\t-H \"Client: a41Io3tfjoJfFkdTHLsviw\" \\\n\t-H \"Expiry: 2790237497\" \\\n\t-H \"Uid: test@example.com\" \\\n\t-H \"Content-Type: application/json\" \\\n\t-H \"Host: example.org\" \\\n\t-H \"Cookie: \""
+    }
+  ]
+}

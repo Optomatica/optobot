@@ -1,0 +1,40 @@
+{
+  "resource": "Dialogues",
+  "resource_explanation": null,
+  "http_method": "DELETE",
+  "route": "/dialogues/:id/destroy",
+  "description": "delete dialogue",
+  "explanation": null,
+  "parameters": [
+    {
+      "required": true,
+      "name": "id",
+      "description": "number"
+    }
+  ],
+  "response_fields": [
+
+  ],
+  "requests": [
+    {
+      "request_method": "DELETE",
+      "request_path": "/dialogues/742/destroy",
+      "request_body": null,
+      "request_headers": {
+        "Content-Type": "application/json",
+        "Host": "example.org"
+      },
+      "request_query_parameters": {
+      },
+      "request_content_type": "application/json",
+      "response_status": 200,
+      "response_status_text": "OK",
+      "response_body": "{\n  \"body\": \"Dialogue was successfully destroyed.\",\n  \"destroyed_parameter\": {\n    \"id\": 742,\n    \"context_id\": null,\n    \"created_at\": \"2020-02-02T09:58:14.077Z\",\n    \"updated_at\": \"2020-02-02T09:58:14.077Z\",\n    \"tag\": \"test\",\n    \"name\": \"good_dialogue\",\n    \"project_id\": 74,\n    \"action\": null,\n    \"identifier\": null,\n    \"form_node\": false\n  }\n}",
+      "response_headers": {
+        "Content-Type": "application/json; charset=utf-8"
+      },
+      "response_content_type": "application/json; charset=utf-8",
+      "curl": "curl \"http://localhost:3000/dialogues/742/destroy\" -d '' -X DELETE \\\n\t-H \"Access-Token: 9qlExpr3GMiOLoisLY7T3w\" \\\n\t-H \"Token-Type: Bearer\" \\\n\t-H \"Client: Xr6jj-cGyV3N1oQI9z5NLA\" \\\n\t-H \"Expiry: 2790237493\" \\\n\t-H \"Uid: test@example.com\" \\\n\t-H \"Content-Type: application/json\" \\\n\t-H \"Host: example.org\" \\\n\t-H \"Cookie: \""
+    }
+  ]
+}

@@ -1,0 +1,85 @@
+{
+  "resource": "Variable",
+  "resource_explanation": null,
+  "http_method": "POST",
+  "route": "/dialogues/:dialogue_id/variables/create",
+  "description": "create new variable for the current dialogue",
+  "explanation": null,
+  "parameters": [
+    {
+      "required": true,
+      "name": "dialogue_id",
+      "description": "number"
+    },
+    {
+      "required": true,
+      "name": "project_id",
+      "description": "number"
+    },
+    {
+      "name": "name",
+      "description": "String"
+    },
+    {
+      "name": "expire_after",
+      "description": "number"
+    },
+    {
+      "disc": "normal, timeseries, in_session , timeseries_in_cache or in_cache",
+      "name": "storage_type",
+      "description": "String"
+    },
+    {
+      "disc": "collected, fetched or provided",
+      "name": "source",
+      "description": "String"
+    },
+    {
+      "name": "allow_writing",
+      "description": "boolean"
+    },
+    {
+      "name": "entity",
+      "description": "String"
+    },
+    {
+      "of": "String",
+      "name": "possible_values",
+      "description": "Array"
+    },
+    {
+      "disc": "with keys 'min' and 'max'",
+      "name": "allowed_range",
+      "description": "Hash"
+    },
+    {
+      "name": "fetch_info",
+      "description": "Hash"
+    }
+  ],
+  "response_fields": [
+
+  ],
+  "requests": [
+    {
+      "request_method": "POST",
+      "request_path": "/dialogues/816/variables/create",
+      "request_body": "{\"project_id\":81,\"name\":\"city name\",\"expire_after\":5,\"storage_type\":\"normal\",\"source\":\"collected\",\"allow_writing\":true,\"entity\":\"location\",\"possible_values\":[\"cairo\",\"alex\"],\"allowed_range\":null,\"fetch_info\":{\"function\":\"is_city\",\"arguments\":[\"cairo\"]}}",
+      "request_headers": {
+        "Content-Type": "application/json",
+        "Host": "example.org"
+      },
+      "request_query_parameters": {
+      },
+      "request_content_type": "application/json",
+      "response_status": 201,
+      "response_status_text": "Created",
+      "response_body": "{\n  \"id\": 94,\n  \"name\": \"city name\",\n  \"created_at\": \"2020-02-02T09:58:22.002Z\",\n  \"updated_at\": \"2020-02-02T09:58:22.002Z\",\n  \"dialogue_id\": 816,\n  \"possible_values\": null,\n  \"expire_after\": 5,\n  \"storage_type\": \"normal\",\n  \"source\": \"collected\",\n  \"allow_writing\": true,\n  \"entity\": \"location\",\n  \"allowed_range\": null,\n  \"fetch_info\": {\n  },\n  \"save_text\": false,\n  \"project_id\": 81,\n  \"unit\": null,\n  \"identifier\": null,\n  \"is_valid\": true\n}",
+      "response_headers": {
+        "Content-Type": "application/json; charset=utf-8"
+      },
+      "response_content_type": "application/json; charset=utf-8",
+      "curl": "curl \"http://localhost:3000/dialogues/816/variables/create\" -d '{\"project_id\":81,\"name\":\"city name\",\"expire_after\":5,\"storage_type\":\"normal\",\"source\":\"collected\",\"allow_writing\":true,\"entity\":\"location\",\"possible_values\":[\"cairo\",\"alex\"],\"allowed_range\":null,\"fetch_info\":{\"function\":\"is_city\",\"arguments\":[\"cairo\"]}}' -X POST \\\n\t-H \"Access-Token: ar-29WDmUWQkpKO6iZTN8g\" \\\n\t-H \"Token-Type: Bearer\" \\\n\t-H \"Client: JEuSBzB4cbCRFnO8qKxeQA\" \\\n\t-H \"Expiry: 2790237501\" \\\n\t-H \"Uid: test@example.com\" \\\n\t-H \"Content-Type: application/json\" \\\n\t-H \"Host: example.org\" \\\n\t-H \"Cookie: \""
+    }
+  ]
+}

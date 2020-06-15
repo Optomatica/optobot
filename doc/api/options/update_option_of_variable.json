@@ -1,0 +1,60 @@
+{
+  "resource": "Options",
+  "resource_explanation": null,
+  "http_method": "PUT",
+  "route": "/dialogues/:dialogue_id/variables/:variable_id/options/:id",
+  "description": "update option of variable",
+  "explanation": null,
+  "parameters": [
+    {
+      "required": true,
+      "name": "dialogue_id",
+      "description": "number"
+    },
+    {
+      "required": true,
+      "allow_nil": false,
+      "name": "variable_id",
+      "description": "number"
+    },
+    {
+      "required": true,
+      "name": "id",
+      "description": "number"
+    },
+    {
+      "desc": "wit value in Synonyms",
+      "name": "value",
+      "description": "String"
+    },
+    {
+      "name": "display_count",
+      "description": "number"
+    }
+  ],
+  "response_fields": [
+
+  ],
+  "requests": [
+    {
+      "request_method": "PUT",
+      "request_path": "/dialogues/805/variables/92/options/55",
+      "request_body": "{\"value\":\"option's value\",\"display_count\":3}",
+      "request_headers": {
+        "Content-Type": "application/json",
+        "Host": "example.org"
+      },
+      "request_query_parameters": {
+      },
+      "request_content_type": "application/json",
+      "response_status": 200,
+      "response_status_text": "OK",
+      "response_body": "{\n  \"id\": 55,\n  \"variable_id\": 92,\n  \"value\": \"option's value\",\n  \"display_count\": 3,\n  \"created_at\": \"2020-02-02T09:58:21.155Z\",\n  \"updated_at\": \"2020-02-02T09:58:21.375Z\",\n  \"identifier\": null\n}",
+      "response_headers": {
+        "Content-Type": "application/json; charset=utf-8"
+      },
+      "response_content_type": "application/json; charset=utf-8",
+      "curl": "curl \"http://localhost:3000/dialogues/805/variables/92/options/55\" -d '{\"value\":\"option\\u0027s value\",\"display_count\":3}' -X PUT \\\n\t-H \"Access-Token: QnaKl5AUaRttLW5Q4E6dXg\" \\\n\t-H \"Token-Type: Bearer\" \\\n\t-H \"Client: bLxGzM4o0EYd092kCT_ewQ\" \\\n\t-H \"Expiry: 2790237500\" \\\n\t-H \"Uid: test@example.com\" \\\n\t-H \"Content-Type: application/json\" \\\n\t-H \"Host: example.org\" \\\n\t-H \"Cookie: \""
+    }
+  ]
+}

@@ -1,0 +1,46 @@
+{
+  "resource": "Projects",
+  "resource_explanation": null,
+  "http_method": "GET",
+  "route": "/projects/:id/get_chat_problems",
+  "description": "get the problems of the project",
+  "explanation": null,
+  "parameters": [
+    {
+      "required": true,
+      "name": "id",
+      "description": "number"
+    },
+    {
+      "default": false,
+      "name": "debug_mode",
+      "description": "boolean"
+    }
+  ],
+  "response_fields": [
+
+  ],
+  "requests": [
+    {
+      "request_method": "GET",
+      "request_path": "/projects/69/get_chat_problems?debug_mode=true",
+      "request_body": null,
+      "request_headers": {
+        "Content-Type": "application/json",
+        "Host": "example.org"
+      },
+      "request_query_parameters": {
+        "debug_mode": "true"
+      },
+      "request_content_type": "application/json",
+      "response_status": 200,
+      "response_status_text": "OK",
+      "response_body": "{\n  \"\": {\n    \"id\": 11,\n    \"problem_type\": \"provided_data_missing\",\n    \"chatbot_message_id\": 21,\n    \"project_id\": 69,\n    \"created_at\": \"2020-02-02T09:57:47.460Z\",\n    \"updated_at\": \"2020-02-02T09:57:47.460Z\",\n    \"dialogue_id\": null\n  }\n}",
+      "response_headers": {
+        "Content-Type": "application/json; charset=utf-8"
+      },
+      "response_content_type": "application/json; charset=utf-8",
+      "curl": "curl -g \"http://localhost:3000/projects/69/get_chat_problems?debug_mode=true\" -X GET \\\n\t-H \"Access-Token: 6bvsMIMkjLKtbyMzOHsLiA\" \\\n\t-H \"Token-Type: Bearer\" \\\n\t-H \"Client: 1AqTygBmOq50Cs9YF--Eqw\" \\\n\t-H \"Expiry: 2790237466\" \\\n\t-H \"Uid: test@example.com\" \\\n\t-H \"Content-Type: application/json\" \\\n\t-H \"Host: example.org\" \\\n\t-H \"Cookie: \""
+    }
+  ]
+}

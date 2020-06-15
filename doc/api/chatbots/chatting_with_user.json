@@ -1,0 +1,62 @@
+{
+  "resource": "Chatbots",
+  "resource_explanation": null,
+  "http_method": "POST",
+  "route": "/projects/:project_id/chatbot",
+  "description": "chatting with user",
+  "explanation": null,
+  "parameters": [
+    {
+      "required": true,
+      "name": "project_id",
+      "description": "number"
+    },
+    {
+      "default": false,
+      "name": "debug_mode",
+      "description": "boolean"
+    },
+    {
+      "name": "text",
+      "description": "String"
+    },
+    {
+      "desc": "user sent this text",
+      "name": "email",
+      "description": "String"
+    },
+    {
+      "name": "language",
+      "description": "ISO 639-1 code"
+    },
+    {
+      "name": "user_id",
+      "description": "number"
+    }
+  ],
+  "response_fields": [
+
+  ],
+  "requests": [
+    {
+      "request_method": "POST",
+      "request_path": "/projects/79/chatbot",
+      "request_body": "{\"debug_mode\":true,\"text\":\"hi\",\"email\":\"test@example.com\",\"language\":\"en\",\"project_id\":79}",
+      "request_headers": {
+        "Content-Type": "application/json",
+        "Host": "example.org"
+      },
+      "request_query_parameters": {
+      },
+      "request_content_type": "application/json",
+      "response_status": 200,
+      "response_status_text": "OK",
+      "response_body": "{\n  \"dialogue\": {\n    \"responses\": {\n      \"note\": [\n\n      ],\n      \"response\": [\n        {\n          \"text\": \"first-reply\"\n        }\n      ],\n      \"hint\": [\n\n      ],\n      \"supplementary\": [\n\n      ],\n      \"title\": [\n\n      ]\n    },\n    \"dialogue_name\": \"good_dialogue\"\n  },\n  \"user_chatbot_session\": {\n    \"id\": 7,\n    \"context_id\": 45,\n    \"dialogue_id\": null,\n    \"created_at\": \"2020-02-02T09:58:19.441Z\",\n    \"updated_at\": \"2020-02-02T09:58:19.494Z\",\n    \"variable_id\": null,\n    \"quick_response_id\": null,\n    \"fallback_counter\": 0,\n    \"prev_session_id\": null,\n    \"next_session_id\": null\n  }\n}",
+      "response_headers": {
+        "Content-Type": "application/json; charset=utf-8"
+      },
+      "response_content_type": "application/json; charset=utf-8",
+      "curl": "curl \"http://localhost:3000/projects/79/chatbot\" -d '{\"debug_mode\":true,\"text\":\"hi\",\"email\":\"test@example.com\",\"language\":\"en\",\"project_id\":79}' -X POST \\\n\t-H \"Access-Token: AvWAl34qN7vw6ukvDs-ZJg\" \\\n\t-H \"Token-Type: Bearer\" \\\n\t-H \"Client: g-u-Mp8CGbrSs75-4bw6hA\" \\\n\t-H \"Expiry: 2790237497\" \\\n\t-H \"Uid: test@example.com\" \\\n\t-H \"Content-Type: application/json\" \\\n\t-H \"Host: example.org\" \\\n\t-H \"Cookie: \""
+    }
+  ]
+}

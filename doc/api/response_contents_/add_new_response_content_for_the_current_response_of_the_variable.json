@@ -1,0 +1,66 @@
+{
+  "resource": "Response Contents ",
+  "resource_explanation": null,
+  "http_method": "POST",
+  "route": "/dialogues/:dialogue_id/variables/:variable_id/responses/:response_id/response_contents/create",
+  "description": "add new response content for the current response of the variable",
+  "explanation": null,
+  "parameters": [
+    {
+      "required": true,
+      "allow_nil": false,
+      "name": "dialogue_id",
+      "description": "number"
+    },
+    {
+      "required": true,
+      "allow_nil": false,
+      "name": "variable_id",
+      "description": "number"
+    },
+    {
+      "required": true,
+      "allow_nil": false,
+      "name": "response_id",
+      "description": "number"
+    },
+    {
+      "required": true,
+      "allow_nil": false,
+      "desc": "the content of the response. the hash keys is the language of the content",
+      "name": "content",
+      "description": "Hash"
+    },
+    {
+      "allow_nil": false,
+      "desc": "text, image or video (default: text)",
+      "name": "content_type",
+      "description": "String"
+    }
+  ],
+  "response_fields": [
+
+  ],
+  "requests": [
+    {
+      "request_method": "POST",
+      "request_path": "/dialogues/763/variables/88/responses/742/response_contents/create",
+      "request_body": "{\"content\":{\"en\":\"english response\"},\"content_type\":\"text\"}",
+      "request_headers": {
+        "Content-Type": "application/json",
+        "Host": "example.org"
+      },
+      "request_query_parameters": {
+      },
+      "request_content_type": "application/json",
+      "response_status": 201,
+      "response_status_text": "Created",
+      "response_body": "{\n  \"id\": 682,\n  \"content\": {\n    \"en\": \"english response\"\n  },\n  \"content_type\": \"text\",\n  \"response_id\": 742,\n  \"created_at\": \"2020-02-02T09:58:16.198Z\",\n  \"updated_at\": \"2020-02-02T09:58:16.198Z\",\n  \"identifier\": null\n}",
+      "response_headers": {
+        "Content-Type": "application/json; charset=utf-8"
+      },
+      "response_content_type": "application/json; charset=utf-8",
+      "curl": "curl \"http://localhost:3000/dialogues/763/variables/88/responses/742/response_contents/create\" -d '{\"content\":{\"en\":\"english response\"},\"content_type\":\"text\"}' -X POST \\\n\t-H \"Access-Token: Cu9nCHJkinDLKrNqrRvtyQ\" \\\n\t-H \"Token-Type: Bearer\" \\\n\t-H \"Client: Th-3gQPS3Me1b2kUS4sQOw\" \\\n\t-H \"Expiry: 2790237495\" \\\n\t-H \"Uid: test@example.com\" \\\n\t-H \"Content-Type: application/json\" \\\n\t-H \"Host: example.org\" \\\n\t-H \"Cookie: \""
+    }
+  ]
+}

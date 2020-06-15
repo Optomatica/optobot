@@ -1,0 +1,87 @@
+{
+  "resource": "Variable",
+  "resource_explanation": null,
+  "http_method": "PUT",
+  "route": "/dialogues/:dialogue_id/variables/:id/update",
+  "description": "update variable",
+  "explanation": null,
+  "parameters": [
+    {
+      "required": true,
+      "name": "id",
+      "description": "number"
+    },
+    {
+      "required": true,
+      "allow_nil": false,
+      "name": "dialogue_id",
+      "description": "number"
+    },
+    {
+      "required": true,
+      "name": "project_id",
+      "description": "number"
+    },
+    {
+      "name": "name",
+      "description": "String"
+    },
+    {
+      "name": "expire_after",
+      "description": "number"
+    },
+    {
+      "disc": "normal, timeseries, in_session , timeseries_in_cache or in_cache",
+      "name": "storage_type",
+      "description": "String"
+    },
+    {
+      "disc": "collected, fetched or provided",
+      "name": "source",
+      "description": "String"
+    },
+    {
+      "name": "allow_writing",
+      "description": "boolean"
+    },
+    {
+      "name": "entity",
+      "description": "String"
+    },
+    {
+      "of": "String",
+      "name": "possible_values",
+      "description": "Array"
+    },
+    {
+      "disc": "with keys 'min' and 'max'",
+      "name": "allowed_range",
+      "description": "Hash"
+    }
+  ],
+  "response_fields": [
+
+  ],
+  "requests": [
+    {
+      "request_method": "PUT",
+      "request_path": "/dialogues/816/variables/93/update",
+      "request_body": "{\"project_id\":81,\"name\":\"variable's name\",\"expire_after\":5,\"storage_type\":\"normal\",\"source\":\"collected\",\"allow_writing\":true,\"entity\":\"distance\",\"possible_values\":[\"1\",\"3\",\"4\"],\"allowed_range\":{\"min\":1,\"max\":6}}",
+      "request_headers": {
+        "Content-Type": "application/json",
+        "Host": "example.org"
+      },
+      "request_query_parameters": {
+      },
+      "request_content_type": "application/json",
+      "response_status": 200,
+      "response_status_text": "OK",
+      "response_body": "{\n  \"id\": 93,\n  \"dialogue_id\": 816,\n  \"name\": \"variable's name\",\n  \"project_id\": 81,\n  \"expire_after\": 5,\n  \"storage_type\": \"normal\",\n  \"source\": \"collected\",\n  \"allow_writing\": true,\n  \"entity\": \"distance\",\n  \"allowed_range\": {\n    \"min\": 1,\n    \"max\": 6\n  },\n  \"created_at\": \"2020-02-02T09:58:21.826Z\",\n  \"updated_at\": \"2020-02-02T09:58:22.020Z\",\n  \"possible_values\": null,\n  \"fetch_info\": null,\n  \"save_text\": false,\n  \"unit\": null,\n  \"identifier\": null,\n  \"is_valid\": true\n}",
+      "response_headers": {
+        "Content-Type": "application/json; charset=utf-8"
+      },
+      "response_content_type": "application/json; charset=utf-8",
+      "curl": "curl \"http://localhost:3000/dialogues/816/variables/93/update\" -d '{\"project_id\":81,\"name\":\"variable\\u0027s name\",\"expire_after\":5,\"storage_type\":\"normal\",\"source\":\"collected\",\"allow_writing\":true,\"entity\":\"distance\",\"possible_values\":[\"1\",\"3\",\"4\"],\"allowed_range\":{\"min\":1,\"max\":6}}' -X PUT \\\n\t-H \"Access-Token: ar-29WDmUWQkpKO6iZTN8g\" \\\n\t-H \"Token-Type: Bearer\" \\\n\t-H \"Client: JEuSBzB4cbCRFnO8qKxeQA\" \\\n\t-H \"Expiry: 2790237501\" \\\n\t-H \"Uid: test@example.com\" \\\n\t-H \"Content-Type: application/json\" \\\n\t-H \"Host: example.org\" \\\n\t-H \"Cookie: \""
+    }
+  ]
+}

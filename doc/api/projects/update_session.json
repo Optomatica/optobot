@@ -1,0 +1,73 @@
+{
+  "resource": "Projects",
+  "resource_explanation": null,
+  "http_method": "POST",
+  "route": "/projects/:id/update_session",
+  "description": "update_session",
+  "explanation": null,
+  "parameters": [
+    {
+      "required": true,
+      "name": "id",
+      "description": "number"
+    },
+    {
+      "required": true,
+      "name": "user_chatbot_session_id",
+      "description": "number"
+    },
+    {
+      "name": "context_id",
+      "description": "number"
+    },
+    {
+      "name": "dialogue_id",
+      "description": "number"
+    },
+    {
+      "name": "variable_id",
+      "description": "number"
+    },
+    {
+      "name": "quick_response_id",
+      "description": "number"
+    },
+    {
+      "name": "fallback_counter",
+      "description": "number"
+    },
+    {
+      "name": "prev_session_id",
+      "description": "number"
+    },
+    {
+      "name": "next_session_id",
+      "description": "number"
+    }
+  ],
+  "response_fields": [
+
+  ],
+  "requests": [
+    {
+      "request_method": "POST",
+      "request_path": "/projects/69/update_session",
+      "request_body": "{\"user_id\":71,\"user_chatbot_session_id\":6,\"context_id\":40,\"dialogue_id\":701,\"variable_id\":79,\"quick_response_id\":null,\"fallback_counter\":null,\"prev_session_id\":702,\"next_session_id\":703}",
+      "request_headers": {
+        "Content-Type": "application/json",
+        "Host": "example.org"
+      },
+      "request_query_parameters": {
+      },
+      "request_content_type": "application/json",
+      "response_status": 200,
+      "response_status_text": "OK",
+      "response_body": "{\n  \"context_id\": 40,\n  \"dialogue_id\": 701,\n  \"variable_id\": 79,\n  \"prev_session_id\": 702,\n  \"next_session_id\": 703,\n  \"id\": 6,\n  \"created_at\": \"2020-02-02T09:57:47.366Z\",\n  \"updated_at\": \"2020-02-02T09:57:47.838Z\",\n  \"quick_response_id\": null,\n  \"fallback_counter\": null\n}",
+      "response_headers": {
+        "Content-Type": "application/json; charset=utf-8"
+      },
+      "response_content_type": "application/json; charset=utf-8",
+      "curl": "curl \"http://localhost:3000/projects/69/update_session\" -d '{\"user_id\":71,\"user_chatbot_session_id\":6,\"context_id\":40,\"dialogue_id\":701,\"variable_id\":79,\"quick_response_id\":null,\"fallback_counter\":null,\"prev_session_id\":702,\"next_session_id\":703}' -X POST \\\n\t-H \"Access-Token: 6bvsMIMkjLKtbyMzOHsLiA\" \\\n\t-H \"Token-Type: Bearer\" \\\n\t-H \"Client: 1AqTygBmOq50Cs9YF--Eqw\" \\\n\t-H \"Expiry: 2790237466\" \\\n\t-H \"Uid: test@example.com\" \\\n\t-H \"Content-Type: application/json\" \\\n\t-H \"Host: example.org\" \\\n\t-H \"Cookie: \""
+    }
+  ]
+}

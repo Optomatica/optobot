@@ -1,0 +1,51 @@
+{
+  "resource": "Variable",
+  "resource_explanation": null,
+  "http_method": "GET",
+  "route": "/dialogues/:dialogue_id/variables/list",
+  "description": "list all variables of the project ",
+  "explanation": null,
+  "parameters": [
+    {
+      "required": true,
+      "name": "dialogue_id",
+      "description": "number"
+    },
+    {
+      "required": true,
+      "name": "id",
+      "description": "number"
+    },
+    {
+      "required": true,
+      "name": "project_id",
+      "description": "number"
+    }
+  ],
+  "response_fields": [
+
+  ],
+  "requests": [
+    {
+      "request_method": "GET",
+      "request_path": "/dialogues/816/variables/list?id=93",
+      "request_body": null,
+      "request_headers": {
+        "Content-Type": "application/json",
+        "Host": "example.org"
+      },
+      "request_query_parameters": {
+        "id": "93"
+      },
+      "request_content_type": "application/json",
+      "response_status": 200,
+      "response_status_text": "OK",
+      "response_body": "[\n\n]",
+      "response_headers": {
+        "Content-Type": "application/json; charset=utf-8"
+      },
+      "response_content_type": "application/json; charset=utf-8",
+      "curl": "curl -g \"http://localhost:3000/dialogues/816/variables/list?id=93\" -X GET \\\n\t-H \"Access-Token: ar-29WDmUWQkpKO6iZTN8g\" \\\n\t-H \"Token-Type: Bearer\" \\\n\t-H \"Client: JEuSBzB4cbCRFnO8qKxeQA\" \\\n\t-H \"Expiry: 2790237501\" \\\n\t-H \"Uid: test@example.com\" \\\n\t-H \"Content-Type: application/json\" \\\n\t-H \"Host: example.org\" \\\n\t-H \"Cookie: \""
+    }
+  ]
+}

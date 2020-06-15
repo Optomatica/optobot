@@ -1,0 +1,51 @@
+{
+  "resource": "Variable",
+  "resource_explanation": null,
+  "http_method": "GET",
+  "route": "/dialogues/:dialogue_id/variables/:id/show",
+  "description": "show variable of the current dialogue with its messages and options ",
+  "explanation": null,
+  "parameters": [
+    {
+      "required": true,
+      "name": "dialogue_id",
+      "description": "number"
+    },
+    {
+      "required": true,
+      "name": "id",
+      "description": "number"
+    },
+    {
+      "required": true,
+      "name": "project_id",
+      "description": "number"
+    }
+  ],
+  "response_fields": [
+
+  ],
+  "requests": [
+    {
+      "request_method": "GET",
+      "request_path": "/dialogues/816/variables/93/show",
+      "request_body": null,
+      "request_headers": {
+        "Content-Type": "application/json",
+        "Host": "example.org"
+      },
+      "request_query_parameters": {
+        "{\"project_id\":81}": null
+      },
+      "request_content_type": "application/json",
+      "response_status": 200,
+      "response_status_text": "OK",
+      "response_body": "{\n  \"variable\": {\n    \"id\": 93,\n    \"name\": \"variable_name\",\n    \"created_at\": \"2020-02-02T09:58:21.826Z\",\n    \"updated_at\": \"2020-02-02T09:58:21.826Z\",\n    \"dialogue_id\": 816,\n    \"possible_values\": null,\n    \"expire_after\": null,\n    \"storage_type\": null,\n    \"source\": null,\n    \"allow_writing\": true,\n    \"entity\": null,\n    \"allowed_range\": null,\n    \"fetch_info\": null,\n    \"save_text\": false,\n    \"project_id\": 81,\n    \"unit\": null,\n    \"identifier\": null,\n    \"is_valid\": true\n  },\n  \"responses\": [\n\n  ],\n  \"options\": [\n    {\n      \"id\": 57,\n      \"variable_id\": 93,\n      \"created_at\": \"2020-02-02T09:58:21.851Z\",\n      \"updated_at\": \"2020-02-02T09:58:21.851Z\",\n      \"value\": null,\n      \"display_count\": 1,\n      \"identifier\": null,\n      \"response\": {\n        \"id\": 788,\n        \"response_owner_id\": 57,\n        \"created_at\": \"2020-02-02T09:58:21.866Z\",\n        \"updated_at\": \"2020-02-02T09:58:21.866Z\",\n        \"response_owner_type\": \"Option\",\n        \"order\": 0,\n        \"identifier\": null,\n        \"response_type\": \"response\"\n      }\n    }\n  ]\n}",
+      "response_headers": {
+        "Content-Type": "application/json; charset=utf-8"
+      },
+      "response_content_type": "application/json; charset=utf-8",
+      "curl": "curl -g \"http://localhost:3000/dialogues/816/variables/93/show\" -X GET \\\n\t-H \"Access-Token: ar-29WDmUWQkpKO6iZTN8g\" \\\n\t-H \"Token-Type: Bearer\" \\\n\t-H \"Client: JEuSBzB4cbCRFnO8qKxeQA\" \\\n\t-H \"Expiry: 2790237501\" \\\n\t-H \"Uid: test@example.com\" \\\n\t-H \"Content-Type: application/json\" \\\n\t-H \"Host: example.org\" \\\n\t-H \"Cookie: \""
+    }
+  ]
+}

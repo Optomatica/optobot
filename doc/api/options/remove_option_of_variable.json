@@ -1,0 +1,45 @@
+{
+  "resource": "Options",
+  "resource_explanation": null,
+  "http_method": "DELETE",
+  "route": "/conditions/:condition_id/options/:id/remove_from_condition",
+  "description": "remove option of variable",
+  "explanation": null,
+  "parameters": [
+    {
+      "required": true,
+      "name": "condition_id",
+      "description": "number"
+    },
+    {
+      "required": true,
+      "name": "id",
+      "description": "number"
+    }
+  ],
+  "response_fields": [
+
+  ],
+  "requests": [
+    {
+      "request_method": "DELETE",
+      "request_path": "/conditions/60/options/55/remove_from_condition",
+      "request_body": null,
+      "request_headers": {
+        "Content-Type": "application/json",
+        "Host": "example.org"
+      },
+      "request_query_parameters": {
+      },
+      "request_content_type": "application/json",
+      "response_status": 200,
+      "response_status_text": "OK",
+      "response_body": "{\n  \"body\": \"Option was successfully destroyed.\"\n}",
+      "response_headers": {
+        "Content-Type": "application/json; charset=utf-8"
+      },
+      "response_content_type": "application/json; charset=utf-8",
+      "curl": "curl \"http://localhost:3000/conditions/60/options/55/remove_from_condition\" -d '' -X DELETE \\\n\t-H \"Access-Token: QnaKl5AUaRttLW5Q4E6dXg\" \\\n\t-H \"Token-Type: Bearer\" \\\n\t-H \"Client: bLxGzM4o0EYd092kCT_ewQ\" \\\n\t-H \"Expiry: 2790237500\" \\\n\t-H \"Uid: test@example.com\" \\\n\t-H \"Content-Type: application/json\" \\\n\t-H \"Host: example.org\" \\\n\t-H \"Cookie: \""
+    }
+  ]
+}

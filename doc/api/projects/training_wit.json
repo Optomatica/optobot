@@ -1,0 +1,46 @@
+{
+  "resource": "Projects",
+  "resource_explanation": null,
+  "http_method": "POST",
+  "route": "/projects/:id/train_wit",
+  "description": "training wit",
+  "explanation": null,
+  "parameters": [
+    {
+      "required": true,
+      "name": "lang",
+      "description": "String"
+    },
+    {
+      "required": true,
+      "default": " https://docs.google.com/document/d/1HFcPB8FSo_tyJ3Ypql46c7vYltnxP-CHZIkHxYDkGso/edit?usp=sharing ",
+      "name": "file",
+      "description": "File"
+    }
+  ],
+  "response_fields": [
+
+  ],
+  "requests": [
+    {
+      "request_method": "POST",
+      "request_path": "/projects/69/train_wit",
+      "request_body": "------------XnJLe9ZIbbGUYtzPQJ16u1\r\nContent-Disposition: form-data; name=\"lang\"\r\n\r\nen\r\n------------XnJLe9ZIbbGUYtzPQJ16u1\r\nContent-Disposition: form-data; name=\"file\"; filename=\"wit_training.optonlp\"\r\nContent-Type: text/plain\r\nContent-Length: 271\r\n\r\n[uploaded data]\r\n------------XnJLe9ZIbbGUYtzPQJ16u1--\r",
+      "request_headers": {
+        "Content-Type": "multipart/form-data; boundary=----------XnJLe9ZIbbGUYtzPQJ16u1",
+        "Host": "example.org"
+      },
+      "request_query_parameters": {
+      },
+      "request_content_type": "multipart/form-data; boundary=----------XnJLe9ZIbbGUYtzPQJ16u1",
+      "response_status": 200,
+      "response_status_text": "OK",
+      "response_body": "\"Training Done.\"",
+      "response_headers": {
+        "Content-Type": "application/json; charset=utf-8"
+      },
+      "response_content_type": "application/json; charset=utf-8",
+      "curl": "curl \"http://localhost:3000/projects/69/train_wit\" -d '------------XnJLe9ZIbbGUYtzPQJ16u1\r\nContent-Disposition: form-data; name=\"lang\"\r\n\r\nen\r\n------------XnJLe9ZIbbGUYtzPQJ16u1\r\nContent-Disposition: form-data; name=\"file\"; filename=\"wit_training.optonlp\"\r\nContent-Type: text/plain\r\nContent-Length: 271\r\n\r\n[uploaded data]\r\n------------XnJLe9ZIbbGUYtzPQJ16u1--\r' -X POST \\\n\t-H \"Content-Type: multipart/form-data; boundary=----------XnJLe9ZIbbGUYtzPQJ16u1\" \\\n\t-H \"Access-Token: 6bvsMIMkjLKtbyMzOHsLiA\" \\\n\t-H \"Token-Type: Bearer\" \\\n\t-H \"Client: 1AqTygBmOq50Cs9YF--Eqw\" \\\n\t-H \"Expiry: 2790237466\" \\\n\t-H \"Uid: test@example.com\" \\\n\t-H \"Host: example.org\" \\\n\t-H \"Cookie: \""
+    }
+  ]
+}

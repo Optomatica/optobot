@@ -1,0 +1,518 @@
+{
+  "resources": [
+    {
+      "name": "Projects",
+      "explanation": null,
+      "examples": [
+        {
+          "description": "create project",
+          "link": "projects/create_project.json",
+          "groups": "all",
+          "route": "/users/:user_id/projects/create",
+          "method": "post"
+        },
+        {
+          "description": "update project",
+          "link": "projects/update_project.json",
+          "groups": "all",
+          "route": "/users/:user_id/projects/:id/update",
+          "method": "put"
+        },
+        {
+          "description": "show projects",
+          "link": "projects/show_projects.json",
+          "groups": "all",
+          "route": "/users/:user_id/projects/:id/show",
+          "method": "get"
+        },
+        {
+          "description": "list projects",
+          "link": "projects/list_projects.json",
+          "groups": "all",
+          "route": "/users/:user_id/projects/list",
+          "method": "get"
+        },
+        {
+          "description": "update_session",
+          "link": "projects/update_session.json",
+          "groups": "all",
+          "route": "/projects/:id/update_session",
+          "method": "post"
+        },
+        {
+          "description": "add users to project",
+          "link": "projects/add_users_to_project.json",
+          "groups": "all",
+          "route": "/users/:user_id/projects/:id/add_users_to_project",
+          "method": "post"
+        },
+        {
+          "description": "remove users to project",
+          "link": "projects/remove_users_to_project.json",
+          "groups": "all",
+          "route": "/users/:user_id/projects/:id/remove_users_from_project",
+          "method": "post"
+        },
+        {
+          "description": "list user's projects",
+          "link": "projects/list_user's_projects.json",
+          "groups": "all",
+          "route": "/users/:user_id/projects/:id/list_project_users",
+          "method": "get"
+        },
+        {
+          "description": "get the problems of the project",
+          "link": "projects/get_the_problems_of_the_project.json",
+          "groups": "all",
+          "route": "/projects/:id/get_chat_problems",
+          "method": "get"
+        },
+        {
+          "description": "export dialogues data",
+          "link": "projects/export_dialogues_data.json",
+          "groups": "all",
+          "route": "/projects/:id/export_dialogues_data",
+          "method": "get"
+        },
+        {
+          "description": "import dialogues data from file",
+          "link": "projects/import_dialogues_data_from_file.json",
+          "groups": "all",
+          "route": "/projects/:id/import_context_dialogues_data",
+          "method": "post"
+        },
+        {
+          "description": "training wit",
+          "link": "projects/training_wit.json",
+          "groups": "all",
+          "route": "/projects/:id/train_wit",
+          "method": "post"
+        }
+      ]
+    },
+    {
+      "name": "Contexts",
+      "explanation": null,
+      "examples": [
+        {
+          "description": "show Context",
+          "link": "contexts/show_context.json",
+          "groups": "all",
+          "route": "/contexts/:id/show",
+          "method": "get"
+        },
+        {
+          "description": "list Context",
+          "link": "contexts/list_context.json",
+          "groups": "all",
+          "route": "/contexts/list",
+          "method": "get"
+        },
+        {
+          "description": "list all dialogues of the context",
+          "link": "contexts/list_all_dialogues_of_the_context.json",
+          "groups": "all",
+          "route": "/contexts/:id/has_dialogues",
+          "method": "get"
+        },
+        {
+          "description": "create context",
+          "link": "contexts/create_context.json",
+          "groups": "all",
+          "route": "/contexts/create",
+          "method": "post"
+        },
+        {
+          "description": "update context",
+          "link": "contexts/update_context.json",
+          "groups": "all",
+          "route": "/contexts/:id/update",
+          "method": "put"
+        },
+        {
+          "description": "delete context",
+          "link": "contexts/delete_context.json",
+          "groups": "all",
+          "route": "/contexts/:id/destroy",
+          "method": "delete"
+        }
+      ]
+    },
+    {
+      "name": "Dialogues",
+      "explanation": null,
+      "examples": [
+        {
+          "description": "show Dialogues",
+          "link": "dialogues/show_dialogues.json",
+          "groups": "all",
+          "route": "/dialogues/:id/show",
+          "method": "get"
+        },
+        {
+          "description": "list dialogues",
+          "link": "dialogues/list_dialogues.json",
+          "groups": "all",
+          "route": "/dialogues/list",
+          "method": "post"
+        },
+        {
+          "description": "create dialogue",
+          "link": "dialogues/create_dialogue.json",
+          "groups": "all",
+          "route": "/dialogues/create",
+          "method": "post"
+        },
+        {
+          "description": "update dialogue",
+          "link": "dialogues/update_dialogue.json",
+          "groups": "all",
+          "route": "/dialogues/:id/update",
+          "method": "put"
+        },
+        {
+          "description": "delete dialogue",
+          "link": "dialogues/delete_dialogue.json",
+          "groups": "all",
+          "route": "/dialogues/:id/destroy",
+          "method": "delete"
+        }
+      ]
+    },
+    {
+      "name": "Response",
+      "explanation": null,
+      "examples": [
+        {
+          "description": "show responses of the dialogue",
+          "link": "response/show_responses_of_the_dialogue.json",
+          "groups": "all",
+          "route": "/dialogues/:dialogue_id/responses/:id/show",
+          "method": "get"
+        },
+        {
+          "description": "show responses for variable of the dialogue",
+          "link": "response/show_responses_for_variable_of_the_dialogue.json",
+          "groups": "all",
+          "route": "/dialogues/:dialogue_id/variables/:variable_id/responses/:id/show",
+          "method": "get"
+        },
+        {
+          "description": "show responses for_option of variable of the dialogue",
+          "link": "response/show_responses_for_option_of_variable_of_the_dialogue.json",
+          "groups": "all",
+          "route": "/dialogues/:dialogue_id/variables/:variable_id/options/:option_id/responses/:id/show",
+          "method": "get"
+        },
+        {
+          "description": "add new response for the current dialogue",
+          "link": "response/add_new_response_for_the_current_dialogue.json",
+          "groups": "all",
+          "route": "/dialogues/:dialogue_id/responses/create",
+          "method": "post"
+        },
+        {
+          "description": "add new response for variable of the current dialogue",
+          "link": "response/add_new_response_for_variable_of_the_current_dialogue.json",
+          "groups": "all",
+          "route": "/dialogues/:dialogue_id/variables/:variable_id/responses/create",
+          "method": "post"
+        },
+        {
+          "description": "add new response for option of variable for the current dialogue",
+          "link": "response/add_new_response_for_option_of_variable_for_the_current_dialogue.json",
+          "groups": "all",
+          "route": "/dialogues/:dialogue_id/variables/:variable_id/options/:option_id/responses/create",
+          "method": "post"
+        },
+        {
+          "description": "update response of dialogue",
+          "link": "response/update_response_of_dialogue.json",
+          "groups": "all",
+          "route": "/dialogues/:dialogue_id/responses/reorder",
+          "method": "put"
+        },
+        {
+          "description": "update response of variable",
+          "link": "response/update_response_of_variable.json",
+          "groups": "all",
+          "route": "/dialogues/:dialogue_id/variables/:variable_id/responses/reorder",
+          "method": "put"
+        },
+        {
+          "description": "delete response of dialogue",
+          "link": "response/delete_response_of_dialogue.json",
+          "groups": "all",
+          "route": "/dialogues/:dialogue_id/responses/:id/destroy",
+          "method": "delete"
+        },
+        {
+          "description": "delete response of variable",
+          "link": "response/delete_response_of_variable.json",
+          "groups": "all",
+          "route": "/dialogues/:dialogue_id/variables/:variable_id/responses/:id/destroy",
+          "method": "delete"
+        },
+        {
+          "description": "delete response of variable",
+          "link": "response/delete_response_of_variable.json",
+          "groups": "all",
+          "route": "/dialogues/:dialogue_id/variables/:variable_id/options/:option_id/responses/:id/destroy",
+          "method": "delete"
+        }
+      ]
+    },
+    {
+      "name": "Response Contents ",
+      "explanation": null,
+      "examples": [
+        {
+          "description": "add new response content for the current response of the dialogue ",
+          "link": "response_contents_/add_new_response_content_for_the_current_response_of_the_dialogue_.json",
+          "groups": "all",
+          "route": "/dialogues/:dialogue_id/responses/:response_id/response_contents/create",
+          "method": "post"
+        },
+        {
+          "description": "add new response content for the current response of the variable",
+          "link": "response_contents_/add_new_response_content_for_the_current_response_of_the_variable.json",
+          "groups": "all",
+          "route": "/dialogues/:dialogue_id/variables/:variable_id/responses/:response_id/response_contents/create",
+          "method": "post"
+        },
+        {
+          "description": "update response content of the current response",
+          "link": "response_contents_/update_response_content_of_the_current_response.json",
+          "groups": "all",
+          "route": "/dialogues/:dialogue_id/responses/:response_id/response_contents/:id/update",
+          "method": "put"
+        },
+        {
+          "description": "update response content of the current response",
+          "link": "response_contents_/update_response_content_of_the_current_response.json",
+          "groups": "all",
+          "route": "/dialogues/:dialogue_id/variables/:variable_id/responses/:response_id/response_contents/:id/update",
+          "method": "put"
+        },
+        {
+          "description": "delete response content of the current response",
+          "link": "response_contents_/delete_response_content_of_the_current_response.json",
+          "groups": "all",
+          "route": "/dialogues/:dialogue_id/responses/:response_id/response_contents/:id/destroy",
+          "method": "delete"
+        },
+        {
+          "description": "delete response content of the current response",
+          "link": "response_contents_/delete_response_content_of_the_current_response.json",
+          "groups": "all",
+          "route": "/dialogues/:dialogue_id/variables/:variable_id/responses/:response_id/response_contents/:id/destroy",
+          "method": "delete"
+        }
+      ]
+    },
+    {
+      "name": "Arcs",
+      "explanation": null,
+      "examples": [
+        {
+          "description": "show Arc",
+          "link": "arcs/show_arc.json",
+          "groups": "all",
+          "route": "/arcs/:id",
+          "method": "get"
+        },
+        {
+          "description": "list_variables of Arc",
+          "link": "arcs/list_variables_of_arc.json",
+          "groups": "all",
+          "route": "/arcs/:id/list_variables",
+          "method": "get"
+        },
+        {
+          "description": "add condition",
+          "link": "arcs/add_condition.json",
+          "groups": "all",
+          "route": "/arcs/:arc_id/options/:id/add_to_condition",
+          "method": "post"
+        }
+      ]
+    },
+    {
+      "name": "Parameters",
+      "explanation": null,
+      "examples": [
+        {
+          "description": "add new parameters for the current dialogue",
+          "link": "parameters/add_new_parameters_for_the_current_dialogue.json",
+          "groups": "all",
+          "route": "/arcs/:arc_id/parameters/create",
+          "method": "post"
+        },
+        {
+          "description": "update parameter",
+          "link": "parameters/update_parameter.json",
+          "groups": "all",
+          "route": "/arcs/:arc_id/parameters/:id/update",
+          "method": "put"
+        },
+        {
+          "description": "delete parameter by id",
+          "link": "parameters/delete_parameter_by_id.json",
+          "groups": "all",
+          "route": "/arcs/:arc_id/parameters/:id/destroy",
+          "method": "delete"
+        }
+      ]
+    },
+    {
+      "name": "Chatbots",
+      "explanation": null,
+      "examples": [
+        {
+          "description": "reply_to_user",
+          "link": "chatbots/reply_to_user.json",
+          "groups": "all",
+          "route": "/projects/:project_id/send_message_to_user",
+          "method": "post"
+        },
+        {
+          "description": "chatting with user",
+          "link": "chatbots/chatting_with_user.json",
+          "groups": "all",
+          "route": "/projects/:project_id/chatbot",
+          "method": "post"
+        }
+      ]
+    },
+    {
+      "name": "Options",
+      "explanation": null,
+      "examples": [
+        {
+          "description": "list all options of current dialogue and its variables",
+          "link": "options/list_all_options_of_current_dialogue_and_its_variables.json",
+          "groups": "all",
+          "route": "/dialogues/:dialogue_id/variables/:variable_id/options/list",
+          "method": "get"
+        },
+        {
+          "description": "add new variable for the current dialogue",
+          "link": "options/add_new_variable_for_the_current_dialogue.json",
+          "groups": "all",
+          "route": "/dialogues/:dialogue_id/variables/:variable_id/options/create",
+          "method": "post"
+        },
+        {
+          "description": "update option of variable",
+          "link": "options/update_option_of_variable.json",
+          "groups": "all",
+          "route": "/dialogues/:dialogue_id/variables/:variable_id/options/:id",
+          "method": "put"
+        },
+        {
+          "description": "remove option of variable",
+          "link": "options/remove_option_of_variable.json",
+          "groups": "all",
+          "route": "/conditions/:condition_id/options/:id/remove_from_condition",
+          "method": "delete"
+        },
+        {
+          "description": "delete option of variable",
+          "link": "options/delete_option_of_variable.json",
+          "groups": "all",
+          "route": "/dialogues/:dialogue_id/variables/:variable_id/options/:id",
+          "method": "delete"
+        }
+      ]
+    },
+    {
+      "name": "Variable",
+      "explanation": null,
+      "examples": [
+        {
+          "description": "show variable of the current dialogue with its messages and options ",
+          "link": "variable/show_variable_of_the_current_dialogue_with_its_messages_and_options_.json",
+          "groups": "all",
+          "route": "/dialogues/:dialogue_id/variables/:id/show",
+          "method": "get"
+        },
+        {
+          "description": "list all variables of the project ",
+          "link": "variable/list_all_variables_of_the_project_.json",
+          "groups": "all",
+          "route": "/dialogues/:dialogue_id/variables/list",
+          "method": "get"
+        },
+        {
+          "description": "create new variable for the current dialogue",
+          "link": "variable/create_new_variable_for_the_current_dialogue.json",
+          "groups": "all",
+          "route": "/dialogues/:dialogue_id/variables/create",
+          "method": "post"
+        },
+        {
+          "description": "update variable",
+          "link": "variable/update_variable.json",
+          "groups": "all",
+          "route": "/dialogues/:dialogue_id/variables/:id/update",
+          "method": "put"
+        },
+        {
+          "description": "delete variable by id",
+          "link": "variable/delete_variable_by_id.json",
+          "groups": "all",
+          "route": "/dialogues/:dialogue_id/variables/:id/destroy",
+          "method": "delete"
+        }
+      ]
+    },
+    {
+      "name": "Users",
+      "explanation": null,
+      "examples": [
+        {
+          "description": "sign_up",
+          "link": "users/sign_up.json",
+          "groups": "all",
+          "route": "/auth",
+          "method": "post"
+        },
+        {
+          "description": "auth",
+          "link": "users/auth.json",
+          "groups": "all",
+          "route": "/auth/validate_token",
+          "method": "get"
+        },
+        {
+          "description": "list user_data ",
+          "link": "users/list_user_data_.json",
+          "groups": "all",
+          "route": "/projects/:project_id/user_data/list",
+          "method": "post"
+        },
+        {
+          "description": "create user_data",
+          "link": "users/create_user_data.json",
+          "groups": "all",
+          "route": "/projects/:project_id/user_data/create",
+          "method": "post"
+        },
+        {
+          "description": "update user_data",
+          "link": "users/update_user_data.json",
+          "groups": "all",
+          "route": "/projects/:project_id/user_data/:id/update",
+          "method": "put"
+        },
+        {
+          "description": "delete user_data",
+          "link": "users/delete_user_data.json",
+          "groups": "all",
+          "route": "/projects/:project_id/user_data/:id/destroy",
+          "method": "delete"
+        }
+      ]
+    }
+  ]
+}

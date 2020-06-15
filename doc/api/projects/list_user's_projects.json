@@ -1,0 +1,45 @@
+{
+  "resource": "Projects",
+  "resource_explanation": null,
+  "http_method": "GET",
+  "route": "/users/:user_id/projects/:id/list_project_users",
+  "description": "list user's projects",
+  "explanation": null,
+  "parameters": [
+    {
+      "required": true,
+      "name": "user_id",
+      "description": "number"
+    },
+    {
+      "required": true,
+      "name": "id",
+      "description": "number"
+    }
+  ],
+  "response_fields": [
+
+  ],
+  "requests": [
+    {
+      "request_method": "GET",
+      "request_path": "/users/71/projects/69/list_project_users",
+      "request_body": null,
+      "request_headers": {
+        "Content-Type": "application/json",
+        "Host": "example.org"
+      },
+      "request_query_parameters": {
+      },
+      "request_content_type": "application/json",
+      "response_status": 200,
+      "response_status_text": "OK",
+      "response_body": "[\n  {\n    \"id\": 73,\n    \"provider\": \"email\",\n    \"uid\": \"remove_test@example.com\",\n    \"allow_password_change\": false,\n    \"name\": null,\n    \"nickname\": null,\n    \"image\": null,\n    \"email\": \"remove_test@example.com\",\n    \"created_at\": \"2020-02-02T09:57:46.512Z\",\n    \"updated_at\": \"2020-02-02T09:57:46.512Z\"\n  },\n  {\n    \"id\": 71,\n    \"provider\": \"email\",\n    \"uid\": \"test@example.com\",\n    \"allow_password_change\": false,\n    \"name\": null,\n    \"nickname\": null,\n    \"image\": null,\n    \"email\": \"test@example.com\",\n    \"created_at\": \"2020-02-02T09:57:46.376Z\",\n    \"updated_at\": \"2020-02-02T09:57:46.614Z\"\n  },\n  {\n    \"id\": 73,\n    \"provider\": \"email\",\n    \"uid\": \"remove_test@example.com\",\n    \"allow_password_change\": false,\n    \"name\": null,\n    \"nickname\": null,\n    \"image\": null,\n    \"email\": \"remove_test@example.com\",\n    \"created_at\": \"2020-02-02T09:57:46.512Z\",\n    \"updated_at\": \"2020-02-02T09:57:46.512Z\"\n  }\n]",
+      "response_headers": {
+        "Content-Type": "application/json; charset=utf-8"
+      },
+      "response_content_type": "application/json; charset=utf-8",
+      "curl": "curl -g \"http://localhost:3000/users/71/projects/69/list_project_users\" -X GET \\\n\t-H \"Access-Token: 6bvsMIMkjLKtbyMzOHsLiA\" \\\n\t-H \"Token-Type: Bearer\" \\\n\t-H \"Client: 1AqTygBmOq50Cs9YF--Eqw\" \\\n\t-H \"Expiry: 2790237466\" \\\n\t-H \"Uid: test@example.com\" \\\n\t-H \"Content-Type: application/json\" \\\n\t-H \"Host: example.org\" \\\n\t-H \"Cookie: \""
+    }
+  ]
+}

@@ -1,0 +1,44 @@
+{
+  "resource": "Users",
+  "resource_explanation": null,
+  "http_method": "POST",
+  "route": "/projects/:project_id/user_data/list",
+  "description": "list user_data ",
+  "explanation": null,
+  "parameters": [
+    {
+      "required": true,
+      "name": "project_id",
+      "description": "number"
+    },
+    {
+      "name": "user_id",
+      "description": "number"
+    }
+  ],
+  "response_fields": [
+
+  ],
+  "requests": [
+    {
+      "request_method": "POST",
+      "request_path": "/projects/82/user_data/list",
+      "request_body": "{\"user_id\":83}",
+      "request_headers": {
+        "Content-Type": "application/json",
+        "Host": "example.org"
+      },
+      "request_query_parameters": {
+      },
+      "request_content_type": "application/json",
+      "response_status": 200,
+      "response_status_text": "OK",
+      "response_body": "{\"name\":null,\"image\":null,\"user_data\":[{\"id\":11,\"user_project_id\":93,\"variable_id\":95,\"option_id\":58,\"value\":\"user's data\",\"created_at\":\"2020-02-02T09:58:22.545Z\",\"updated_at\":\"2020-02-02T09:58:22.545Z\"}]}",
+      "response_headers": {
+        "Content-Type": "text/plain; charset=utf-8"
+      },
+      "response_content_type": "text/plain; charset=utf-8",
+      "curl": "curl \"http://localhost:3000/projects/82/user_data/list\" -d '{\"user_id\":83}' -X POST \\\n\t-H \"Access-Token: qChUcgT5zcxOxVz4rYPX2g\" \\\n\t-H \"Token-Type: Bearer\" \\\n\t-H \"Client: oPcJ2d7zDnw7pPD6itKm7g\" \\\n\t-H \"Expiry: 2790237502\" \\\n\t-H \"Uid: test@example.com\" \\\n\t-H \"Content-Type: application/json\" \\\n\t-H \"Host: example.org\" \\\n\t-H \"Cookie: \""
+    }
+  ]
+}
