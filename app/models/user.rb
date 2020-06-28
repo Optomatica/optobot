@@ -24,19 +24,6 @@ class User < ActiveRecord::Base
     self.create!(email: anonymous_email, password: SecureRandom.hex(4))
   end
 
-  def create_wit_app(token, app_name)
-    uri = URI.parse('https://api.wit.ai/apps?v=20170307')
-
-    request = Net::HTTP::Post.new(uri)
-    request.content_type = 'application/json'
-    request['Authorization'] = "Bearer #{token}"
-    request.body = JSON.dump('name' => app_name, 'lang' => 'en',
-                             'private' => 'true')
-    req_options = { use_ssl: uri.scheme == 'https' }
-
-    Net::HTTP.start(uri.hostname, uri.port, req_options) { |h| h.request(request) }
-  end
-
   private
 
   def password_required?

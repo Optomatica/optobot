@@ -1,3 +1,10 @@
+GIT
+  remote: https://github.com/wit-ai/wit-ruby
+  revision: de85e85cb0da7d41615f0838541e0d54dbbccfe2
+  branch: master
+  specs:
+    wit (7.0.0)
+
 GEM
   remote: https://rubygems.org/
   specs:
@@ -383,6 +390,7 @@ DEPENDENCIES
   vcr
   web-console (>= 3.3.0)
   webmock (~> 3.7.6)
+  wit (~> 7.0)!
 
 RUBY VERSION
    ruby 2.6.5p114
