@@ -138,7 +138,7 @@ module ChatbotHelper
     p "in go_to_onboarding"
     p "params[:text] ======== " , params[:text]
     p "@intent ======== " , @intent
-    intent_arr = [params[:text]]
+    intent_arr = [normalize_for_wit(params[:text])]
     intent_arr << (@intent["name"]).downcase if @intent
 
     dialogues = @project.dialogues.joins(:intent).select("dialogues.*").where("intents.value in (?)", intent_arr)

@@ -49,6 +49,10 @@ module WitHelper
     client.message(query)
   end
 
+  def normalize_for_wit(intent_name)
+    intent_name.downcase.gsub(/\W/, ' ').split(' ').join('_')
+  end
+
   private
 
   def initialize_wit(token = ENV['WIT_SERVER_TOKEN'])
