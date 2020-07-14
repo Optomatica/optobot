@@ -11,8 +11,8 @@ class Project < ApplicationRecord
 
   after_create :fallback_dialogue
 
-  belongs_to :prod_project, foreign_key: :prod_project_id, class_name: "Project", dependent: :destroy
-  belongs_to :tmp_project, foreign_key: :tmp_project_id, class_name: "Project", dependent: :destroy
+  belongs_to :prod_project, foreign_key: :prod_project_id, class_name: "Project", dependent: :destroy, optional: true
+  belongs_to :tmp_project, foreign_key: :tmp_project_id, class_name: "Project", dependent: :destroy, optional: true
 
   def has_user(user)
     self.user_projects.where(user: user).exists?
