@@ -10,9 +10,8 @@ namespace :tmp_project do
           user_project.user_chatbot_session.destroy
         end
       end
-      if UserChatbotSession.all.where(context_id: project.context_ids).empty?
-        tmp_project.dialogues.destroy_all
-        tmp_project.contexts.destroy_all
+      if UserChatbotSession.where(context_id: tmp_project.context_ids).empty?
+        tmp_project.destroy!
         project.tmp_project_id = nil
         project.save!
       end
