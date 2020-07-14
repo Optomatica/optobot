@@ -320,7 +320,7 @@ class ProjectsController < ApplicationController
 		data = JSON.parse(data,:symbolize_names => true)
 
 		if UserChatbotSession.all.where(context_id: @project.context_ids)
-      @project.tmp_project.id = @project.prod_project.id
+      @project.tmp_project = @project.prod_project
       begin
         ActiveRecord::Base.transaction do
           prod_project = Project.create!(nlp_engine: @project.nlp_engine, name: @project.name,
