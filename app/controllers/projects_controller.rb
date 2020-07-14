@@ -1,4 +1,6 @@
 class ProjectsController < ApplicationController
+  include WitHelper
+
   before_action :authenticate_user!
   before_action :same_user?, except: [:get_chat_messages, :get_chat_problems, :export_dialogues_data, :import_dialogues_data, :update_session, :release ,:train_wit, :import_context_dialogues_data]
   before_action :set_project, except: [:create, :list ]
@@ -30,9 +32,7 @@ class ProjectsController < ApplicationController
         cur_project_params = project_params
         cur_project_params.require(:name)
         if project_params[:nlp_engine].nil? || project_params[:nlp_engine].empty? || project_params[:nlp_engine]["en"].nil? || project_params[:nlp_engine]["en"].empty?
-          response = current_user.create_wit_app( ENV['WIT_SERVER_TOKEN'] , current_user.email.split('@')[0] + "_" + project_params[:name] )
-          p response
-          response = JSON.parse(response.body)
+          response = create_wit_app(current_user.email.split('@')[0] + "_" + project_params[:name] )
           cur_project_params[:nlp_engine] = project_params[:nlp_engine].merge({en: response['access_token'] || ENV['WIT_SERVER_TOKEN']})
         end
         project = Project.create!(cur_project_params)
@@ -284,7 +284,7 @@ class ProjectsController < ApplicationController
 	param :lang , String, required: true
 	def train_wit
 		file = params[:file].read
-		train = @project.training_wit(file, params[:lang] || "en")
+		train = @project.parse_nlp_file_and_train_wit(file, params[:lang] || "en")
 		render json: train, status: :ok
 
 	end

@@ -1,22 +1,23 @@
 include APICalls
+include WitHelper
 
 module ChatbotHelper
-  def analyzeText(text, wit_api)
-    url = ENV['WIT_AI_URL']
-    headers = {Authorization: "Bearer " + wit_api}
-    params = {q: text}
+  def analyzeText(text, wit_token)
 
-    resp = APICalls.getRequest(url,params,headers)
-    puts "first put:", resp.to_json
-    myResponse = JSON.parse(resp.body)
-    puts myResponse
+    myResponse = query_wit(text, wit_token)
+    puts "first put:", myResponse
 
-    entities = myResponse["entities"] ? myResponse["entities"] : myResponse["data"][0]["__wit__legacy_response"]["entities"] # chechk if has muti entity
-    return entities
-  end
-  
-  def get_intent(entities)
-    return entities["intent"][0] if !entities["intent"].nil?
+    intent = myResponse['intents']&.first
+    entities = myResponse['entities']
+
+    entities.keys.each do |k|
+      new_key = k.match(/wit\$(\w*)\:\w*/)[1]
+      entities[new_key] = entities.delete(k) if new_key.present?
+
+    end
+
+    p "WIT RESPONSE >>>>>>>>>>>>>", myResponse
+    return entities, intent
   end
 
   def handle_form_response(params, user_chatbot_session)
@@ -137,8 +138,8 @@ module ChatbotHelper
     p "in go_to_onboarding"
     p "params[:text] ======== " , params[:text]
     p "@intent ======== " , @intent
-    intent_arr = [params[:text]]
-    intent_arr << @intent["value"].downcase if @intent
+    intent_arr = [normalize_for_wit(params[:text])]
+    intent_arr << (@intent["name"]).downcase if @intent
 
     dialogues = @project.dialogues.joins(:intent).select("dialogues.*").where("intents.value in (?)", intent_arr)
     user_intent = dialogues.first.intent unless dialogues.empty?
@@ -171,8 +172,8 @@ module ChatbotHelper
   def call_wit_and_set_entities_and_intent (value = params[:text])
     return unless @entities.nil?
     p " in call_wit_and_set_entities_and_intent  with value === #{value}"
-    @entities = analyzeText(value, @project.nlp_engine[@lang])
-    @intent = get_intent(@entities)
+
+    @entities, @intent = analyzeText(value, @project.nlp_engine[@lang])
     p 'entities = ' , @entities , " intent = " , @intent
     @entities
   end
@@ -271,7 +272,7 @@ module ChatbotHelper
       @problem = @project.problems.new(problem_type: :multiple_intent_in_same_context)
       return dialogues[rand(dialogues.length)]
     elsif !dialogues.blank?
-      # if number of roots matched > 1 and in different contexts, say fallback 
+      # if number of roots matched > 1 and in different contexts, say fallback
       # do you mean...
       @to_render[:variable] = {}
       response = {en:"Sorry, but do you mean by that for:"}
@@ -357,7 +358,7 @@ module ChatbotHelper
         @user_project.delete_cached_user_data
         set_to_render_response(@next_dialogue)
         go_to_next_dialogue(@next_dialogue)
-      else 
+      else
         set_next_variable(dialogue)
         if @next_variable
           set_to_render_response(@next_variable)
@@ -429,9 +430,9 @@ module ChatbotHelper
     if variable.entity.nil? or variable.entity.blank?
       p "this variable should have entity"
       return :no_entity
-    elsif @entities.present? and @entities[variable.entity].present? and 
-        ((variable.unit.nil? and @entities[variable.entity][0]["unit"].nil?) or 
-         (variable.unit and @entities[variable.entity][0]["unit"] and 
+    elsif @entities.present? and @entities[variable.entity].present? and
+        ((variable.unit.nil? and @entities[variable.entity][0]["unit"].nil?) or
+         (variable.unit and @entities[variable.entity][0]["unit"] and
           @entities[variable.entity][0]["unit"].to_unit =~ variable.unit.to_unit))
 
       if @entities[variable.entity].length > 1 and take_first_entity == false
@@ -476,7 +477,7 @@ module ChatbotHelper
         @user_project.user_data.create!(variable_id: variable.id, value: val, option_id: option_id,
                                         storage_type: 'timeseries_in_cache')
       end
-    elsif tmp and (tmp.variable.expire_after and tmp.variable.storage_type != "timeseries" and 
+    elsif tmp and (tmp.variable.expire_after and tmp.variable.storage_type != "timeseries" and
       (Time.now - tmp.updated_at) >= tmp.variable.expire_after*60)
         # value exists but expired and not of type timeseries
         tmp.update_attributes(value: value, option_id: option_id)
@@ -521,18 +522,18 @@ module ChatbotHelper
     unsatisfied_conditions = all_conditions - satisfied_conditions
     p "unsatisfied_conditions", unsatisfied_conditions
     @missing_variables_table = {}
-    unsatisfied_conditions.map do |c| 
-      if @missing_variables_table[c.variable.source] 
-        @missing_variables_table[c.variable.source][c.variable] = 0 
+    unsatisfied_conditions.map do |c|
+      if @missing_variables_table[c.variable.source]
+        @missing_variables_table[c.variable.source][c.variable] = 0
       else
         @missing_variables_table[c.variable.source] = {c.variable => 0 }
       end
     end
 
     unsatisfied_conditions.each do |condition|
-      if @missing_variables_table[condition.variable.source] 
+      if @missing_variables_table[condition.variable.source]
         @missing_variables_table[condition.variable.source][condition.variable] = 0
-      else 
+      else
         @missing_variables_table[condition.variable.source] = {condition.variable => 0 }
       end
       @missing_variables_table[condition.variable.source][condition.variable] += 1
@@ -552,7 +553,7 @@ module ChatbotHelper
       var_name = var_name[0...-4] if is_all
       var = @project.variables.find_by_name(var_name)
       return if var.nil?
-      user_data = @user_project.user_data.where(variable_id: var.id) 
+      user_data = @user_project.user_data.where(variable_id: var.id)
       return nil if user_data.empty?
       if is_all
         return user_data.pluck(:value).map{|value| is_number?(value) ? value.to_f : value}
@@ -672,8 +673,8 @@ module ChatbotHelper
       get_mustache_value responses.to_s, replacements
     elsif responses.is_a?(Array)
       responses.each do |response|
-        response.keys.each { |key| 
-          response[key] = get_mustache_value response[key], replacements 
+        response.keys.each { |key|
+          response[key] = get_mustache_value response[key], replacements
         }
         p 'response after replacment ======', response
       end
@@ -732,7 +733,7 @@ module ChatbotHelper
         fix_response_text response_content if response_content != [] && !response_content.any?{|c| c[:list_template]}
       end
       if @to_render[kind]
-        all_responses.each {|key, value| 
+        all_responses.each {|key, value|
           @to_render[kind][key] = (@to_render[kind][key] || []) + value
         }
       else

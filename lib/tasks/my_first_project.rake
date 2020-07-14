@@ -3,6 +3,7 @@ namespace :example do
   # run it by this command "  bundle exec rake environment example:MyFirstProject user_email=user@example.com project_name=my_first_project"
   desc "Create an example project with contexts and dialogues"
   task :MyFirstProject do
+    include WitHelper
 
     @user = User.create!(:email => ENV["user_email"] , :password => 'password', :password_confirmation => 'password')
     @new_auth_header = @user.create_new_auth_token()
@@ -15,8 +16,7 @@ namespace :example do
 
     @user_project = UserProject.create!(user_id: @user.id, project_id: @project.id, role: "admin")
 
-    wit_response = @user.create_wit_app( ENV['WIT_SERVER_TOKEN'] , @project.name )
-    wit_response = JSON.parse(wit_response.body)
+    wit_response = create_wit_app(@project.name)
     @project.update!(nlp_engine: {en: wit_response['access_token']})
     @context = Context.create!(project_id: @project.id, name: "context_seed")
 
