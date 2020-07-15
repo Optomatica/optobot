@@ -126,41 +126,41 @@ class Project < ApplicationRecord
   end
 
   def fallback_dialogue
-    new_dilog = Dialogue.create!(project_id: self.id , name: "do_not_understand", context_id: nil, action: nil, tag: "fallback/do_not_understand")
+    new_dilog = Dialogue.create!(project_id: self.id , name: "do_not_understand", context_id: nil, actions: nil, tag: "fallback/do_not_understand")
     response=Response.create!(response_owner: new_dilog, order: 1)
     ResponseContent.create!(response_id: response.id, content: {"en" => "Sorry, I don't understand! , Say that again!"}, content_type:0)
 
 
-    new_dilog = Dialogue.create!(project_id: self.id , name: "technical_problem", context_id: nil, action: nil, tag: "fallback/technical_problem")
+    new_dilog = Dialogue.create!(project_id: self.id , name: "technical_problem", context_id: nil, actions: nil, tag: "fallback/technical_problem")
     response=Response.create!(response_owner: new_dilog, order: 1)
     ResponseContent.create!(response_id: response.id, content: {"en" => "Sorry, it's a technical problem"}, content_type:0)
 
 
-    new_dilog = Dialogue.create!(project_id: self.id , name: "no_route_matching", context_id: nil, action: nil, tag: "fallback/no_route_matching")
+    new_dilog = Dialogue.create!(project_id: self.id , name: "no_route_matching", context_id: nil, actions: nil, tag: "fallback/no_route_matching")
     response=Response.create!(response_owner: new_dilog, order: 1)
     ResponseContent.create!(response_id: response.id, content: {"en" => "Sorry, no route matching"}, content_type:0)
 
 
-    new_dilog = Dialogue.create!(project_id: self.id , name: "fallback_limit_exeeded", context_id: nil, action: nil, tag: "fallback/fallback_limit_exeeded")
+    new_dilog = Dialogue.create!(project_id: self.id , name: "fallback_limit_exeeded", context_id: nil, actions: nil, tag: "fallback/fallback_limit_exeeded")
     response=Response.create!(response_owner: new_dilog, order: 1)
     ResponseContent.create!(response_id: response.id, content: {"en" => "Sorry, fallback limit exeeded"}, content_type:0)
 
 
-    new_dilog = Dialogue.create!(project_id: self.id , name: "not_allowed_value", context_id: nil, action: nil, tag: "fallback/not_allowed_value")
+    new_dilog = Dialogue.create!(project_id: self.id , name: "not_allowed_value", context_id: nil, actions: nil, tag: "fallback/not_allowed_value")
     response=Response.create!(response_owner: new_dilog, order: 1)
     ResponseContent.create!(response_id: response.id, content: {"en" => "Sorry, not allowed value"}, content_type:0)
 
 
-    new_dilog = Dialogue.create!(project_id: self.id , name: "provided_data_missing", context_id: nil, action: nil, tag: "fallback/provided_data_missing")
+    new_dilog = Dialogue.create!(project_id: self.id , name: "provided_data_missing", context_id: nil, actions: nil, tag: "fallback/provided_data_missing")
     response=Response.create!(response_owner: new_dilog, order: 1)
     ResponseContent.create!(response_id: response.id, content: {"en" => "Sorry, provided data missing"}, content_type:0)
 
 
-    new_dilog = Dialogue.create!(project_id: self.id , name: "warning", context_id: nil, action: nil, tag: "fallback/warning")
+    new_dilog = Dialogue.create!(project_id: self.id , name: "warning", context_id: nil, actions: nil, tag: "fallback/warning")
     response=Response.create!(response_owner: new_dilog, order: 1)
     ResponseContent.create!(response_id: response.id, content: {"en" => "warning"}, content_type:0)
 
-    new_dilog = Dialogue.create!(project_id: self.id , name: "invalid_number", context_id: nil, action: nil, tag: "fallback/invalid_number")
+    new_dilog = Dialogue.create!(project_id: self.id , name: "invalid_number", context_id: nil, actions: nil, tag: "fallback/invalid_number")
     response=Response.create!(response_owner: new_dilog, order: 1)
     ResponseContent.create!(response_id: response.id, content: {"en" => "please enter a valid number!"}, content_type:0)
   end
@@ -183,7 +183,8 @@ class Project < ApplicationRecord
   end
 
   def get_response_content(res)
-    result = res.gsub(/\s+/,' ').match(/(?:\((response|hint|supplementary|title|note|icon|button|alt)\))?(.+)/)
+    content_types = ["response", "hint", "supplementary", "title", "note", "icon", "button", "alt"]
+    result = res.gsub(/\s+/,' ').match(/(?:\((#{content_types.join('|')})\))?(.+)/)
     response_type = result[1] || "response"
     response_content = result[2]
     content = response_content
@@ -204,11 +205,17 @@ class Project < ApplicationRecord
     appended_contents = ['card_image', 'sub_title', 'button_type', 'button_text', 'button_url',
                          'list_headers', 'button_payload']
     min = max = nil
+    actions = []
+
     tmp_arr = data.strip.split("\n")
-    tmp_arr.each_with_index{ |res, index|
-      result = res.gsub(/\s+/,'').match(/(?:\(range\))(.+)/)
+    tmp_arr.each_with_index do |res, index|
+      #parses range or action
+      result = res.gsub(/\s+/,'').match(/(?:\((?:range|action)\))(.+)/)
       if result && is_variable
         min, max = result[1].split('-', 2)
+      elsif result && !is_variable
+        action = result[1].match(/(.+)\((.+)\)/)
+        actions.push({function: action[1], arguments: action[2].split(',')})
       else
         response_type, content, content_type = get_response_content(res)
         content.gsub!("\\n", "\n")
@@ -220,8 +227,8 @@ class Project < ApplicationRecord
           responses_arr.push ( get_response(res, language, index+1) )
         end
       end
-    }
-    return responses_arr, min, max
+    end
+    return responses_arr, min, max, actions
   end
 
   def get_variable_information(tmp)
@@ -282,7 +289,7 @@ class Project < ApplicationRecord
       self.dialogues.where(tag: nil).destroy_all
       if self.dialogues.where(tag: nil).empty?
         newcontext = Context.find_or_create_by(project_id: self.id, name: "first_context")
-        new_dilog = Dialogue.create!(project_id: self.id , name: "first dialogue", context_id: newcontext.id, action: nil)
+        new_dilog = Dialogue.create!(project_id: self.id , name: "first dialogue", context_id: newcontext.id, actions: nil)
         response=Response.create!(response_owner: new_dilog, order: 1)
         ResponseContent.create!(response_id: response.id, content: {"en" => "Hi , how can I help you ? "}, content_type:0)
         context_id = newcontext.id
@@ -310,9 +317,9 @@ class Project < ApplicationRecord
     (start_index...arr.length).step(2).each do |i|
       if arr[i][1].upcase == 'N'
         # dialogue node
-        responses_arr, _, _ = get_all_responses(arr[i+1], i, language)
-        tmp = arr[i].strip.slice(3..-2).gsub(/\s+/, '_')
-        dialogue_name, intent_value, form_node = tmp.gsub(/\s+/, '_').split(':')
+        responses_arr, _, _, actions = get_all_responses(arr[i+1], i, language)
+        tmp = arr[i].strip.slice(3..-2).gsub(/\s+/,'_')
+        dialogue_name, intent_value = tmp.gsub(/\s+/,'_').split(':')
         if form_node || intent_value == 'form_node'
           form_node = true
         end
@@ -322,6 +329,7 @@ class Project < ApplicationRecord
           form_node: form_node,
           options: [],
           variables: {},
+          actions: actions,
           responses: responses_arr
         }
         prev_dialogue = dialogue_name
@@ -329,10 +337,10 @@ class Project < ApplicationRecord
         arcs[prev_dialogue] = {}
 
       elsif arr[i][1].upcase == 'P'
-        responses_arr, _, _ = get_all_responses(arr[i+1], i, language)
+        responses_arr, = get_all_responses(arr[i+1], i, language)
         MessengerHelper.persistent_menu(self.facebook_page_access_token, responses_arr)
       elsif arr[i][1].upcase == 'O'
-        responses_arr, _, _ = get_all_responses(arr[i+1], i, language)
+        responses_arr, = get_all_responses(arr[i+1], i, language)
         raise "Option can't have more than one response in DSL file line #{(i+1)/2}. Option defined as #{arr[i+1]}" if responses_arr.length > 1
         if prev_variable and prev_dialogue
           dialogues[prev_dialogue][:variables][prev_variable][:options].push({response: responses_arr.first})
@@ -343,7 +351,7 @@ class Project < ApplicationRecord
         end
 
       elsif arr[i][1].upcase == 'V'
-        responses_arr, min, max = get_all_responses(arr[i+1], i, language, true)
+        responses_arr, min, max, = get_all_responses(arr[i+1], i, language, true)
         tmp = arr[i].strip.slice(3..-2)
         variable_name, entity_type, storage_type, expire_after, save_text = get_variable_information(tmp)
 
@@ -354,9 +362,10 @@ class Project < ApplicationRecord
           expire_after: expire_after,
           source: "collected",
           responses: responses_arr,
-          allowed_range: { :min => min, :max => max },
+          allowed_range: { min: min, max: max },
           save_text: save_text
         }
+
         prev_variable = variable_name
 
       elsif arr[i][1].upcase == 'F'

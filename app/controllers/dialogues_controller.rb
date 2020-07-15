@@ -129,7 +129,7 @@ class DialoguesController < ApplicationController
     end
 
     def dialogue_params
-      params.permit(:name, :context_id, :project_id, :action, :tag)
+      params.permit(:name, :context_id, :project_id, :actions, :tag)
     end
 
     def set_project

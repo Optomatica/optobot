@@ -52,3 +52,4 @@ image@https://s7img.ftdi.com/is/image/ProvideCommerce/PO58_LOL?$proflowers-hero-
 
 
 [N:buy_flowers2:purchase_flowers] buying flowers !!
+(action) delete_user_data(flowers_budget)

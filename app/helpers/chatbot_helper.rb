@@ -1,5 +1,8 @@
 include APICalls
 include WitHelper
+include VariableFunctionsHelper
+include ActionsHelper
+
 
 module ChatbotHelper
   def analyzeText(text, wit_token)
@@ -204,7 +207,8 @@ module ChatbotHelper
 =end
 
   def new_intent_process
-    if dialogue = new_intent_process_a
+    dialogue = new_intent_process_a
+    if dialogue.present?
       p "new_intent_process_a true"
       @next_dialogue = dialogue
       @user_project.delete_cached_user_data
@@ -342,6 +346,12 @@ module ChatbotHelper
   end
 
   def go_to_next_dialogue(dialogue)
+    if dialogue.actions.present?
+      dialogue.actions.each do |action|
+        arguments = get_action_argumnets(action)
+        send(action['function'], arguments)
+      end
+    end
     p "in go_to_next_dialogue given dialogue = " , dialogue
     if @next_variable.nil? and dialogue.children.count != 0
       set_missing_variables_table(dialogue)
@@ -577,6 +587,20 @@ module ChatbotHelper
       end
     end
     return num_arr
+  end
+
+  def get_action_argumnets(action)
+    action['arguments'].map do |var_name|
+      if is_number?(var_name)
+        var_name
+      else
+        is_all = var_name.ends_with?(".all")
+        var_name = var_name[0...-4] if is_all
+        variables_ids = @project.variables.where(name: variable_names).ids
+        user_data = @user_project.user_data.where(variable_id: variables_ids)
+        is_all ? user_data : user_data.last
+      end
+    end
   end
 
   def get_fetched_data(variable)

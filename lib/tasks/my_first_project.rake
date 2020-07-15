@@ -22,7 +22,7 @@ namespace :example do
 
 
     newcontext = Context.create!(project_id: @project.id, name: "first_context")
-    new_dilog = Dialogue.create!(project_id: @project.id , name: "first dialogue", context_id: newcontext.id, action: nil)
+    new_dilog = Dialogue.create!(project_id: @project.id , name: "first dialogue", context_id: newcontext.id, actions: nil)
     response=Response.create!(response_owner: new_dilog, order: 1)
     ResponseContent.create!(response_id: response.id, content: {"en" => "Hi , how can I help you ? "}, content_type:0)
 
