@@ -97,8 +97,8 @@ class ProjectsController < ApplicationController
   api :GET, '/users/user_id/projects/list'
   description "list all user's projects as (Admin/author/subscriber)"
   def list
-		user_projects = current_user.projects.where(prod_project_id: nil).select("projects.id, projects.name, projects.is_private, user_projects.role, projects.created_at")
-		public_projects = Project.where(is_private: false, prod_project_id: nil).select(:id, :name, :is_private, :created_at)
+		user_projects = current_user.projects.select("projects.id, projects.name, projects.is_private, user_projects.role, projects.created_at")
+		public_projects = Project.where(is_private: false).where.not(prod_project_id: nil).select(:id, :name, :is_private, :created_at)
     render :json => {user_projects: user_projects, public_projects: public_projects-user_projects}
 	end
 
@@ -341,7 +341,6 @@ class ProjectsController < ApplicationController
     else
       begin
 			  ActiveRecord::Base.transaction do
-          @project.user_projects.each{|up| up.user_chatbot_session&.destroy! } # for now delete all session
           prod_project = @project.prod_project
           #Delete all
           prod_project.dialogues.destroy_all

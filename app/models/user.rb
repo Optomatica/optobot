@@ -4,7 +4,8 @@ class User < ActiveRecord::Base
   include DeviseTokenAuth::Concerns::User
 
   has_many :user_projects
-  has_many :projects, through: :user_projects
+  has_many :admin_project, -> { where(role: [UserProject.roles[:admin], UserProject.roles[:author]]) }, class_name: "UserProject"
+  has_many :projects, through: :admin_project
 
   def self.get_or_create_users(user_emails)
     return [] if user_emails&.empty?
