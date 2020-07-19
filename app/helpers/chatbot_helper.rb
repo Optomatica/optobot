@@ -396,7 +396,9 @@ module ChatbotHelper
     else
       call_wit_and_set_entities_and_intent
       p "@entities ============== " , @entities
-      if @entities.empty?
+      if @intent.present?
+        handle_intent
+      elsif @entities.empty?
         @problem = @project.problems.new(problem_type: :do_not_understand)
         @next_variable = @user_chatbot_session.variable
       elsif @entities and new_intent_process != false
