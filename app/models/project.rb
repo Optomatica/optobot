@@ -183,8 +183,8 @@ class Project < ApplicationRecord
   end
 
   def get_response_content(res)
-    content_types = ["response", "hint", "supplementary", "title", "note", "icon", "button", "alt"]
-    result = res.gsub(/\s+/,' ').match(/(?:\((#{content_types.join('|')})\))?(.+)/)
+    response_types = ["response", "hint", "supplementary", "title", "note", "icon", "button", "alt"]
+    result = res.gsub(/\s+/,' ').match(/(?:\((#{response_types.join('|')})\))?(.+)/)
     response_type = result[1] || "response"
     response_content = result[2]
     content = response_content
