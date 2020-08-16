@@ -323,6 +323,8 @@ class ProjectsController < ApplicationController
       @project.tmp_project = @project.prod_project
       begin
         ActiveRecord::Base.transaction do
+          p 'check in here in first transcation'
+          p '**********************************'
           prod_project = Project.create!(nlp_engine: @project.nlp_engine, name: @project.name,
             external_backend: @project.external_backend, is_private: @project.is_private,
             fallback_setting: @project.fallback_setting, facebook_page_id: @project.facebook_page_id,
