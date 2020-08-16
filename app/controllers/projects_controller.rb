@@ -319,18 +319,14 @@ class ProjectsController < ApplicationController
 
 		data = JSON.parse(data,:symbolize_names => true)
 
-		if UserChatbotSession.where(context_id: @project.prod_project.context_ids).empty?
+		if UserChatbotSession.where.not(context_id: @project.prod_project.context_ids).empty?
       @project.tmp_project = @project.prod_project
       begin
         ActiveRecord::Base.transaction do
-          p 'check in here in first transcation'
-          p '**********************************'
           prod_project = Project.create!(nlp_engine: @project.nlp_engine, name: @project.name,
             external_backend: @project.external_backend, is_private: @project.is_private,
             fallback_setting: @project.fallback_setting, facebook_page_id: @project.facebook_page_id,
             version: @project.version)
-          p '************ after create prod project'
-          p '**************************************'
           prod_project.dialogues.destroy_all
           prod_project.import_contexts(data[:contexts])
           prod_project.import_dialogues(data[:contexts], data[:dialogues_and_arcs])
