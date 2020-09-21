@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20200324112449) do
+ActiveRecord::Schema.define(version: 20200920122820) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -76,7 +76,7 @@ ActiveRecord::Schema.define(version: 20200324112449) do
     t.string "tag"
     t.string "name", null: false
     t.integer "project_id", null: false
-    t.json "action"
+    t.json "actions"
     t.bigint "identifier"
     t.boolean "form_node", default: false
     t.index ["tag", "project_id"], name: "index_dialogues_on_tag_and_project_id", unique: true
@@ -106,7 +106,6 @@ ActiveRecord::Schema.define(version: 20200324112449) do
     t.float "max"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.string "unit"
     t.bigint "identifier"
     t.bigint "project_id"
     t.index ["project_id"], name: "index_parameters_on_project_id"
@@ -136,6 +135,7 @@ ActiveRecord::Schema.define(version: 20200324112449) do
     t.bigint "prod_project_id"
     t.boolean "get_started_node", default: false
     t.integer "tmp_project_id"
+    t.string "qa_engine_endpoint"
     t.index ["facebook_page_id"], name: "index_projects_on_facebook_page_id", unique: true
     t.index ["prod_project_id"], name: "index_projects_on_prod_project_id"
   end
