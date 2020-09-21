@@ -293,7 +293,9 @@ module ChatbotHelper
 
   def new_intent_process_c
     p " in new_intent_process_C ............."
-    see_in_knowledge_base
+    dialogue = see_in_knowledge_base
+    dialogue = general_QA if dialogue.nil?
+    dialogue
   end
 
   def new_intent_process_d
@@ -882,6 +884,16 @@ module ChatbotHelper
     end
     p "value returned, #{value}"
 		return {value: value}
+  end
+
+  def general_QA(message = params[:text])
+    return if @project.qa_engine_endpoint.nil?
+    response = APICalls.postRequest(@project.qa_engine_endpoint, nil, {message: message})
+    response = JSON.parse(response.body)
+    d = Dialogue.new(name: "general_QA", project_id: @project.id)
+    d.responses.new()
+    d.responses[0].response_contents.new(content: response["answer"], content_type: "text")
+    return d
   end
 
 end
