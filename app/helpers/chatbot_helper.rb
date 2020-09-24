@@ -917,13 +917,12 @@ module ChatbotHelper
   def general_QA(message = params[:text])
     p "in general QA"
     return if @project.qa_engine_endpoint.nil?
-    p response = APICalls.postRequest(@project.qa_engine_endpoint, nil, {question: message}.to_json)
-    p response = JSON.parse(response.body)
+    response = APICalls.postRequest(@project.qa_engine_endpoint, nil, {question: message}.to_json)
+    response = JSON.parse(response.body)
     return if response["answer"].nil? || response["answer"].empty?
     d = Dialogue.new(name: "general_QA", project_id: @project.id)
     d.responses.new(created_at: Time.now)
     d.responses[0].response_contents.new(content: {@lang => response["answer"]}, content_type: ResponseContent.content_types[:text])
-    p d.responses[0].response_contents[0]
     return d
   end
 
