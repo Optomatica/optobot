@@ -593,7 +593,9 @@ module ChatbotHelper
 
   def get_action_argumnets(action)
     action['arguments'].map do |var_name|
-      if is_number?(var_name)
+      if var_name == 'user_project'
+        @user_project
+      elsif is_number?(var_name)
         var_name
       else
         is_all = var_name.ends_with?(".all")
