@@ -183,7 +183,7 @@ class Project < ApplicationRecord
   end
 
   def get_response_content(res)
-    response_types = ["response", "hint", "supplementary", "title", "note", "icon", "button", "alt"]
+    response_types = ["response", "hint", "supplementary", "title", "note", "icon", "button", "alt", "receipt"]
     result = res.gsub(/\s+/,' ').match(/(?:\((#{response_types.join('|')})\))?(.+)/)
     response_type = result[1] || "response"
     response_content = result[2]
@@ -203,7 +203,8 @@ class Project < ApplicationRecord
   def get_all_responses(data, i, language, is_variable=false)
     responses_arr = []
     appended_contents = ['card_image', 'sub_title', 'button_type', 'button_text', 'button_url',
-                         'list_headers', 'button_payload']
+                         'list_headers', 'button_payload', 'order_number', 'currency', 'payment_method',
+                         'total_cost', 'element', 'quantity', 'price', 'image_url']
     min = max = nil
     actions = []
 
