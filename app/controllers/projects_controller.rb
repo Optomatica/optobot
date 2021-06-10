@@ -396,6 +396,9 @@ class ProjectsController < ApplicationController
 
       fb_page_name = fb_page['name']
       render json: {'page_name': fb_page_name}, status: :ok
+    rescue ActiveRecord::RecordNotUnique
+      p "Facebook page already linked to a project"
+      render body: "Facebook page already linked to a project", status: :unprocessable_entity
     rescue => e
       p e&.message
       p e&.response&.body

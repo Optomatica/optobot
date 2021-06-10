@@ -30,6 +30,13 @@ module MessengerHelper
             requestes_responses << APICalls.postRequest(url, nil, @body.to_json) if index != responses.length - 1
         end
 
+        responses.each do |response|
+            if response.content_type == 'receipt'
+                receipt_template(page_access_token, responses)
+            end
+        end
+
+
         if button_or_generic_tem.count > 0
           if button_or_generic_tem.find{ |res| res[:title] }.nil?
             @body["message"] = self.button_template(button_or_generic_tem)
@@ -248,6 +255,25 @@ module MessengerHelper
       ]
     }
     APICalls.postRequest(url, nil, body.to_json)
+  end
+
+  def self.receipt_template(page_access_token, responses)
+     url = "https://graph.facebook.com/v9.0/me/messages?access_token=#{page_access_token}"
+     @body = { "attachment" =>{
+             "type" => "template",
+             "payload" => {
+                "template_type":"receipt",
+                "recipient_name": responses[0]['content'][en],
+                "order_number": responses[1]['content'][en],
+                "currency": responses[2]['content'][en], #
+                "payment_method": responses[3]['content'][en], #
+                "summary":{
+                "total_cost":responses[4]['content'][en] #
+                }
+            }
+        }
+    }
+    requestes_responses << APICalls.postRequest(url, nil, @body.to_json)
   end
 
     def self.account_link(page_access_token, user_psid)

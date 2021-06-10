@@ -349,7 +349,7 @@ module ChatbotHelper
     if dialogue.actions.present?
       dialogue.actions.each do |action|
         arguments = get_action_argumnets(action)
-        send(action['function'], arguments)
+        send(action['function'], *arguments)
       end
     end
     p "in go_to_next_dialogue given dialogue = " , dialogue
@@ -595,6 +595,8 @@ module ChatbotHelper
     action['arguments'].map do |var_name|
       if var_name == 'user_project'
         @user_project
+      elsif var_name == 'fb_page_access_token'
+        @project.facebook_page_access_token
       elsif is_number?(var_name)
         var_name
       else
@@ -660,7 +662,7 @@ module ChatbotHelper
     else
       arr = get_arguments(variable)
       return unless arr
-      value = send(variable.fetch_info['function'], arr) rescue nil
+      value = send(variable.fetch_info['function'], *arr) rescue nil
     end
     unless value.nil?
       create_or_update_user_data(variable, value)
