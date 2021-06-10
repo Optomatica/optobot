@@ -13,6 +13,10 @@ module VariableFunctionsHelper
     (response.nil? || response['current'].nil?) ? 'error' : response['current']['temperature']
   end
 
+  def first(arr)
+    arr.find(&:itself)
+  end
+
   def sum(num_arr)
     num_arr.inject(0.0) { |sum, i| sum + i.to_f }
   end

@@ -319,7 +319,7 @@ class ProjectsController < ApplicationController
 
 		data = JSON.parse(data,:symbolize_names => true)
 
-		if UserChatbotSession.where(context_id: @project.prod_project.context_ids).empty?
+		if UserChatbotSession.where(context_id: @project.prod_project.context_ids).count > 0
       @project.tmp_project = @project.prod_project
       begin
         ActiveRecord::Base.transaction do
