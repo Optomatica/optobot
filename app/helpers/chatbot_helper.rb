@@ -178,7 +178,10 @@ module ChatbotHelper
 
     @entities, @intent = analyzeText(value, @project.nlp_engine[@lang])
     p 'entities = ' , @entities , " intent = " , @intent
-    @entities
+    if !(@intent)
+      dialogues = @project.dialogues.joins(:intent).select("dialogues.*").where("intents.value = ?", normalize_for_wit(value))
+      @intent = {"name" => dialogues.first.intent.value} unless dialogues.empty?
+    end
   end
 
   def handle_intent
@@ -348,7 +351,7 @@ module ChatbotHelper
   def go_to_next_dialogue(dialogue)
     if dialogue.actions.present?
       dialogue.actions.each do |action|
-        arguments = get_action_argumnets(action)
+        arguments = get_action_arguments(action)
         send(action['function'], *arguments)
       end
     end
@@ -591,7 +594,7 @@ module ChatbotHelper
     return num_arr
   end
 
-  def get_action_argumnets(action)
+  def get_action_arguments(action)
     action['arguments'].map do |var_name|
       if var_name == 'user_project'
         @user_project

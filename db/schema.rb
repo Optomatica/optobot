@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20200324112449) do
+ActiveRecord::Schema.define(version: 20200615161557) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -76,7 +76,7 @@ ActiveRecord::Schema.define(version: 20200324112449) do
     t.string "tag"
     t.string "name", null: false
     t.integer "project_id", null: false
-    t.json "action"
+    t.json "actions"
     t.bigint "identifier"
     t.boolean "form_node", default: false
     t.index ["tag", "project_id"], name: "index_dialogues_on_tag_and_project_id", unique: true

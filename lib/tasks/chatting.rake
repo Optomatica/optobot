@@ -18,7 +18,7 @@ namespace :example do
                     formResponse = user_input
                     user_input = nil
                 end
-                send_request(user_input, formResponse, Project.where(prod_project_id: nil).last.id, auth_token['access-token'], auth_token['client'], auth_token['expiry'], auth_token['uid'])
+                send_request(user_input, formResponse, Project.where.not(prod_project_id: nil).last.id, auth_token['access-token'], auth_token['client'], auth_token['expiry'], auth_token['uid'])
             end
         end
     end
