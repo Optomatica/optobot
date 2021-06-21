@@ -177,11 +177,11 @@ module ChatbotHelper
     p " in call_wit_and_set_entities_and_intent  with value === #{value}"
 
     @entities, @intent = analyzeText(value, @project.nlp_engine[@lang])
-    p 'entities = ' , @entities , " intent = " , @intent
     if !(@intent)
       dialogues = @project.dialogues.joins(:intent).select("dialogues.*").where("intents.value = ?", normalize_for_wit(value))
       @intent = {"name" => dialogues.first.intent.value} unless dialogues.empty?
     end
+    p 'entities = ' , @entities , " intent = " , @intent
   end
 
   def handle_intent
