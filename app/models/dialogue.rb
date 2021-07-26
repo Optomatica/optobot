@@ -46,7 +46,7 @@ class Dialogue < ApplicationRecord
     my_responses = {}
     Response.response_types.each {|k, _| my_responses[k.pluralize.to_sym] = []}
 
-    self.responses.order(:created_at).each do |response|
+    self.responses.order(:order).each do |response|
       res_hash = response.get_contents(lang)
       res_type = response.response_type.pluralize.to_sym
       my_responses[res_type].push(res_hash)
@@ -130,7 +130,7 @@ class Dialogue < ApplicationRecord
           if new_response_content.nil?
             expected_wrong_line = "[C:#{child_name}]#{variable.name}=#{response_content}"
             line_number = get_error_line(dsl_lines, expected_wrong_line)
-            raise "undefined option '#{response_content}' in DSL file line #{line_number}"
+            raise "undefined option '#{response_content}' in DSL file line #{line_number}: #{expected_wrong_line}"
           end
 
           new_condition.option_id = new_response_content.response.response_owner_id

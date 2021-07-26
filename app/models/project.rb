@@ -99,7 +99,7 @@ class Project < ApplicationRecord
             expected_wrong_line = "[C:#{child_name}]#{lhs}"
             expected_wrong_line += "=#{rhs}" if rhs
             line_number = get_error_line(@lines_without_comments_arr, expected_wrong_line)
-            raise "undefined dailogue '#{child_name}' mentioned in DSL file line #{line_number}"
+            raise "undefined dailogue '#{child_name}' mentioned in DSL file line #{line_number}: #{expected_wrong_line}"
           end
         end
         dialogue[:children][child_name][:id] = dialogues[child_name] ? dialogues[child_name][:new_dialogue].id : self.dialogues.find_by_name(child_name).id

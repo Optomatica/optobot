@@ -12,7 +12,7 @@ class Variable < ApplicationRecord
     my_responses = {}
     Response.response_types.each { |k, _| my_responses[k.pluralize.to_sym] = [] }
 
-    self.responses.order(:created_at).each do |response|
+    self.responses.order(:order).each do |response|
       res_hash = response.get_contents(lang)
       res_type = response.response_type.pluralize.to_sym
       my_responses[res_type].push(res_hash)
