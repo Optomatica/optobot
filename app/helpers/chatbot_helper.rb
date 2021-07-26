@@ -157,6 +157,7 @@ module ChatbotHelper
       @next_dialogue = @project.dialogues.where(name: "greeting").first
     end
 
+    @next_dialogue = general_QA unless @next_dialogue
     unless @next_dialogue
       @problem = @project.problems.new(problem_type: :do_not_understand)
       @user_chatbot_session = UserChatbotSession.create!(context_id: nil, dialogue_id: nil)
@@ -188,8 +189,16 @@ module ChatbotHelper
     if @intent
       @user_chatbot_session.context.nil? ? new_intent_process_no_context : new_intent_process
     else
-      @problem = @project.problems.new(problem_type: :do_not_understand)
-      @is_fallback = true
+      @next_quick_response = general_QA
+      if @next_quick_response
+        set_to_render_response(@next_quick_response)
+        @next_context = @user_chatbot_session.context
+        @next_dialogue = @user_chatbot_session.dialogue
+        @next_variable = @user_chatbot_session.variable
+      else
+        @problem = @project.problems.new(problem_type: :do_not_understand)
+        @is_fallback = true
+      end
     end
   end
 
@@ -231,7 +240,7 @@ module ChatbotHelper
       p "get_dialogues_by intent = #{@intent}  === ",dialogues
       @problem = @project.problems.new(problem_type: :multiple_intent_in_same_context) if dialogues.length > 1
       return dialogues[rand(dialogues.length)]
-    else
+    else # the else content will never be reached because it's alredy checked before!
       # no intent
       @next_context = @user_chatbot_session.context
       @next_dialogue = @user_chatbot_session.dialogue
@@ -254,6 +263,7 @@ module ChatbotHelper
       go_to_next_dialogue(@next_dialogue)
     elsif @next_quick_response = new_intent_process_c
       p "new_intent_process_c true"
+      set_to_render_response(@next_quick_response)
       @next_context = @user_chatbot_session.context
       @next_dialogue = @user_chatbot_session.dialogue
       @next_variable = @user_chatbot_session.variable
@@ -739,6 +749,22 @@ module ChatbotHelper
     end
     response
   end
+  
+  def specicial_render(dialogue_obj, lang)
+    p "in spicial render ============"
+    response_hash = {}
+    Response.response_types.each {|k, _| response_hash[k.pluralize.to_sym] = []}
+
+    response = dialogue_obj.responses[0]
+    res_hash = {"text" => dialogue_obj.responses[0].response_contents[0][:content]["en"]}
+    
+    res_type = response.response_type.pluralize.to_sym
+    response_hash[res_type].push(res_hash)
+
+    @to_render[:dialogue] = response_hash
+    @to_render[:dialogue][:dialogue_name] = dialogue_obj.name
+    @to_render[:dialogue][:id] = dialogue_obj.id
+  end
 
   def set_to_render_response(reply_owner, overwrite = true)
     p " in set_to_render_response...... given reply_owner == " , reply_owner
@@ -746,6 +772,10 @@ module ChatbotHelper
     kind = reply_owner.class == Array ? :form : ((reply_owner.class == Dialogue) ? :dialogue : :variable)
     p "kind == " , kind
     return if !overwrite && @to_render[kind]
+
+    if reply_owner.class == Dialogue && reply_owner.id.nil?
+      specicial_render(reply_owner, @lang) and return
+    end
 
     if reply_owner.class == Array
       p "reply_owner.class = Array (for variables)"
@@ -889,6 +919,18 @@ module ChatbotHelper
     end
     p "value returned, #{value}"
 		return {value: value}
+  end
+
+  def general_QA(message = params[:text])
+    p "in general QA"
+    return if @project.qa_engine_endpoint.nil?
+    response = APICalls.postRequest(@project.qa_engine_endpoint, nil, {question: message}.to_json)
+    response = JSON.parse(response.body)
+    return if response["answer"].nil? || response["answer"].empty?
+    d = Dialogue.new(name: "general_QA", project_id: @project.id)
+    d.responses.new(created_at: Time.now)
+    d.responses[0].response_contents.new(content: {@lang => response["answer"]}, content_type: ResponseContent.content_types[:text])
+    return d
   end
 
 end
