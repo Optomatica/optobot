@@ -57,10 +57,10 @@
   Example: `sum(1,2,3)`   
   Result: 6
 
-1. __sub__   
-  __sub(first_var_name,second_var_name)__   
+1. __subtract__   
+  __subtract(first_var_name,second_var_name)__   
   It subtracts second variable from the first variable, replace var_name with a variable name or a constant value
-  Example: `sub(10,5)`   
+  Example: `subtract(10,5)`   
   Result: 5
 
 1. __multiply__   

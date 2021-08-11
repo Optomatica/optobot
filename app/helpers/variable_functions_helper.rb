@@ -21,7 +21,7 @@ module VariableFunctionsHelper
     num_arr.inject(0.0) { |sum, i| sum + i.to_f }
   end
 
-  def sub(*num_arr)
+  def subtract(*num_arr)
     num_arr.first.to_f - num_arr.last.to_f
   end
 
