@@ -32,7 +32,7 @@ class Dialogue < ApplicationRecord
     p "in get_dialogues_by given intent #{intent} and intent value = #{intent_value} and context_id = #{context_id}"
 
     all_dialogues = self.joins(:intent).select("dialogues.*").where("intents.value =?", intent_value.downcase)
-    return all_dialogues if context_id == -1
+    return all_dialogues.where.not(context_id: nil) if context_id == -1
 
     context_dialogues = all_dialogues.where(context_id: context_id)
     return context_dialogues
