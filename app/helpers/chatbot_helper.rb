@@ -257,6 +257,7 @@ module ChatbotHelper
       @next_context = @user_chatbot_session.context
       @next_dialogue = @user_chatbot_session.dialogue
       @next_variable = @user_chatbot_session.variable
+      set_to_render_response(@next_quick_response)
       increase_quick_response
     else
       p "not A or B or C"
@@ -327,10 +328,11 @@ module ChatbotHelper
     p "in increase_quick_response "
     p "@next_quick_response === " , @next_quick_response
     p "@user_chatbot_session ====" , @user_chatbot_session
-    # @is_fallback = true
+    @is_fallback = true
     if @user_chatbot_session.quick_response_id == @next_quick_response.id
       @user_chatbot_session.fallback_counter += 1
     else
+      @user_chatbot_session.quick_response_id = @next_quick_response.id
       @user_chatbot_session.fallback_counter = 1
     end
     if @user_chatbot_session.fallback_counter > @project.fallback_setting["fallback_counter_limit"]
