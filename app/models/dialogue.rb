@@ -35,7 +35,7 @@ class Dialogue < ApplicationRecord
     return all_dialogues if context_id == -1
 
     context_dialogues = all_dialogues.where(context_id: context_id)
-    return context_dialogues.present? ? context_dialogues : all_dialogues
+    return context_dialogues
   end
 
   def self.in_same_context?(dialogues, context_id)
