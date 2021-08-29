@@ -164,7 +164,7 @@ module ChatbotHelper
       @user_project.save!
       return
     end
-    @user_chatbot_session = UserChatbotSession.create!(context_id: @next_context.id, dialogue_id: @next_dialogue.id)
+    @user_chatbot_session = UserChatbotSession.create!(context_id: @next_context.id, dialogue_id: @next_dialogue.id) if (@next_context && @next_dialogue)
     @user_project.user_chatbot_session = @user_chatbot_session
     @user_project.save!
 
