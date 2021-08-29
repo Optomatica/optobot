@@ -12,7 +12,7 @@ class User < ActiveRecord::Base
 
     user_emails.map do |email|
       user = self.find_by_email(email)
-      user || User.create!(email: email, uid: email, provider: "project")
+      user || User.create!(email: email, uid: email, provider: "email")
     end
   end
 
@@ -23,11 +23,5 @@ class User < ActiveRecord::Base
     end
 
     self.create!(email: anonymous_email, password: SecureRandom.hex(4))
-  end
-
-  private
-
-  def password_required?
-    super if self.provider != 'project'
   end
 end
