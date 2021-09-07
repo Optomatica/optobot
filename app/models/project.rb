@@ -215,7 +215,7 @@ class Project < ApplicationRecord
       if result && is_variable
         min, max = result[1].split('-', 2)
       elsif result && !is_variable
-        action = result[1].match(/(.+)\((.+)\)/)
+        action = result[1].match(/(.+)\((.*)\)/)
         actions.push({function: action[1], arguments: action[2].split(',')})
       else
         response_type, content, content_type = get_response_content(res)
@@ -286,15 +286,17 @@ class Project < ApplicationRecord
     if context_id && Context.find_by(id: context_id)
       raise "Invalid Context" if Context.find_by(id: context_id).project_id != self.id
       Context.find_by(id: context_id).dialogues.destroy_all
-    else
-      self.dialogues.where(tag: nil).destroy_all
+    elsif context_id && context_id == -1
       if self.dialogues.where(tag: nil).empty?
         newcontext = Context.find_or_create_by(project_id: self.id, name: "first_context")
+        self.dialogues.where(tag: nil, context_id: newcontext.id).destroy_all
         new_dilog = Dialogue.create!(project_id: self.id , name: "first dialogue", context_id: newcontext.id, actions: nil)
         response=Response.create!(response_owner: new_dilog, order: 1)
         ResponseContent.create!(response_id: response.id, content: {"en" => "Hi , how can I help you ? "}, content_type:0)
         context_id = newcontext.id
       end
+    elsif context_id.nil?
+      self.dialogues.where(context_id: nil, tag: nil).destroy_all
     end
 
     file = file.force_encoding("utf-8")
