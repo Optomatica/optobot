@@ -141,9 +141,9 @@ class Project < ApplicationRecord
     ResponseContent.create!(response_id: response.id, content: {"en" => "Sorry, no route matching"}, content_type:0)
 
 
-    new_dilog = Dialogue.create!(project_id: self.id , name: "fallback_limit_exeeded", context_id: nil, actions: nil, tag: "fallback/fallback_limit_exeeded")
+    new_dilog = Dialogue.create!(project_id: self.id , name: "fallback_limit_exceeded", context_id: nil, actions: nil, tag: "fallback/fallback_limit_exceeded")
     response=Response.create!(response_owner: new_dilog, order: 1)
-    ResponseContent.create!(response_id: response.id, content: {"en" => "Sorry, fallback limit exeeded"}, content_type:0)
+    ResponseContent.create!(response_id: response.id, content: {"en" => "Sorry, fallback limit exceeded"}, content_type:0)
 
 
     new_dilog = Dialogue.create!(project_id: self.id , name: "not_allowed_value", context_id: nil, actions: nil, tag: "fallback/not_allowed_value")

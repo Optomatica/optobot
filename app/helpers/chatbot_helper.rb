@@ -336,8 +336,8 @@ module ChatbotHelper
       @user_chatbot_session.fallback_counter = 1
     end
     if @user_chatbot_session.fallback_counter > @project.fallback_setting["fallback_counter_limit"]
-      d = Dialogue.get_fallback(@project.id, :fallback_limit_exeeded)
-      @problem = @project.problems.new(problem_type: :fallback_limit_exeeded)
+      d = Dialogue.get_fallback(@project.id, :fallback_limit_exceeded)
+      @problem = @project.problems.new(problem_type: :fallback_limit_exceeded)
       set_to_render_response(d)
     end
   end
