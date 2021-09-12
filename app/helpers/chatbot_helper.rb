@@ -607,7 +607,7 @@ module ChatbotHelper
       else
         is_all = var_name.ends_with?(".all")
         var_name = var_name[0...-4] if is_all
-        variables_ids = @project.variables.where(name: variable_names).ids
+        variables_ids = @project.variables.where(name: var_name).ids
         user_data = @user_project.user_data.where(variable_id: variables_ids)
         is_all ? user_data : user_data.last
       end
