@@ -685,7 +685,7 @@ module ChatbotHelper
       option = x if x.response.response_contents.index{|z| z.content[@lang].downcase == params[:text].downcase}
     end
     if option
-      create_or_update_user_data(variable, option.response.response_contents.last.content[@lang], option.id)
+      create_or_update_user_data(variable, option.response.response_contents.first.content[@lang], option.id)
       @entities = {}
     end
     return option
