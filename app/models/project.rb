@@ -287,14 +287,9 @@ class Project < ApplicationRecord
       raise "Invalid Context" if Context.find_by(id: context_id).project_id != self.id
       Context.find_by(id: context_id).dialogues.destroy_all
     elsif context_id && context_id == -1
-      if self.dialogues.where(tag: nil).empty?
-        newcontext = Context.find_or_create_by(project_id: self.id, name: "first_context")
-        self.dialogues.where(tag: nil, context_id: newcontext.id).destroy_all
-        new_dilog = Dialogue.create!(project_id: self.id , name: "first dialogue", context_id: newcontext.id, actions: nil)
-        response=Response.create!(response_owner: new_dilog, order: 1)
-        ResponseContent.create!(response_id: response.id, content: {"en" => "Hi , how can I help you ? "}, content_type:0)
-        context_id = newcontext.id
-      end
+      newcontext = Context.find_or_create_by(project_id: self.id, name: "first_context")
+      self.dialogues.where(tag: nil, context_id: newcontext.id).destroy_all
+      context_id = newcontext.id
     elsif context_id.nil?
       self.dialogues.where(context_id: nil, tag: nil).destroy_all
     end
