@@ -283,7 +283,8 @@ class Project < ApplicationRecord
 
   def import_context_dialogues_data (file , context_id , language)
     self.user_projects.each{|up| up.user_chatbot_session&.destroy!}
-    if context_id && Context.find_by(id: context_id)
+    if context_id && context_id != -1
+      raise "Invalid Context" unless Context.find_by(id: context_id)
       raise "Invalid Context" if Context.find_by(id: context_id).project_id != self.id
       Context.find_by(id: context_id).dialogues.destroy_all
     elsif context_id && context_id == -1
