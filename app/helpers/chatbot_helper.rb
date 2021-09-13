@@ -873,11 +873,11 @@ module ChatbotHelper
       in_possible_values = variable.possible_values.include?(@entities[variable.entity][0]["value"]) and variable.possible_values.include?(@entities[variable.entity][0]["value"])
       value = @entities[variable.entity][0]["value"]
     elsif variable.allowed_range and is_number?(@entities[variable.entity][0]["value"])
-      value = Unit.new("#{@entities[variable.entity][0]["value"]} #{@entities[variable.entity][0]['unit']}").convert_to(variable.unit).to_s.to_i
+      value = Unit.new("#{@entities[variable.entity][0]["value"]} #{@entities[variable.entity][0]['unit']}").convert_to(variable.unit).to_i
       in_range = (variable.allowed_range["min"].nil? or variable.allowed_range["min"] <= value) and (variable.allowed_range["max"].nil? or value <= variable.allowed_range["max"])
     else
       if variable.unit and variable.unit.to_unit != @entities[variable.entity][0]['unit'] # but I know its compatible
-        value = Unit.new("#{@entities[variable.entity][0]["value"]} #{@entities[variable.entity][0]['unit']}").convert_to(variable.unit).to_s.to_i
+        value = Unit.new("#{@entities[variable.entity][0]["value"]} #{@entities[variable.entity][0]['unit']}").convert_to(variable.unit).to_i
       else
         value = @entities[variable.entity][0]['value']
       end
