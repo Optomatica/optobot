@@ -311,6 +311,7 @@ module ChatbotHelper
   end
 
   def save_session
+    return if @user_chatbot_session.nil?
     unless @is_fallback
       @user_chatbot_session.fallback_counter = 0
     end
@@ -677,6 +678,7 @@ module ChatbotHelper
 
   def bypass_nlp?(variable)
     # if we will bypass nlp, we will save value in user data here as well
+    return false if params[:text].nil?
     p "in bypass_nlp? given variable = " , variable
     options = Option.where(variable_id: variable.id)
     option = nil
