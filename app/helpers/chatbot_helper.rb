@@ -211,7 +211,7 @@ module ChatbotHelper
 
   def new_intent_process
     dialogue = new_intent_process_a
-    if dialogue.present?
+    if dialogue.present? && (dialogue.parents.empty? || dialogue.parents.any{|parent| parent.id == @user_chatbot_session.dialogue_id})
       p "new_intent_process_a true"
       @next_dialogue = dialogue
       @user_project.delete_cached_user_data
