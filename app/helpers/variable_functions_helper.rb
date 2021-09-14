@@ -21,24 +21,24 @@ module VariableFunctionsHelper
     num_arr.inject(0.0) { |sum, i| sum + i.to_f }
   end
 
-  def subtract(*num_arr)
-    num_arr.first.to_f - num_arr.last.to_f
+  def subtract(minuend, subtrahend)
+    minuend.to_f - subtrahend.to_f
   end
 
   def multiply(*num_arr)
     num_arr.inject(1.0) { |product, i| product * i.to_f }
   end
 
-  def division(*num_arr)
-    num_arr.first.to_f / num_arr.last.to_f
+  def division(dividend, divisor)
+    dividend.to_f / divisor.to_f
   end
 
-  def power(*num_arr)
-    num_arr.first.to_f**num_arr.last.to_f
+  def power(base, exponent)
+    base.to_f**exponent.to_f
   end
 
-  def int_division(*num_arr)
-    num_arr.first.to_i / num_arr.last.to_i
+  def int_division(dividend, divisor)
+    dividend.to_i / divisor.to_i
   end
 
   def fv(rate, nper, pmt, pv, when_due=0)
