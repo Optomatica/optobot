@@ -145,6 +145,8 @@ module ChatbotHelper
     intent_arr << (@intent["name"]).downcase if @intent
 
     dialogues = @project.dialogues.joins(:intent).select("dialogues.*").where("intents.value in (?)", intent_arr)
+    dialogues = dialogues.select{| dialogue | dialogue.parents.empty? }
+
     user_intent = dialogues.first.intent unless dialogues.empty?
     if user_intent
       p "user_intent =========== ", user_intent
@@ -211,7 +213,7 @@ module ChatbotHelper
 
   def new_intent_process
     dialogue = new_intent_process_a
-    if dialogue.present? && (dialogue.parents.empty? || dialogue.parents.any{|parent| parent.id == @user_chatbot_session.dialogue_id})
+    if dialogue.present? && (dialogue.parents.empty? || dialogue.parents.any?{|parent| parent.id == @user_chatbot_session.dialogue_id})
       p "new_intent_process_a true"
       @next_dialogue = dialogue
       @user_project.delete_cached_user_data
@@ -274,6 +276,9 @@ module ChatbotHelper
     p " in new_intent_process_b ............."
     # search in other contexts dialogues intents, return dialogue if found
     dialogues = @project.dialogues.get_dialogues_by(@intent)
+    dialogues = dialogues.select{| dialogue | 
+        (dialogue.parents.empty? || dialogue.parents.any?{|parent| parent.id == @user_chatbot_session.dialogue_id})
+    }
     p "dialogues got by get_dialogues_by: #{dialogues.to_json}"
     return dialogues.first if dialogues.length == 1
     if !dialogues.blank? and Dialogue.in_same_context?(dialogues, dialogues.first.context_id)
