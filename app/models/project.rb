@@ -421,6 +421,10 @@ class Project < ApplicationRecord
           p "condition[1] -> variable option"
           condition[0].strip!
           next if condition[0].downcase == 'true'
+          if condition[0].downcase == 'false'
+            arcs[prev_dialogue][child_name] = {go_next: false}
+            next
+          end
           condition[1].strip!  if condition[1].present?
           dialogues.each do |d_name , d_body|
             if !found && d_body[:variables] && d_body[:variables][condition[0]]

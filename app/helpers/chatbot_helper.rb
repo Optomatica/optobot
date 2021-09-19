@@ -545,15 +545,9 @@ module ChatbotHelper
     unsatisfied_conditions = all_conditions - satisfied_conditions
     p "unsatisfied_conditions", unsatisfied_conditions
     @missing_variables_table = {}
-    unsatisfied_conditions.map do |c|
-      if @missing_variables_table[c.variable.source]
-        @missing_variables_table[c.variable.source][c.variable] = 0
-      else
-        @missing_variables_table[c.variable.source] = {c.variable => 0 }
-      end
-    end
 
     unsatisfied_conditions.each do |condition|
+      next if condition.variable.source == "fetched" && get_fetched_data(condition.variable)
       if @missing_variables_table[condition.variable.source]
         @missing_variables_table[condition.variable.source][condition.variable] = 0
       else
@@ -793,7 +787,7 @@ module ChatbotHelper
 
   def check_for_conditions(arc)
     p "in check_for_conditions given arc = ", arc
-    return true if arc.conditions.blank?
+    return arc.go_next if arc.conditions.blank?
     return arc.conditions.all?{|c|
       p "condition === " , c
       p "@user_project , c.variable , c.variable_id================ "  , @user_project , c.variable , c.variable_id
