@@ -145,6 +145,8 @@ module ChatbotHelper
     intent_arr << (@intent["name"]).downcase if @intent
 
     dialogues = @project.dialogues.joins(:intent).select("dialogues.*").where("intents.value in (?)", intent_arr)
+    dialogues = dialogues.select{| dialogue | dialogue.parents.empty? }
+
     user_intent = dialogues.first.intent unless dialogues.empty?
     if user_intent
       p "user_intent =========== ", user_intent
@@ -211,7 +213,7 @@ module ChatbotHelper
 
   def new_intent_process
     dialogue = new_intent_process_a
-    if dialogue.present? && (dialogue.parents.empty? || dialogue.parents.any{|parent| parent.id == @user_chatbot_session.dialogue_id})
+    if dialogue.present? && (dialogue.parents.empty? || dialogue.parents.any?{|parent| parent.id == @user_chatbot_session.dialogue_id})
       p "new_intent_process_a true"
       @next_dialogue = dialogue
       @user_project.delete_cached_user_data
@@ -274,6 +276,9 @@ module ChatbotHelper
     p " in new_intent_process_b ............."
     # search in other contexts dialogues intents, return dialogue if found
     dialogues = @project.dialogues.get_dialogues_by(@intent)
+    dialogues = dialogues.select{| dialogue | 
+        (dialogue.parents.empty? || dialogue.parents.any?{|parent| parent.id == @user_chatbot_session.dialogue_id})
+    }
     p "dialogues got by get_dialogues_by: #{dialogues.to_json}"
     return dialogues.first if dialogues.length == 1
     if !dialogues.blank? and Dialogue.in_same_context?(dialogues, dialogues.first.context_id)
@@ -540,15 +545,9 @@ module ChatbotHelper
     unsatisfied_conditions = all_conditions - satisfied_conditions
     p "unsatisfied_conditions", unsatisfied_conditions
     @missing_variables_table = {}
-    unsatisfied_conditions.map do |c|
-      if @missing_variables_table[c.variable.source]
-        @missing_variables_table[c.variable.source][c.variable] = 0
-      else
-        @missing_variables_table[c.variable.source] = {c.variable => 0 }
-      end
-    end
 
     unsatisfied_conditions.each do |condition|
+      next if condition.variable.source == "fetched" && get_fetched_data(condition.variable)
       if @missing_variables_table[condition.variable.source]
         @missing_variables_table[condition.variable.source][condition.variable] = 0
       else
@@ -788,7 +787,7 @@ module ChatbotHelper
 
   def check_for_conditions(arc)
     p "in check_for_conditions given arc = ", arc
-    return true if arc.conditions.blank?
+    return arc.go_next if arc.conditions.blank?
     return arc.conditions.all?{|c|
       p "condition === " , c
       p "@user_project , c.variable , c.variable_id================ "  , @user_project , c.variable , c.variable_id
