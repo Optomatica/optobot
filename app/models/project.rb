@@ -173,7 +173,7 @@ class Project < ApplicationRecord
     lines.each do |line|
       if ['[I:', '[E:'].include? line[0..2]
         understanding = {}
-        value = line.slice(3..-2).gsub(/\s+/, '_')
+        value = line.strip.slice(3..-2).gsub(/\s+/, '_')
         understanding[line[1] == 'E' ? :entity : :intent] = value
       elsif line.first.present?
         train_wit_by_samples(line, understanding, token)
