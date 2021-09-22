@@ -68,12 +68,14 @@ module VariableFunctionsHelper
 
   def test_goal_house_recommended_init_invest(rate, nper, pmt, fv)
     rate, nper, pmt, fv = rate.to_f, nper.to_f, pmt.to_f, fv.to_f
+    pmt *= -1
     pv = test_pv(rate, nper, pmt, fv, 0).abs
     Integer((Float(pv) / 50000).ceil * 50000)
   end
 
   def test_goal_house_recommended_monthly_invest(rate, nper, pv, fv)
     rate, nper, pv, fv = rate.to_f, nper.to_f, pv.to_f, fv.to_f
+    pv *= -1
     pmt = test_pmt(rate, nper, pv, fv, 0).abs / 12.0
     Integer((Float(pmt) / 50000).ceil * 50000)
   end
