@@ -586,7 +586,6 @@ module ChatbotHelper
     num_arr = []
     variable.fetch_info['arguments'].each do |item|
       ud = get_variable_data(item)
-      next if ud.nil?
       if ud.is_a? Array
         num_arr += ud
       else
