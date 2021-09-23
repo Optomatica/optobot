@@ -12,7 +12,7 @@ class Response < ApplicationRecord
     all_responses = self.response_contents.where("content ->> '#{lang}' is not NULL")
     responses = {}
     all_responses.each do |res|
-      responses[res.content_type] = {} if responses[res.content_type].nil?
+      responses[res.content_type] = [] if responses[res.content_type].nil?
       responses[res.content_type].push(res)
     end
 
