@@ -71,7 +71,7 @@ class ResponseContentsController < ApplicationController
 
     private
       def create
-        if params[:content].nil? or params[:content].keys.all{|k| params[:content][k].nil? or params[:content][k].blank?}
+        if params[:content].nil? or params[:content].keys.all?{|k| params[:content][k].nil? or params[:content][k].blank?}
           render body: "content is required", status: :bad_request and return
         end
         @response_content = ResponseContent.new(response_content_params)
@@ -83,7 +83,7 @@ class ResponseContentsController < ApplicationController
       end
 
       def update
-        if params[:content].nil? or params[:content].keys.all{|k| params[:content][k].nil? or params[:content][k].blank?}
+        if params[:content].nil? or params[:content].keys.all?{|k| params[:content][k].nil? or params[:content][k].blank?}
           render body: "content doesn't accept null but given blank!", status: :bad_request and return
         end
         if @response_content.update_attributes(response_content_params)
