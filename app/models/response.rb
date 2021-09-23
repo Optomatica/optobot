@@ -9,7 +9,7 @@ class Response < ApplicationRecord
   def get_contents(lang, count = 1)
     p " in get_contents ====== with lang == #{lang} and count = #{count}"
 
-    all_responses = response.response_contents.where("content ->> '#{lang}' is not NULL")
+    all_responses = self.response_contents.where("content ->> '#{lang}' is not NULL")
     responses = {}
     all_responses.each do |res|
       responses[res.content_type] = {} if responses[res.content_type].nil?
