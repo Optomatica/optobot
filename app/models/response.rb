@@ -9,9 +9,11 @@ class Response < ApplicationRecord
   def get_contents(lang, count = 1)
     p " in get_contents ====== with lang == #{lang} and count = #{count}"
 
+    all_responses = response.response_contents.where("content ->> '#{lang}' is not NULL")
     responses = {}
-    ResponseContent.content_types.each do |content_type, _|
-      responses[content_type] = self.response_contents.where(content_type: content_type).where("content ->> '#{lang}' is not NULL")
+    all_responses.each do |res|
+      responses[res.content_type] = {} if responses[res.content_type].nil?
+      responses[res.content_type].push(res)
     end
 
     self.response_owner_type == "Option" ? format_options(responses, lang, count) : format_response(responses, lang)
