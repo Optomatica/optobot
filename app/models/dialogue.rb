@@ -32,10 +32,10 @@ class Dialogue < ApplicationRecord
     p "in get_dialogues_by given intent #{intent} and intent value = #{intent_value} and context_id = #{context_id}"
 
     all_dialogues = self.joins(:intent).select("dialogues.*").where("intents.value =?", intent_value.downcase)
-    return all_dialogues if context_id == -1
+    return all_dialogues.where.not(context_id: nil) if context_id == -1
 
     context_dialogues = all_dialogues.where(context_id: context_id)
-    return context_dialogues.present? ? context_dialogues : all_dialogues
+    return context_dialogues
   end
 
   def self.in_same_context?(dialogues, context_id)
@@ -112,7 +112,7 @@ class Dialogue < ApplicationRecord
 
     associations_data[:children].each do |child_name, child|
       arc = Arc.create!(parent_id: self.id, child_id: child[:id])
-
+      next if arc.update!(go_next: false) if child[:go_next] == false
       child[:conditions].each do |condition|
         variable = self.project.variables.where(name: condition[:variable_name]).last
         new_condition = Condition.new(arc_id: arc.id, variable_id: variable.id)

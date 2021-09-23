@@ -24,7 +24,7 @@ These instructions show you how to clone the repository using Git.
   5. Setup the database by running this command.
 
 	`rake db:setup`
-   
+
 2.NLP Training
 ------------------
 Chatbots usually carry out conversations with users. When building a chatbot, the aim is to understand the ‘intent’ of a user’s utterance that can then be used to guide the dialogue between the chatbot and the user. Training the chatbot to understand certain statements, is simplified in Optobot through the use of files. Since Optobot uses wit.ai, there are other ways to train the bot which are further explained [here](/NLP_Engine). To define an intent such as ‘greeting’ and some examples of that intent to be used for training, the developer can add statements with the below syntax, to the file ‘wit_training.optonlp’ 
@@ -141,7 +141,7 @@ This is a description of a proposed language that OptoBot uses for easier implem
    variable_name is the name you want to have for this variable. The variable_name can be used later on in statements or conditions
    You can optionally assign the variable_type and variable_storage_type.  
    
-    After this syntax, you should write the response `statement` that optobot would say. The response that the user types in after the bot statement, is send to Wit.ai and the returned intent or option value is stored in this variable by optobot automatically. If you want to store the exact response of the user without sending a request to Wit.ai, you can do that by adding `save_text` in variable declararion [V&#58;variable_name:variable_type&#58;variable_storage_typee&#58;save_text]   
+    After this syntax, you should write the response `statement` that optobot would say. The response that the user types in after the bot statement, is send to Wit.ai and the returned intent or option value is stored in this variable by optobot automatically. If you want to store the exact response of the user without sending a request to Wit.ai, you can do that by adding `save_text` in variable declararion [V&#58;variable_name:variable_type&#58;variable_storage_type&#58;save_text]   
 
     Also in bot's response you can display value of a variable using two curly brackets. Example `Great!, you can buy {{flowers_count}} rose(s)`. For a time series variable, Optobot get the last stored value by default. If you want to get all values you can write `{{var_name.all}}`
 

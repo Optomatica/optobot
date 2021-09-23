@@ -145,6 +145,8 @@ module ChatbotHelper
     intent_arr << (@intent["name"]).downcase if @intent
 
     dialogues = @project.dialogues.joins(:intent).select("dialogues.*").where("intents.value in (?)", intent_arr)
+    dialogues = dialogues.select{| dialogue | dialogue.parents.empty? }
+
     user_intent = dialogues.first.intent unless dialogues.empty?
     if user_intent
       p "user_intent =========== ", user_intent
@@ -165,7 +167,7 @@ module ChatbotHelper
       @user_project.save!
       return
     end
-    @user_chatbot_session = UserChatbotSession.create!(context_id: @next_context.id, dialogue_id: @next_dialogue.id)
+    @user_chatbot_session = UserChatbotSession.create!(context_id: @next_context.id, dialogue_id: @next_dialogue.id) if (@next_context && @next_dialogue)
     @user_project.user_chatbot_session = @user_chatbot_session
     @user_project.save!
 
@@ -220,7 +222,7 @@ module ChatbotHelper
 
   def new_intent_process
     dialogue = new_intent_process_a
-    if dialogue.present?
+    if dialogue.present? && (dialogue.parents.empty? || dialogue.parents.any?{|parent| parent.id == @user_chatbot_session.dialogue_id})
       p "new_intent_process_a true"
       @next_dialogue = dialogue
       @user_project.delete_cached_user_data
@@ -267,6 +269,7 @@ module ChatbotHelper
       @next_context = @user_chatbot_session.context
       @next_dialogue = @user_chatbot_session.dialogue
       @next_variable = @user_chatbot_session.variable
+      set_to_render_response(@next_quick_response)
       increase_quick_response
     else
       p "not A or B or C"
@@ -283,6 +286,9 @@ module ChatbotHelper
     p " in new_intent_process_b ............."
     # search in other contexts dialogues intents, return dialogue if found
     dialogues = @project.dialogues.get_dialogues_by(@intent)
+    dialogues = dialogues.select{| dialogue | 
+        (dialogue.parents.empty? || dialogue.parents.any?{|parent| parent.id == @user_chatbot_session.dialogue_id})
+    }
     p "dialogues got by get_dialogues_by: #{dialogues.to_json}"
     return dialogues.first if dialogues.length == 1
     if !dialogues.blank? and Dialogue.in_same_context?(dialogues, dialogues.first.context_id)
@@ -320,6 +326,7 @@ module ChatbotHelper
   end
 
   def save_session
+    return if @user_chatbot_session.nil?
     unless @is_fallback
       @user_chatbot_session.fallback_counter = 0
     end
@@ -337,15 +344,16 @@ module ChatbotHelper
     p "in increase_quick_response "
     p "@next_quick_response === " , @next_quick_response
     p "@user_chatbot_session ====" , @user_chatbot_session
-    # @is_fallback = true
+    @is_fallback = true
     if @user_chatbot_session.quick_response_id == @next_quick_response.id
       @user_chatbot_session.fallback_counter += 1
     else
+      @user_chatbot_session.quick_response_id = @next_quick_response.id
       @user_chatbot_session.fallback_counter = 1
     end
     if @user_chatbot_session.fallback_counter > @project.fallback_setting["fallback_counter_limit"]
-      d = Dialogue.get_fallback(@project.id, :fallback_limit_exeeded)
-      @problem = @project.problems.new(problem_type: :fallback_limit_exeeded)
+      d = Dialogue.get_fallback(@project.id, :fallback_limit_exceeded)
+      @problem = @project.problems.new(problem_type: :fallback_limit_exceeded)
       set_to_render_response(d)
     end
   end
@@ -547,15 +555,9 @@ module ChatbotHelper
     unsatisfied_conditions = all_conditions - satisfied_conditions
     p "unsatisfied_conditions", unsatisfied_conditions
     @missing_variables_table = {}
-    unsatisfied_conditions.map do |c|
-      if @missing_variables_table[c.variable.source]
-        @missing_variables_table[c.variable.source][c.variable] = 0
-      else
-        @missing_variables_table[c.variable.source] = {c.variable => 0 }
-      end
-    end
 
     unsatisfied_conditions.each do |condition|
+      next if condition.variable.source == "fetched" && get_fetched_data(condition.variable)
       if @missing_variables_table[condition.variable.source]
         @missing_variables_table[condition.variable.source][condition.variable] = 0
       else
@@ -594,7 +596,6 @@ module ChatbotHelper
     num_arr = []
     variable.fetch_info['arguments'].each do |item|
       ud = get_variable_data(item)
-      next if ud.nil?
       if ud.is_a? Array
         num_arr += ud
       else
@@ -615,7 +616,7 @@ module ChatbotHelper
       else
         is_all = var_name.ends_with?(".all")
         var_name = var_name[0...-4] if is_all
-        variables_ids = @project.variables.where(name: variable_names).ids
+        variables_ids = @project.variables.where(name: var_name).ids
         user_data = @user_project.user_data.where(variable_id: variables_ids)
         is_all ? user_data : user_data.last
       end
@@ -685,6 +686,7 @@ module ChatbotHelper
 
   def bypass_nlp?(variable)
     # if we will bypass nlp, we will save value in user data here as well
+    return false if params[:text].nil?
     p "in bypass_nlp? given variable = " , variable
     options = Option.where(variable_id: variable.id)
     option = nil
@@ -693,7 +695,7 @@ module ChatbotHelper
       option = x if x.response.response_contents.index{|z| z.content[@lang].downcase == params[:text].downcase}
     end
     if option
-      create_or_update_user_data(variable, option.response.response_contents.last.content[@lang], option.id)
+      create_or_update_user_data(variable, option.response.response_contents.first.content[@lang], option.id)
       @entities = {}
     end
     return option
@@ -814,7 +816,7 @@ module ChatbotHelper
 
   def check_for_conditions(arc)
     p "in check_for_conditions given arc = ", arc
-    return true if arc.conditions.blank?
+    return arc.go_next if arc.conditions.blank?
     return arc.conditions.all?{|c|
       p "condition === " , c
       p "@user_project , c.variable , c.variable_id================ "  , @user_project , c.variable , c.variable_id
@@ -901,11 +903,11 @@ module ChatbotHelper
       in_possible_values = variable.possible_values.include?(@entities[variable.entity][0]["value"]) and variable.possible_values.include?(@entities[variable.entity][0]["value"])
       value = @entities[variable.entity][0]["value"]
     elsif variable.allowed_range and is_number?(@entities[variable.entity][0]["value"])
-      value = Unit.new("#{@entities[variable.entity][0]["value"]} #{@entities[variable.entity][0]['unit']}").convert_to(variable.unit).to_s.to_i
+      value = Unit.new("#{@entities[variable.entity][0]["value"]} #{@entities[variable.entity][0]['unit']}").convert_to(variable.unit).to_i
       in_range = (variable.allowed_range["min"].nil? or variable.allowed_range["min"] <= value) and (variable.allowed_range["max"].nil? or value <= variable.allowed_range["max"])
     else
       if variable.unit and variable.unit.to_unit != @entities[variable.entity][0]['unit'] # but I know its compatible
-        value = Unit.new("#{@entities[variable.entity][0]["value"]} #{@entities[variable.entity][0]['unit']}").convert_to(variable.unit).to_s.to_i
+        value = Unit.new("#{@entities[variable.entity][0]["value"]} #{@entities[variable.entity][0]['unit']}").convert_to(variable.unit).to_i
       else
         value = @entities[variable.entity][0]['value']
       end

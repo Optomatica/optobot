@@ -99,7 +99,7 @@ class ProjectsController < ApplicationController
   api :GET, '/users/user_id/projects/list'
   description "list all user's projects as (Admin/author/subscriber)"
   def list
-		user_projects = current_user.projects.select("projects.id, projects.name, projects.is_private, user_projects.role, projects.created_at")
+		user_projects = current_user.projects.select("projects.id, projects.name, projects.is_private, user_projects.role, projects.created_at, projects.version")
 		public_projects = Project.where(is_private: false).where.not(prod_project_id: nil).select(:id, :name, :is_private, :created_at)
     render :json => {user_projects: user_projects, public_projects: public_projects-user_projects}
 	end
@@ -338,6 +338,7 @@ class ProjectsController < ApplicationController
         end
       rescue => e
         ActiveRecord::Rollback
+        p e.message, e.backtrace
 			  return render plain: e.message, status: :bad_request
       end
     else
@@ -358,6 +359,7 @@ class ProjectsController < ApplicationController
         end
       rescue => e
 			  ActiveRecord::Rollback
+        p e.message, e.backtrace
 			  return render plain: e.message, status: :bad_request
       end
     end

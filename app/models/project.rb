@@ -141,9 +141,9 @@ class Project < ApplicationRecord
     ResponseContent.create!(response_id: response.id, content: {"en" => "Sorry, no route matching"}, content_type:0)
 
 
-    new_dilog = Dialogue.create!(project_id: self.id , name: "fallback_limit_exeeded", context_id: nil, actions: nil, tag: "fallback/fallback_limit_exeeded")
+    new_dilog = Dialogue.create!(project_id: self.id , name: "fallback_limit_exceeded", context_id: nil, actions: nil, tag: "fallback/fallback_limit_exceeded")
     response=Response.create!(response_owner: new_dilog, order: 1)
-    ResponseContent.create!(response_id: response.id, content: {"en" => "Sorry, fallback limit exeeded"}, content_type:0)
+    ResponseContent.create!(response_id: response.id, content: {"en" => "Sorry, fallback limit exceeded"}, content_type:0)
 
 
     new_dilog = Dialogue.create!(project_id: self.id , name: "not_allowed_value", context_id: nil, actions: nil, tag: "fallback/not_allowed_value")
@@ -173,7 +173,7 @@ class Project < ApplicationRecord
     lines.each do |line|
       if ['[I:', '[E:'].include? line[0..2]
         understanding = {}
-        value = line.slice(3..-2).gsub(/\s+/, '_')
+        value = line.strip.slice(3..-2).gsub(/\s+/, '_')
         understanding[line[1] == 'E' ? :entity : :intent] = value
       elsif line.first.present?
         train_wit_by_samples(line, understanding, token)
@@ -215,7 +215,7 @@ class Project < ApplicationRecord
       if result && is_variable
         min, max = result[1].split('-', 2)
       elsif result && !is_variable
-        action = result[1].match(/(.+)\((.+)\)/)
+        action = result[1].match(/(.+)\((.*)\)/)
         actions.push({function: action[1], arguments: action[2].split(',')})
       else
         response_type, content, content_type = get_response_content(res)
@@ -283,18 +283,16 @@ class Project < ApplicationRecord
 
   def import_context_dialogues_data (file , context_id , language)
     self.user_projects.each{|up| up.user_chatbot_session&.destroy!}
-    if context_id && Context.find_by(id: context_id)
+    if context_id && context_id.to_i != -1
+      raise "Invalid Context" unless Context.find_by(id: context_id)
       raise "Invalid Context" if Context.find_by(id: context_id).project_id != self.id
       Context.find_by(id: context_id).dialogues.destroy_all
-    else
-      self.dialogues.where(tag: nil).destroy_all
-      if self.dialogues.where(tag: nil).empty?
-        newcontext = Context.find_or_create_by(project_id: self.id, name: "first_context")
-        new_dilog = Dialogue.create!(project_id: self.id , name: "first dialogue", context_id: newcontext.id, actions: nil)
-        response=Response.create!(response_owner: new_dilog, order: 1)
-        ResponseContent.create!(response_id: response.id, content: {"en" => "Hi , how can I help you ? "}, content_type:0)
-        context_id = newcontext.id
-      end
+    elsif context_id && context_id.to_i == -1
+      newcontext = Context.find_or_create_by(project_id: self.id, name: "first_context")
+      self.dialogues.where(tag: nil, context_id: newcontext.id).destroy_all
+      context_id = newcontext.id
+    elsif context_id.nil?
+      self.dialogues.where(context_id: nil, tag: nil).destroy_all
     end
 
     file = file.force_encoding("utf-8")
@@ -423,6 +421,10 @@ class Project < ApplicationRecord
           p "condition[1] -> variable option"
           condition[0].strip!
           next if condition[0].downcase == 'true'
+          if condition[0].downcase == 'false'
+            arcs[prev_dialogue][child_name] = {go_next: false}
+            next
+          end
           condition[1].strip!  if condition[1].present?
           dialogues.each do |d_name , d_body|
             if !found && d_body[:variables] && d_body[:variables][condition[0]]
