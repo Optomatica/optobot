@@ -3,7 +3,6 @@ class VariablesController < ApplicationController
   before_action :can_access_or_edit_dialogue_relatives?
   before_action :set_variable, only: [:show, :update, :destroy]
   before_action :is_dialogue_own_me?, only: [:show, :update, :destroy]
-  before_action :is_project_own_me?, only: [:show, :update, :destroy]
   before_action :is_valid_storage_type?, only: [:create, :update]
   before_action :is_valid_source?, only: [:create, :update]
 
@@ -126,13 +125,6 @@ class VariablesController < ApplicationController
     vars = Variable.where(id: params[:id], dialogue_id: dialogue_id) if dialogue_id
 
     render "this dialogue doesn't have this variable!", status: :unprocessable_entity if vars.length.zero?
-  end
-
-  def is_project_own_me?
-    project_id = variable_params[:project_id]
-    vars = Variable.where(id: params[:id], project_id: project_id) if project_id
-
-    render "this project doesn't have this variable!", status: :unprocessable_entity if vars.length.zero?
   end
 
   def is_valid_storage_type?
