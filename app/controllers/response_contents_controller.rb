@@ -117,7 +117,7 @@ class ResponseContentsController < ApplicationController
           params[:response_owner_id] = params[:dialogue_id]
           params[:response_owner_type] = "Dialogue"
         end
-        tmp = params.permit(:response_id, :content_type, :content)
+        tmp = params.permit!(:response_id, :content_type, :content => {})
         return tmp
       end
 
