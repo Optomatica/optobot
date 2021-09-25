@@ -341,11 +341,13 @@ module ChatbotHelper
       @user_chatbot_session.quick_response_id = @next_quick_response.id
       @user_chatbot_session.fallback_counter = 1
     end
-    if @user_chatbot_session.fallback_counter > @project.fallback_setting["fallback_counter_limit"]
-      d = Dialogue.get_fallback(@project.id, :fallback_limit_exceeded)
-      @problem = @project.problems.new(problem_type: :fallback_limit_exceeded)
-      set_to_render_response(d)
-    end
+    
+    # if @user_chatbot_session.fallback_counter > @project.fallback_setting["fallback_counter_limit"]
+    #   d = Dialogue.get_fallback(@project.id, :fallback_limit_exceeded)
+    #   @problem = @project.problems.new(problem_type: :fallback_limit_exceeded)
+    #   set_to_render_response(d)
+    # end
+  
   end
 
   # TODO 1: if more than one variable hava same entity type

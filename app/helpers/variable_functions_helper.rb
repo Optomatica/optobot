@@ -128,9 +128,9 @@ module VariableFunctionsHelper
       end
   end
 
-  def test_goal_retire_fund_required_monthly(retirement_fund)
+  def test_goal_retire_monthly_incremental_invest_1(retirement_fund)
     retirement_fund = retirement_fund.to_f
-    ceil_nearest(retirement_fund / 1000, 1000) * 12
+    ceil_nearest(retirement_fund / 1000, 1000)
   end
 
   def test_goal_retire_fund_required(annual_income, death_age, age, years_to_retirement, inflation_rate, risk_free_rate)
@@ -140,8 +140,9 @@ module VariableFunctionsHelper
     retirement_fund_needed = pv(risk_free_rate, nper, -pmt, 0)
   end
 
-  def test_goal_retire_recommended_init_invest(retirement_fund, annual_income, death_age, age, years_to_retirement, incremental_invest, rate_of_return)
-    retirement_fund, annual_income, death_age, age, years_to_retirement, incremental_invest, rate_of_return = [retirement_fund, annual_income, death_age, age, years_to_retirement, incremental_invest, rate_of_return].map(&:to_f)
+  def test_goal_retire_recommended_init_invest(retirement_fund, annual_income, death_age, age, years_to_retirement, monthly_incremental_invest, rate_of_return)
+    retirement_fund, annual_income, death_age, age, years_to_retirement, monthly_incremental_invest, rate_of_return = [retirement_fund, annual_income, death_age, age, years_to_retirement, monthly_incremental_invest, rate_of_return].map(&:to_f)
+    incremental_invest = monthly_incremental_invest * 12
     fv = retirement_fund
     nper = years_to_retirement
     init_investment = pv(rate_of_return, nper, -incremental_invest, fv)
