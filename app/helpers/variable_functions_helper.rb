@@ -70,12 +70,12 @@ module VariableFunctionsHelper
     Integer((Float(number) / precision).ceil * precision)
   end
 
-  def format_number(number)
+  def format_int(number)
     whole, decimal = number.to_s.split('.')
     if whole.to_i < -999 || whole.to_i > 999
       whole.reverse!.gsub!(/(\d{3})(?=\d)/, '\\1,').reverse!
     end
-    [whole, decimal].compact.join('.')
+    whole
   end
 
   def bool(truth)
@@ -85,6 +85,11 @@ module VariableFunctionsHelper
   def between(number, low, high)
     number, low, high = [number, low, high].map(&:to_f)
     bool(low <= number && number <= high)
+  end
+
+  def greater_than(lhs, rhs)
+    lhs, rhs = [lhs, rhs].map(&:to_f)
+    bool(lhs > rhs)
   end
 
   def is_int(number)
