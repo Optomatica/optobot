@@ -341,11 +341,13 @@ module ChatbotHelper
       @user_chatbot_session.quick_response_id = @next_quick_response.id
       @user_chatbot_session.fallback_counter = 1
     end
-    if @user_chatbot_session.fallback_counter > @project.fallback_setting["fallback_counter_limit"]
-      d = Dialogue.get_fallback(@project.id, :fallback_limit_exceeded)
-      @problem = @project.problems.new(problem_type: :fallback_limit_exceeded)
-      set_to_render_response(d)
-    end
+    
+    # if @user_chatbot_session.fallback_counter > @project.fallback_setting["fallback_counter_limit"]
+    #   d = Dialogue.get_fallback(@project.id, :fallback_limit_exceeded)
+    #   @problem = @project.problems.new(problem_type: :fallback_limit_exceeded)
+    #   set_to_render_response(d)
+    # end
+  
   end
 
   # TODO 1: if more than one variable hava same entity type
@@ -873,11 +875,11 @@ module ChatbotHelper
       in_possible_values = variable.possible_values.include?(@entities[variable.entity][0]["value"]) and variable.possible_values.include?(@entities[variable.entity][0]["value"])
       value = @entities[variable.entity][0]["value"]
     elsif variable.allowed_range and is_number?(@entities[variable.entity][0]["value"])
-      value = Unit.new("#{@entities[variable.entity][0]["value"]} #{@entities[variable.entity][0]['unit']}").convert_to(variable.unit).to_i
+      value = Unit.new("#{@entities[variable.entity][0]["value"]} #{@entities[variable.entity][0]['unit']}").convert_to(variable.unit).to_f
       in_range = (variable.allowed_range["min"].nil? or variable.allowed_range["min"] <= value) and (variable.allowed_range["max"].nil? or value <= variable.allowed_range["max"])
     else
       if variable.unit and variable.unit.to_unit != @entities[variable.entity][0]['unit'] # but I know its compatible
-        value = Unit.new("#{@entities[variable.entity][0]["value"]} #{@entities[variable.entity][0]['unit']}").convert_to(variable.unit).to_i
+        value = Unit.new("#{@entities[variable.entity][0]["value"]} #{@entities[variable.entity][0]['unit']}").convert_to(variable.unit).to_f
       else
         value = @entities[variable.entity][0]['value']
       end
