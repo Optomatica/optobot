@@ -323,6 +323,7 @@ class ProjectsController < ApplicationController
 		if UserChatbotSession.where(context_id: @project.prod_project.context_ids).count > 0
       begin
         ActiveRecord::Base.transaction do
+          @project.delete_tmp_project
           @project.tmp_project = @project.prod_project
           prod_project = Project.create!(nlp_engine: @project.nlp_engine, name: @project.name,
             external_backend: @project.external_backend, is_private: @project.is_private,
