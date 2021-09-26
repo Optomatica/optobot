@@ -37,6 +37,26 @@ class Project < ApplicationRecord
     return tmp_contexts
   end
 
+  def delete_old_user_sessions
+    self.user_projects.each do |user_project|
+      session = user_project.user_chatbot_session
+      if (session && session.updated_at < Time.now - 3.hours)
+        user_project.user_chatbot_session.destroy
+      end
+    end
+  end
+
+  def delete_tmp_project
+    return unless self.tmp_project
+    tmp_project = self.tmp_project
+    tmp_project.delete_old_user_sessions
+    if UserChatbotSession.where(context_id: tmp_project.context_ids).empty?
+      tmp_project.destroy!
+      self.tmp_project_id = nil
+      self.save!
+    end
+  end
+
   def export_dialogues
     tmp_dialogues = {}
     self.dialogues.each do |dialogue|
