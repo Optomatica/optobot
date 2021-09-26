@@ -134,7 +134,7 @@ module VariableFunctionsHelper
   end
 
   def test_goal_retire_monthly_incremental_invest_1(retirement_fund, dividend)
-    retirement_fund = retirement_fund.to_f
+    retirement_fund, dividend = retirement_fund.to_f, dividend.to_f,
     ceil_nearest(retirement_fund / dividend, 1000)
   end
 
