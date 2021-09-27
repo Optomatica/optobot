@@ -101,7 +101,7 @@ class Project < ApplicationRecord
     dialogues_and_arcs_data[:arcs].each do |arc|
       parent_id = dialogues[arc[:parent_id].to_s.to_sym].nil? ? nil : dialogues[arc[:parent_id].to_s.to_sym][:new_dialogue].id
       child_id = dialogues[arc[:child_id].to_s.to_sym][:new_dialogue].id
-      Arc.create!(parent_id: parent_id, child_id: child_id).import(arc[:conditions], dialogues_and_arcs_data)
+      Arc.create!(parent_id: parent_id, child_id: child_id, go_next: arc[:go_next], is_and: arc[:is_and]).import(arc[:conditions], dialogues_and_arcs_data)
       p "pass"
     end
   end
