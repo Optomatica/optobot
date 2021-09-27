@@ -322,10 +322,9 @@ module ChatbotHelper
     end
     unless @next_context.nil?
       @user_chatbot_session.context = @next_context
-      @user_chatbot_session.dialogue = @next_dialogue
     end
     @user_chatbot_session.variable = (@next_variable.class != Array and @next_variable.present?) ? @next_variable : nil
-    @user_chatbot_session.dialogue = @next_dialogue || (@next_dialogue && @next_variable.dialogue)
+    @user_chatbot_session.dialogue = @next_dialogue || (@next_dialogue && @next_variable.dialogue) if (@next_dialogue || @next_variable)
     @user_chatbot_session.save!
   end
 
