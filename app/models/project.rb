@@ -44,8 +44,10 @@ class Project < ApplicationRecord
         user_project.user_chatbot_session.destroy
       end
     end
-    UserChatbotSession.where(context_id: self.prod_project.context_ids).each do |session|
-      session.destroy if session.updated_at < Time.now - 3.hours
+    if self.prod_project
+      UserChatbotSession.where(context_id: self.prod_project.context_ids).each do |session|
+        session.destroy if session.updated_at < Time.now - 3.hours
+      end
     end
   end
 
