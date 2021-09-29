@@ -412,7 +412,7 @@ module ChatbotHelper
         handle_intent
       elsif @entities.empty?
         @problem = @project.problems.new(problem_type: :do_not_understand)
-        @next_variable = @user_chatbot_session.variable
+        #@next_variable = @user_chatbot_session.variable
       elsif @entities and new_intent_process != false
         return
       else
