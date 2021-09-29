@@ -294,11 +294,14 @@ class ProjectsController < ApplicationController
 	api :POST, '/projects/:id/import_dialogues_data'
 	param :file, File, required: true
 	param :context_id, Integer
-  	def import_context_dialogues_data
+  def import_context_dialogues_data
+    p params
 		file = params[:file].read
 		begin
 			dialogues = @project.import_context_dialogues_data(file ,params[:context_id], params[:lang] || "en")
 		rescue  => e
+      p e
+      p e.backtrace
 			render json: {error: e}, status: :not_acceptable
 		else
 			render json: dialogues, status: :ok
