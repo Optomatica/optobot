@@ -112,8 +112,8 @@ class Dialogue < ApplicationRecord
 
     associations_data[:children].each do |child_name, child|
       arc = Arc.create!(parent_id: self.id, child_id: child[:id])
-      next if arc.update!(go_next: false) if child[:go_next] == false
-      child[:conditions].each do |condition|
+      arc.update!(go_next: false) if child[:go_next] == false
+      child[:conditions] && child[:conditions].each do |condition|
         variable = self.project.variables.where(name: condition[:variable_name]).last
         new_condition = Condition.new(arc_id: arc.id, variable_id: variable.id)
         option = condition[:option]
