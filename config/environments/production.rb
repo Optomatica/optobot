@@ -97,5 +97,6 @@ Rails.application.configure do
     :authentication => :plain,
     :domain         => 'optobot.ai'
    }
+   config.action_mailer.delivery_method = :smtp
    config.action_mailer.default_url_options = { :host => ENV['DEPLOY_URL'] }
 end
