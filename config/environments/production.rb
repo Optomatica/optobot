@@ -95,8 +95,7 @@ Rails.application.configure do
     :user_name      => ENV['MAILGUN_SMTP_LOGIN'],
     :password       => ENV['MAILGUN_SMTP_PASSWORD'],
     :authentication => :plain,
-    :domain         => 'heroku.com',
-    :enable_starttls_auto => true
+    :domain         => 'optobot.ai'
    }
    config.action_mailer.default_url_options = { :host => ENV['DEPLOY_URL'] }
 end
