@@ -12,7 +12,7 @@ class User < ActiveRecord::Base
 
     user_emails.map do |email|
       user = self.find_by_email(email)
-      user || User.create!(email: email, uid: email, provider: "email")
+      user || User.create!(email: email, uid: email, password: SecureRandom.hex(4))
     end
   end
 
