@@ -97,72 +97,51 @@ module VariableFunctionsHelper
   end
 
   # The following functions are used for test purposes by Optobot's development team and will be removed later.
-  def test_goal_house_recommended_init_invest(rate, nper, pmt, house_price, inflation_rate)
-    rate, nper, pmt, house_price, inflation_rate = rate.to_f, nper.to_f, pmt.to_f, house_price.to_f, inflation_rate.to_f
-    house_price = fv(inflation_rate, nper, 0, -house_price)
-    pv = pv(rate, nper, -pmt, house_price, 0)
-    pv = pv > 0 ? 0 : pv.abs
-    ceil_nearest(pv, 50000)
-  end
-  def test_goal_house_recommended_monthly_invest(rate, nper, pv, house_price, inflation_rate)
-    rate, nper, pv, house_price, inflation_rate = rate.to_f, nper.to_f, pv.to_f, house_price.to_f, inflation_rate.to_f
-    house_price = fv(inflation_rate, nper, 0, -house_price)
-    pmt = pmt(rate, nper, -pv, house_price, 0).abs / 12.0
-    ceil_nearest(pmt, 1000)
+  $inflation_rate = 0.09
+  $annual_pmt_increase = 0.05
+
+  def test_goal_recommended_init_invest(pv, percentage)
+    pv, percentage = [pv, percentage].map(&:to_f)
+    ceil_nearest(pv * percentage, 50000)
   end
 
-  def test_goal_retire_fund_needed(age, annual_income, death_age, inflation_rate, risk_free_rate)
-      age, annual_income, death_age, inflation_rate, risk_free_rate = [age, annual_income, death_age, inflation_rate, risk_free_rate].map(&:to_f)
-      if (age < 60)
-        nper = years_to_retirement = 60 - age
-        pv = annual_income
-        income_at_retirement = fv(inflation_rate, nper, 0, -pv)
-        nper = death_age - 60
-        pmt = income_at_retirement
-        retirement_fund_needed = pv(risk_free_rate, nper, -pmt, 0)
-        ceil_nearest(retirement_fund_needed, 50000)
-      else
-        years_to_retirement = age < 76 ? 5 : 80 - age
-        nper = years_to_retirement
-        pv = annual_income
-        income_at_retirement = fv(inflation_rate, nper, 0, -pv)
-        nper = 90 - (age + years_to_retirement)
-        pmt = income_at_retirement
-        retirement_fund_needed = pv(risk_free_rate, nper, -pmt, 0)
-        ceil_nearest(retirement_fund_needed, 50000)
-      end
+  def test_goal_recommended_pmt(pv, nper, init_invest)
+    pv, init_invest, nper = [pv, init_invest, nper].map(&:to_f)
+    yearly_amount = (pv - init_invest) / nper
+    pmt = yearly_amount * (1 + $annual_pmt_increase)
+    ceil_nearest(pmt / 12, 1000)
+  end
+  
+  def test_goal_retire_recommended_init_invest(retirement_fund, nper, percentage)
+    retirement_fund, nper, percentage = [retirement_fund, nper, percentage].map(&:to_f)
+    rt_pv = pv($inflation_rate, nper, 0, retirement_fund)
+    init_invest = test_goal_recommended_init_invest(-rt_pv, percentage)
+  end
+  
+  def test_goal_retire_recommended_monthly_invest(retirement_fund, init_invest, nper, percentage)
+    retirement_fund, init_invest, nper, percentage = [retirement_fund, init_invest, nper, percentage].map(&:to_f)
+    rt_pv = pv($inflation_rate, nper, 0, retirement_fund)
+    test_goal_recommended_pmt(-rt_pv, init_invest, percentage)
   end
 
-  def test_goal_retire_monthly_incremental_invest_1(retirement_fund, dividend)
-    retirement_fund, dividend = retirement_fund.to_f, dividend.to_f
-    ceil_nearest(retirement_fund / dividend, 1000)
+  def test_goal_retire_fund_needed(age, annual_income, death_age)
+    age, annual_income, death_age = [age, annual_income, death_age].map(&:to_f)
+    if (age < 60)
+      years_to_retirement = 60 - age
+    elseif (age < 76)
+      years_to_retirement = 5
+    else
+      years_to_retirement = 80 - age
+    end
+    rt_pmt = fv($inflation_rate, years_to_retirement, 0, -annual_income)
+    retirement_fund_needed = rt_pmt * (death_age - age)
+    m_rt_pmt = pmt($annual_pmt_increase, years_to_retirement, 0, retirement_fund_needed)
+    ceil_nearest(m_rt_pmt, 1000)
   end
 
-  def test_goal_retire_fund_required(annual_income, death_age, age, years_to_retirement, inflation_rate, risk_free_rate)
-    annual_income, death_age, age, years_to_retirement, inflation_rate, risk_free_rate = [annual_income, death_age, age, years_to_retirement, inflation_rate, risk_free_rate].map(&:to_f)
-    nper = death_age - age - years_to_retirement
-    pmt = fv(inflation_rate, years_to_retirement, 0, -annual_income)
-    retirement_fund_needed = pv(risk_free_rate, nper, -pmt, 0)
+  def test_goal_retire_fund_required(annual_income, death_age, age, years_to_retirement)
+    annual_income, death_age, age, years_to_retirement = [annual_income, death_age, age, years_to_retirement].map(&:to_f)
+    pmt = fv($inflation_rate, years_to_retirement, 0, -annual_income)
+    retirement_fund_need = pmt * (death_age - age)
   end
-
-  def test_goal_retire_recommended_init_invest(retirement_fund, annual_income, death_age, age, years_to_retirement, monthly_incremental_invest, rate_of_return)
-    retirement_fund, annual_income, death_age, age, years_to_retirement, monthly_incremental_invest, rate_of_return = [retirement_fund, annual_income, death_age, age, years_to_retirement, monthly_incremental_invest, rate_of_return].map(&:to_f)
-    incremental_invest = monthly_incremental_invest * 12
-    fv = retirement_fund
-    nper = years_to_retirement
-    init_investment = pv(rate_of_return, nper, -incremental_invest, fv)
-    init_investment = init_investment > 0 ? 0 : init_investment.abs
-    ceil_nearest(init_investment, 50000)
-  end
-
-  def test_goal_retire_monthly_invest(retirement_fund, init_invest, years_to_retirement, rate_of_return)
-      retirement_fund, init_invest, years_to_retirement, rate_of_return = [retirement_fund, init_invest, years_to_retirement, rate_of_return].map(&:to_f)
-      fv = retirement_fund
-      nper = years_to_retirement
-      pv = init_invest
-      annual_invest_needed = pmt(rate_of_return, nper, -pv, fv)
-      monthly_invest_needed = annual_invest_needed / 12
-      ceil_nearest(monthly_invest_needed.abs, 1000)
-  end
-
 end
