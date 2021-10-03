@@ -98,16 +98,24 @@ module VariableFunctionsHelper
 
   # The following functions are used for test purposes by Optobot's development team and will be removed later.
   $inflation_rate = 0.09
-  $annual_pmt_increase = 0.05
+  $annual_pmt_increase = 0.1
+  $invest_return = 0.13
 
   def test_goal_recommended_init_invest(pv, percentage)
     pv, percentage = [pv, percentage].map(&:to_f)
     ceil_nearest(pv * percentage, 50000)
   end
 
-  def test_goal_recommended_pmt(pv, nper, init_invest)
-    pv, init_invest, nper = [pv, init_invest, nper].map(&:to_f)
-    yearly_amount = (pv - init_invest) / nper
+  def test_goal_recommended_pmt(goal_price, nper, init_invest)
+    goal_price, init_invest, nper = [goal_price, init_invest, nper].map(&:to_f)
+    goal_fv = fv($inflation_rate, nper, 0, -goal_price)
+    init_invest_fv = fv($invest_return, nper, 0, -init_invest)
+    goal_invest_diff = goal_fv - init_invest_fv
+    if (goal_invest_diff <= 0)
+      return 0
+    end
+    goal_invest_diff_pv = pv($invest_return, nper, 0, goal_invest_diff)
+    yearly_amount = (goal_invest_diff_pv - init_invest) / nper
     pmt = yearly_amount * (1 + $annual_pmt_increase)
     ceil_nearest(pmt / 12, 1000)
   end
