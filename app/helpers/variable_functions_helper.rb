@@ -114,8 +114,8 @@ module VariableFunctionsHelper
     if (goal_invest_diff <= 0)
       return 0
     end
-    goal_invest_diff_pv = pv($invest_return, nper, 0, goal_invest_diff)
-    yearly_amount = (goal_invest_diff_pv - init_invest) / nper
+    goal_invest_diff_pv = -pv($invest_return, nper, 0, goal_invest_diff)
+    yearly_amount = goal_invest_diff_pv / nper
     pmt = yearly_amount * (1 + $annual_pmt_increase)
     ceil_nearest(pmt / 12, 1000)
   end
