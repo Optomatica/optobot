@@ -117,25 +117,25 @@ module VariableFunctionsHelper
     rt_pv = pv($inflation_rate, nper, 0, retirement_fund)
     init_invest = test_goal_recommended_init_invest(-rt_pv, percentage)
   end
-  
-  def test_goal_retire_recommended_monthly_invest(retirement_fund, init_invest, nper, percentage)
-    retirement_fund, init_invest, nper, percentage = [retirement_fund, init_invest, nper, percentage].map(&:to_f)
+
+  def test_goal_retire_recommended_pmt(retirement_fund, nper, init_invest)
+    retirement_fund, nper, init_invest = [retirement_fund, nper, init_invest].map(&:to_f)
     rt_pv = pv($inflation_rate, nper, 0, retirement_fund)
-    test_goal_recommended_pmt(-rt_pv, init_invest, percentage)
+    test_goal_recommended_pmt(-rt_pv, nper, init_invest)
   end
 
   def test_goal_retire_fund_needed(age, annual_income, death_age)
     age, annual_income, death_age = [age, annual_income, death_age].map(&:to_f)
     if (age < 60)
       years_to_retirement = 60 - age
-    elseif (age < 76)
+    elsif (age < 76)
       years_to_retirement = 5
     else
       years_to_retirement = 80 - age
     end
     rt_pmt = fv($inflation_rate, years_to_retirement, 0, -annual_income)
     retirement_fund_needed = rt_pmt * (death_age - age)
-    m_rt_pmt = pmt($annual_pmt_increase, years_to_retirement, 0, retirement_fund_needed)
+    m_rt_pmt = pmt($annual_pmt_increase, years_to_retirement, 0, -retirement_fund_needed)
     ceil_nearest(m_rt_pmt, 1000)
   end
 
