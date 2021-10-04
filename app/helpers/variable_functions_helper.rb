@@ -141,15 +141,14 @@ module VariableFunctionsHelper
     else
       years_to_retirement = 80 - age
     end
-    rt_pmt = fv($inflation_rate, years_to_retirement, 0, -annual_income)
-    retirement_fund_needed = rt_pmt * (death_age - age)
-    m_rt_pmt = pmt($annual_pmt_increase, years_to_retirement, 0, -retirement_fund_needed)
-    ceil_nearest(m_rt_pmt, 1000)
+    
+    retirement_fund_needed = test_goal_retire_fund_required(annual_income, death_age, age, years_to_retirement)
+    m_rt_pmt = test_goal_retire_recommended_pmt(retirement_fund_needed, years_to_retirement, 0)
   end
 
   def test_goal_retire_fund_required(annual_income, death_age, age, years_to_retirement)
     annual_income, death_age, age, years_to_retirement = [annual_income, death_age, age, years_to_retirement].map(&:to_f)
     pmt = fv($inflation_rate, years_to_retirement, 0, -annual_income)
-    retirement_fund_need = pmt * (death_age - age)
+    retirement_fund_need = pmt * (death_age - (age + years_to_retirement))
   end
 end
