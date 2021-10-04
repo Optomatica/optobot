@@ -178,11 +178,21 @@ module ChatbotHelper
     return unless @entities.nil?
     p " in call_wit_and_set_entities_and_intent  with value === #{value}"
 
-    @entities, @intent = analyzeText(value, @project.nlp_engine[@lang])
+    begin
+      @entities, @intent = analyzeText(value, @project.nlp_engine[@lang])
+    rescue
+      p "Exception in analyzeText in call_wit_and_set_entities_and_intent"
+
+      if !@entities && (true if Float(value) rescue false)
+        @entities = {"number" => [{"value" => value}]}
+      end  
+    end
+
     if !(@intent)
       dialogues = @project.dialogues.joins(:intent).select("dialogues.*").where("intents.value = ?", normalize_for_wit(value))
       @intent = {"name" => dialogues.first.intent.value} unless dialogues.empty?
     end
+    
     p 'entities = ' , @entities , " intent = " , @intent
   end
 
