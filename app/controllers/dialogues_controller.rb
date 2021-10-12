@@ -46,6 +46,9 @@ class DialoguesController < ApplicationController
     if dialogue_params[:name].nil?
       render body: "name is required", status: :bad_request and return
     end
+    if Context.find_by_id(dialogue_params[:context_id]).nil?
+      render body: "Invalid context", status: :bad_request and return
+    end
     @dialogue = Dialogue.new(dialogue_params)
     if @dialogue.save
       Intent.create!(dialogue_id: @dialogue.id , value: params[:intent]) if params[:intent]
