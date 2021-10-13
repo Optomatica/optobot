@@ -122,7 +122,8 @@ module ChatbotHelper
       @to_render.slice(:dialogue, :variable).each do |_, tmp_to_render|
         tmp_to_render[:responses].each do |response|
           response.each do |_, value|
-            ChatbotMessage.create(user_project_id: @user_project.id, message: value, is_user_message: false) unless value.nil?
+            ChatbotMessage.create(user_project_id: @user_project.id, message: value, is_user_message: false, 
+              dialogue_id: @to_render[:dialogue] && @to_render[:dialogue][:id]) unless value.nil?
           end
         end
       end
