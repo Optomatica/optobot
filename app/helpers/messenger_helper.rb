@@ -259,10 +259,10 @@ module MessengerHelper
 
   def self.receipt_template(page_access_token, response, user_project)
      url = "https://graph.facebook.com/v9.0/me/messages?access_token=#{page_access_token}"
-     elements = Array(JSON.parse(response[:element]) rescue response[:element])
-     prices = Array(JSON.parse(response[:price]) rescue response[:price])
-     quantitites = Array(JSON.parse(response[:quantity]) rescue response[:quantity])
-     image_urls = Array(JSON.parse(response[:image_url]) rescue response[:image_url])
+     elements = Array((JSON.parse(response[:element]) rescue response[:element]))
+     prices = Array((JSON.parse(response[:price]) rescue response[:price]))
+     quantitites = Array((JSON.parse(response[:quantity]) rescue response[:quantity]))
+     image_urls = Array((JSON.parse(response[:image_url]) rescue response[:image_url]))
      @body = { "attachment" =>{
              "type" => "template",
              "payload" => {
