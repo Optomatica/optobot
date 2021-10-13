@@ -26,6 +26,7 @@ class ProjectsController < ApplicationController
   param :is_private, :boolean
   param :fallback_setting, Hash
   param :facebook_page_access_token, String
+  param :qa_engine_endpoint, String
   def create
 		begin
       ActiveRecord::Base.transaction do
@@ -65,6 +66,7 @@ class ProjectsController < ApplicationController
   param :is_private, :boolean
   param :fallback_setting, Hash
   param :facebook_page_access_token, String
+  param :qa_engine_endpoint, String
 	def update
     ActiveRecord::Base.transaction do
       update_params = project_params.except(:facebook_page_access_token, :facebook_page_id)
@@ -438,7 +440,7 @@ class ProjectsController < ApplicationController
 		end
 
     def project_params
-      params.permit(:name, :external_backend, :is_private, :facebook_page_access_token, :facebook_page_id, :facebook_user_id, :fallback_setting => {}, :nlp_engine => {})
+      params.permit(:name, :external_backend, :is_private, :facebook_page_access_token, :facebook_page_id, :facebook_user_id, :qa_engine_endpoint, :fallback_setting => {}, :nlp_engine => {})
     end
 
 		def is_project(valid_roles)

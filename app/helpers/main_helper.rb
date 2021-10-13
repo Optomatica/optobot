@@ -40,13 +40,9 @@ module MainHelper
 
   def can_access_or_edit_dialogue_relatives?
     dialogue_id = params[:dialogue_id]
-    project_id = params[:project_id].to_i
-    dialogue_proj_id = dialogue_id ? Dialogue.find(dialogue_id).project_id : nil
+    project_id = dialogue_id ? Dialogue.find(dialogue_id).project_id : nil
 
-    if dialogue_proj_id != project_id
-      err_msg = "That Dialogue doesn't belong to that project"
-      render_bad_req_with_err_msg(err_msg) and return
-    elsif project_id.nil? || role_projs_cnt(project_id).zero?
+    if project_id.nil? || role_projs_cnt(project_id).zero?
       err_msg = 'You are not authorized to do this action.'
       render_bad_req_with_err_msg(err_msg)
     end

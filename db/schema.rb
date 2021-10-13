@@ -107,7 +107,6 @@ ActiveRecord::Schema.define(version: 20210919083028) do
     t.float "max"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.string "unit"
     t.bigint "identifier"
     t.bigint "project_id"
     t.index ["project_id"], name: "index_parameters_on_project_id"
@@ -137,6 +136,7 @@ ActiveRecord::Schema.define(version: 20210919083028) do
     t.bigint "prod_project_id"
     t.boolean "get_started_node", default: false
     t.integer "tmp_project_id"
+    t.string "qa_engine_endpoint"
     t.index ["facebook_page_id"], name: "index_projects_on_facebook_page_id", unique: true
     t.index ["prod_project_id"], name: "index_projects_on_prod_project_id"
   end
