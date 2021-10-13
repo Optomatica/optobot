@@ -122,7 +122,8 @@ module ChatbotHelper
       @to_render.slice(:dialogue, :variable).each do |_, tmp_to_render|
         tmp_to_render[:responses].each do |response|
           response.each do |_, value|
-            ChatbotMessage.create(user_project_id: @user_project.id, message: value, is_user_message: false) unless value.nil?
+            ChatbotMessage.create(user_project_id: @user_project.id, message: value, is_user_message: false, 
+              dialogue_id: @to_render[:dialogue] && @to_render[:dialogue][:id]) unless value.nil?
           end
         end
       end
@@ -179,11 +180,21 @@ module ChatbotHelper
     return unless @entities.nil?
     p " in call_wit_and_set_entities_and_intent  with value === #{value}"
 
-    @entities, @intent = analyzeText(value, @project.nlp_engine[@lang])
+    begin
+      @entities, @intent = analyzeText(value, @project.nlp_engine[@lang])
+    rescue
+      p "Exception in analyzeText in call_wit_and_set_entities_and_intent"
+
+      if !@entities && (true if Float(value) rescue false)
+        @entities = {"number" => [{"value" => value}]}
+      end  
+    end
+
     if !(@intent)
       dialogues = @project.dialogues.joins(:intent).select("dialogues.*").where("intents.value = ?", normalize_for_wit(value))
       @intent = {"name" => dialogues.first.intent.value} unless dialogues.empty?
     end
+    
     p 'entities = ' , @entities , " intent = " , @intent
   end
 
@@ -332,10 +343,9 @@ module ChatbotHelper
     end
     unless @next_context.nil?
       @user_chatbot_session.context = @next_context
-      @user_chatbot_session.dialogue = @next_dialogue
     end
     @user_chatbot_session.variable = (@next_variable.class != Array and @next_variable.present?) ? @next_variable : nil
-    @user_chatbot_session.dialogue = @next_dialogue || (@next_dialogue && @next_variable.dialogue)
+    @user_chatbot_session.dialogue = (@next_dialogue || (@next_dialogue && @next_variable.dialogue)) if (@next_dialogue || @next_variable)
     @user_chatbot_session.save!
   end
 
@@ -351,11 +361,13 @@ module ChatbotHelper
       @user_chatbot_session.quick_response_id = @next_quick_response.id
       @user_chatbot_session.fallback_counter = 1
     end
-    if @user_chatbot_session.fallback_counter > @project.fallback_setting["fallback_counter_limit"]
-      d = Dialogue.get_fallback(@project.id, :fallback_limit_exceeded)
-      @problem = @project.problems.new(problem_type: :fallback_limit_exceeded)
-      set_to_render_response(d)
-    end
+    
+    # if @user_chatbot_session.fallback_counter > @project.fallback_setting["fallback_counter_limit"]
+    #   d = Dialogue.get_fallback(@project.id, :fallback_limit_exceeded)
+    #   @problem = @project.problems.new(problem_type: :fallback_limit_exceeded)
+    #   set_to_render_response(d)
+    # end
+  
   end
 
   # TODO 1: if more than one variable hava same entity type
@@ -421,7 +433,7 @@ module ChatbotHelper
         handle_intent
       elsif @entities.empty?
         @problem = @project.problems.new(problem_type: :do_not_understand)
-        @next_variable = @user_chatbot_session.variable
+        #@next_variable = @user_chatbot_session.variable
       elsif @entities and new_intent_process != false
         return
       else
@@ -903,11 +915,11 @@ module ChatbotHelper
       in_possible_values = variable.possible_values.include?(@entities[variable.entity][0]["value"]) and variable.possible_values.include?(@entities[variable.entity][0]["value"])
       value = @entities[variable.entity][0]["value"]
     elsif variable.allowed_range and is_number?(@entities[variable.entity][0]["value"])
-      value = Unit.new("#{@entities[variable.entity][0]["value"]} #{@entities[variable.entity][0]['unit']}").convert_to(variable.unit).to_i
+      value = Unit.new("#{@entities[variable.entity][0]["value"]} #{@entities[variable.entity][0]['unit']}").convert_to(variable.unit).to_f
       in_range = (variable.allowed_range["min"].nil? or variable.allowed_range["min"] <= value) and (variable.allowed_range["max"].nil? or value <= variable.allowed_range["max"])
     else
       if variable.unit and variable.unit.to_unit != @entities[variable.entity][0]['unit'] # but I know its compatible
-        value = Unit.new("#{@entities[variable.entity][0]["value"]} #{@entities[variable.entity][0]['unit']}").convert_to(variable.unit).to_i
+        value = Unit.new("#{@entities[variable.entity][0]["value"]} #{@entities[variable.entity][0]['unit']}").convert_to(variable.unit).to_f
       else
         value = @entities[variable.entity][0]['value']
       end

@@ -296,11 +296,14 @@ class ProjectsController < ApplicationController
 	api :POST, '/projects/:id/import_dialogues_data'
 	param :file, File, required: true
 	param :context_id, Integer
-  	def import_context_dialogues_data
+  def import_context_dialogues_data
+    p params
 		file = params[:file].read
 		begin
 			dialogues = @project.import_context_dialogues_data(file ,params[:context_id], params[:lang] || "en")
 		rescue  => e
+      p e
+      p e.backtrace
 			render json: {error: e}, status: :not_acceptable
 		else
 			render json: dialogues, status: :ok
@@ -320,11 +323,13 @@ class ProjectsController < ApplicationController
 		}.to_json
 
 		data = JSON.parse(data,:symbolize_names => true)
+    @project.delete_old_user_sessions
 
-		if UserChatbotSession.where(context_id: @project.prod_project.context_ids).count > 0
-      @project.tmp_project = @project.prod_project
+		if @project.prod_project && UserChatbotSession.where(context_id: @project.prod_project.context_ids).count > 0
       begin
         ActiveRecord::Base.transaction do
+          @project.delete_tmp_project
+          @project.tmp_project = @project.prod_project
           prod_project = Project.create!(nlp_engine: @project.nlp_engine, name: @project.name,
             external_backend: @project.external_backend, is_private: @project.is_private,
             fallback_setting: @project.fallback_setting, facebook_page_id: @project.facebook_page_id,

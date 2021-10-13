@@ -24,15 +24,15 @@ module MessengerHelper
             elsif response.keys.length == 1 and (response[:image] or response[:video])
                 @body["message"] = self.get_media_message(page_access_token, response)
             elsif response[:list_url] || response[:list_template]
-                @body["message"] = self.get_list!(response[:list_url], response[:list_template], response[:list_url_headers] || {})
+                @body["message"] = self.get_list!(response[:list_url], response[:list_template], response[:list_headers] || {})
             end
             @body["persona_id"] = persona_id if persona_id
             requestes_responses << APICalls.postRequest(url, nil, @body.to_json) if index != responses.length - 1
         end
 
         responses.each do |response|
-            if response.content_type == 'receipt'
-                receipt_template(page_access_token, responses)
+            if response[:receipt]
+                receipt_template(page_access_token, response, user_project)
             end
         end
 
@@ -257,18 +257,31 @@ module MessengerHelper
     APICalls.postRequest(url, nil, body.to_json)
   end
 
-  def self.receipt_template(page_access_token, responses)
+  def self.receipt_template(page_access_token, response, user_project)
      url = "https://graph.facebook.com/v9.0/me/messages?access_token=#{page_access_token}"
+     elements = Array(JSON.parse(response[:element]) rescue response[:element])
+     prices = Array(JSON.parse(response[:price]) rescue response[:price])
+     quantitites = Array(JSON.parse(response[:quantity]) rescue response[:quantity])
+     image_urls = Array(JSON.parse(response[:image_url]) rescue response[:image_url])
      @body = { "attachment" =>{
              "type" => "template",
              "payload" => {
-                "template_type":"receipt",
-                "recipient_name": responses[0]['content'][en],
-                "order_number": responses[1]['content'][en],
-                "currency": responses[2]['content'][en], #
-                "payment_method": responses[3]['content'][en], #
+                "template_type": "receipt",
+                "recipient_name": user_project.user.name || user_project.user.email.split('@')[0],
+                "order_number": response[:order_number],
+                "currency": response[:currency],
+                "payment_method": response[:payment_method],
                 "summary":{
-                "total_cost":responses[4]['content'][en] #
+                    "total_cost": response[:total_cost] 
+                },
+                "elements":(0...elements.length).map { |i| 
+                    {
+                        "title": elements[i],
+                        "quantity": quantitites[i],
+                        "price": prices[i],
+                        "currency": response[:currency],
+                        "image_url": image_urls[i]
+                    }
                 }
             }
         }

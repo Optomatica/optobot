@@ -89,14 +89,21 @@ Rails.application.configure do
   # Do not dump schema after migrations.
   config.active_record.dump_schema_after_migration = false
 
-   config.action_mailer.smtp_settings = {
-    :address        => 'smtp.sendgrid.net',
-    :port           => '587',
-    :authentication => :plain,
-    :user_name      => 'apikey',
-    :password       => ENV['SENDGRID_API_KEY'],
-    :domain         => 'heroku.com',
-    :enable_starttls_auto => true
-   }
-   config.action_mailer.default_url_options = { :host => ENV['DEPLOY_URL'] }
+  mailertogo        = URI.parse ENV['MAILERTOGO_URL']
+  mailertogo_domain = ENV.fetch("MAILERTOGO_DOMAIN", "mydomain.com")
+  
+  # Fixes RFC 3986 and 2396
+  mailertogo_username = URI.decode_www_form_component(mailertogo.user)
+  mailertogo_password = URI.decode_www_form_component(mailertogo.password)
+  
+  config.action_mailer.smtp_settings = {
+    :address              => mailertogo.host,
+    :port                 => mailertogo.port,
+    :user_name            => mailertogo_username,
+    :password             => mailertogo_password,
+    :domain               => mailertogo_domain,
+    :authentication       => :plain,
+    :enable_starttls_auto => true,
+  }
+  config.action_mailer.default_url_options = { :host => ENV['DEPLOY_URL'] }
 end

@@ -37,6 +37,31 @@ class Project < ApplicationRecord
     return tmp_contexts
   end
 
+  def delete_old_user_sessions
+    self.user_projects.each do |user_project|
+      session = user_project.user_chatbot_session
+      if (session && session.updated_at < Time.now - 3.hours)
+        user_project.user_chatbot_session.destroy
+      end
+    end
+    if self.prod_project
+      UserChatbotSession.where(context_id: self.prod_project.context_ids).each do |session|
+        session.destroy if session.updated_at < Time.now - 3.hours
+      end
+    end
+  end
+
+  def delete_tmp_project
+    return unless self.tmp_project
+    tmp_project = self.tmp_project
+    tmp_project.delete_old_user_sessions
+    if UserChatbotSession.where(context_id: tmp_project.context_ids).empty?
+      tmp_project.destroy!
+      self.tmp_project_id = nil
+      self.save!
+    end
+  end
+
   def export_dialogues
     tmp_dialogues = {}
     self.dialogues.each do |dialogue|
@@ -76,7 +101,7 @@ class Project < ApplicationRecord
     dialogues_and_arcs_data[:arcs].each do |arc|
       parent_id = dialogues[arc[:parent_id].to_s.to_sym].nil? ? nil : dialogues[arc[:parent_id].to_s.to_sym][:new_dialogue].id
       child_id = dialogues[arc[:child_id].to_s.to_sym][:new_dialogue].id
-      Arc.create!(parent_id: parent_id, child_id: child_id).import(arc[:conditions], dialogues_and_arcs_data)
+      Arc.create!(parent_id: parent_id, child_id: child_id, go_next: arc[:go_next], is_and: arc[:is_and]).import(arc[:conditions], dialogues_and_arcs_data)
       p "pass"
     end
   end
