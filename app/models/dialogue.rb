@@ -88,12 +88,14 @@ class Dialogue < ApplicationRecord
     p " in dialogue import_dsl with  associations_data === " , associations_data
 
     options_ids = {}
-    variable = self.variables.create!(project_id: self.project_id)
+    if (associations_data[:options])
+      variable = self.variables.create!(project_id: self.project_id, name: self.name + "_variable")
 
-    associations_data[:options].each do |option|
-      new_option = variable.options.create!(option.except(:response))
-      options_ids.merge!(new_option.id => option)
-      new_option.import(response: option[:response])
+      associations_data[:options].each do |option|
+        new_option = variable.options.create!(option.except(:response))
+        options_ids.merge!(new_option.id => option)
+        new_option.import(response: option[:response])
+      end
     end
 
     associations_data[:variables]&.each do |variable_name, variable|
