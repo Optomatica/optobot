@@ -2,9 +2,9 @@ class ProjectsController < ApplicationController
   include WitHelper
 
   before_action :authenticate_user!
-  before_action :same_user?, except: [:get_chat_messages, :get_chat_problems, :export_dialogues_data, :import_dialogues_data, :update_session, :release ,:train_wit, :import_context_dialogues_data]
+  before_action :same_user?, except: [:get_chat_messages, :get_chat_problems, :export_dialogues_data, :import_dialogues_data, :update_session, :show, :release ,:train_wit, :import_context_dialogues_data]
   before_action :set_project, except: [:create, :list ]
-  before_action only: [:update, :destroy, :add_users_to_project, :get_chat_problems,
+  before_action only: [:update, :destroy, :add_users_to_project, :get_chat_problems, :show,
                       :remove_users_from_project, :get_facebook_access_token] do
 		is_project(["admin"])
 	end
