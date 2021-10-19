@@ -100,7 +100,7 @@ class Project < ApplicationRecord
         new_dialogue: new_dialogues[i]
       }
       new_dialogues[i].import(tmp)
-      intents << dialogue_id: new_dialogues[i].id, value: dialogue[:intent][:value] if dialogue[:intent]
+      intents << {dialogue_id: new_dialogues[i].id, value: dialogue[:intent][:value]} if dialogue[:intent]
     end
     Intent.create!(intents)
     arcs_data = dialogues_and_arcs_data[:arcs].map do |arc|
