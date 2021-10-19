@@ -84,25 +84,33 @@ class Project < ApplicationRecord
 
   def import_dialogues(contexts_data, dialogues_and_arcs_data)
     dialogues = {}
-    dialogues_and_arcs_data[:dialogues].each do |old_id, dialogue|
+    dialogues_data = dialogues_and_arcs_data[:dialogues].map{|old_id, dialogue| 
+      dialogue[:context_id] = contexts_data[dialogue[:context_id].to_s.to_sym][:new_id] if dialogue[:context_id]
+      dialogue.except(:variables, :responses, :intent)
+    }
+    new_dialogues = self.dialogues.create!(dialogues_data)
+    intents = []
+    dialogues_and_arcs_data[:dialogues].each_with_index do |(old_id, dialogue), i|
       tmp = {
         variables: dialogue[:variables],
         responses: dialogue[:responses],
         intent: dialogue[:intent]
       }
-      dialogue[:context_id] = contexts_data[dialogue[:context_id].to_s.to_sym][:new_id] if dialogue[:context_id]
-      new_dialogue = self.dialogues.create!(dialogue.except(:variables, :responses, :intent))
       dialogues[old_id] = {
-        new_dialogue: new_dialogue
+        new_dialogue: new_dialogues[i]
       }
-      new_dialogue.import(tmp)
-      Intent.create!(dialogue_id: new_dialogue.id, value: dialogue[:intent][:value]) if dialogue[:intent]
+      new_dialogues[i].import(tmp)
+      intents << dialogue_id: new_dialogues[i].id, value: dialogue[:intent][:value] if dialogue[:intent]
     end
-    dialogues_and_arcs_data[:arcs].each do |arc|
+    Intent.create!(intents)
+    arcs_data = dialogues_and_arcs_data[:arcs].map do |arc|
       parent_id = dialogues[arc[:parent_id].to_s.to_sym].nil? ? nil : dialogues[arc[:parent_id].to_s.to_sym][:new_dialogue].id
       child_id = dialogues[arc[:child_id].to_s.to_sym][:new_dialogue].id
-      Arc.create!(parent_id: parent_id, child_id: child_id, go_next: arc[:go_next], is_and: arc[:is_and]).import(arc[:conditions], dialogues_and_arcs_data)
-      p "pass"
+      { parent_id: parent_id, child_id: child_id, go_next: arc[:go_next], is_and: arc[:is_and] }
+    end
+    new_arcs = Arc.create!(arcs_data)
+    dialogues_and_arcs_data[:arcs].each_with_index do |arc, i|
+      new_arcs[i].import(arc[:conditions], dialogues_and_arcs_data)
     end
   end
 
