@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20210919083028) do
+ActiveRecord::Schema.define(version: 20211019143416) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -84,7 +84,7 @@ ActiveRecord::Schema.define(version: 20210919083028) do
   end
 
   create_table "intents", force: :cascade do |t|
-    t.bigint "dialogue_id", null: false
+    t.bigint "dialogue_id"
     t.string "value", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
@@ -107,6 +107,7 @@ ActiveRecord::Schema.define(version: 20210919083028) do
     t.float "max"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.string "unit"
     t.bigint "identifier"
     t.bigint "project_id"
     t.index ["project_id"], name: "index_parameters_on_project_id"
@@ -151,7 +152,7 @@ ActiveRecord::Schema.define(version: 20210919083028) do
   end
 
   create_table "responses", id: :serial, force: :cascade do |t|
-    t.integer "response_owner_id", null: false
+    t.integer "response_owner_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.string "response_owner_type", limit: 20, null: false
@@ -232,7 +233,7 @@ ActiveRecord::Schema.define(version: 20210919083028) do
   end
 
   create_table "variables", id: :serial, force: :cascade do |t|
-    t.string "name"
+    t.string "name", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.integer "dialogue_id"

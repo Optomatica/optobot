@@ -6,15 +6,15 @@ class Dialogue < ApplicationRecord
 
   has_many :user_chatbot_session, dependent: :restrict_with_exception
 
-  has_many :responses, as: :response_owner, dependent: :destroy
-  has_many :variables, dependent: :destroy
+  has_many :responses, as: :response_owner, dependent: :nullify_then_purge
+  has_many :variables, dependent: :nullify_then_purge
 
-  has_many :children_arcs, class_name: "Arc", foreign_key: "parent_id", dependent: :destroy
-  has_many :parents_arcs, class_name: "Arc", foreign_key: "child_id", dependent: :destroy
+  has_many :children_arcs, class_name: "Arc", foreign_key: "parent_id", dependent: :nullify_then_purge
+  has_many :parents_arcs, class_name: "Arc", foreign_key: "child_id", dependent: :nullify_then_purge
 
   has_many :children, through: :children_arcs, source: :child
   has_many :parents, through: :parents_arcs, source: :parent
-  has_one :intent, dependent: :destroy
+  has_one :intent, dependent: :nullify_then_purge
 
 	def self.get_fallback(project_id , fallback_type = "do_not_understand")
 		fallback_type = "do_not_understand" if fallback_type == :provided_data_missing
@@ -69,7 +69,6 @@ class Dialogue < ApplicationRecord
   end
 
   def import(associations_data)
-    p associations_data
 
     associations_data[:variables].each do |old_id, variable|
       variable[:project_id] = self.project_id
