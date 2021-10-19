@@ -9,6 +9,7 @@ end
 # gem 'webmock'
 gem 'vcr'
 gem 'webmock', '~> 3.7.6'
+gem 'miss_hannigan'
 
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
 gem 'rails', '~> 5.1.7'

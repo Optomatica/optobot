@@ -1,5 +1,4 @@
 include DslError
-include MissHannigan
 
 class Dialogue < ApplicationRecord
   belongs_to :context, optional: true
