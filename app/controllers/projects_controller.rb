@@ -317,11 +317,7 @@ class ProjectsController < ApplicationController
 	def release
 		p @project
 		# export
-		data = {
-			contexts: @project.export_contexts,
-			dialogues_and_arcs: @project.export_dialogues
-		}.to_json
-
+		data = {contexts: @project.export_contexts, dialogues_and_arcs: @project.export_dialogues}.to_json #163
 		data = JSON.parse(data,:symbolize_names => true)
     @project.delete_old_user_sessions
 
@@ -351,12 +347,13 @@ class ProjectsController < ApplicationController
 			  ActiveRecord::Base.transaction do
           prod_project = @project.prod_project
           #Delete all
-          prod_project.dialogues.destroy_all
+          prod_project.variables.update_all(project_id: nil)
+          prod_project.dialogues.destroy_all #245
           prod_project.contexts.destroy_all
 
           #import
           prod_project.import_contexts(data[:contexts])
-          prod_project.import_dialogues(data[:contexts], data[:dialogues_and_arcs])
+          prod_project.import_dialogues(data[:contexts], data[:dialogues_and_arcs]) # 380
 
           prod_project.update!(version: @project.version)
           @project.version += 1
