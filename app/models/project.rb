@@ -132,7 +132,7 @@ class Project < ApplicationRecord
             expected_wrong_line = "[C:#{child_name}]#{lhs}"
             expected_wrong_line += "=#{rhs}" if rhs
             line_number = get_error_line(@lines_without_comments_arr, expected_wrong_line)
-            raise "undefined dailogue '#{child_name}' mentioned in DSL file line #{line_number}: #{expected_wrong_line}"
+            raise "undefined dialogue '#{child_name}' mentioned in DSL file line #{line_number}: #{expected_wrong_line}"
           end
         end
         dialogue[:children][child_name][:id] = dialogues[child_name] ? dialogues[child_name][:new_dialogue].id : self.dialogues.find_by_name(child_name).id
@@ -319,13 +319,18 @@ class Project < ApplicationRecord
     if context_id && context_id.to_i != -1
       raise "Invalid Context" unless Context.find_by(id: context_id)
       raise "Invalid Context" if Context.find_by(id: context_id).project_id != self.id
+      Context.find_by(id: context_id).variables.update_all(project_id: nil)
       Context.find_by(id: context_id).dialogues.destroy_all
     elsif context_id && context_id.to_i == -1
       newcontext = Context.find_or_create_by(project_id: self.id, name: "first_context")
-      self.dialogues.where(tag: nil, context_id: newcontext.id).destroy_all
+      dialogues = self.dialogues.where(tag: nil, context_id: newcontext.id)
+      self.variables.where(dialogue_id: dialogues.ids).update_all(project_id: nil)
+      dialogues.destroy_all
       context_id = newcontext.id
     elsif context_id.nil?
-      self.dialogues.where(context_id: nil, tag: nil).destroy_all
+      dialogues = self.dialogues.where(context_id: nil, tag: nil)
+      self.variables.where(dialogue_id: dialogues.ids).update_all(project_id: nil)
+      dialogues.destroy_all
     end
 
     file = file.force_encoding("utf-8")
@@ -484,7 +489,6 @@ class Project < ApplicationRecord
 
     ActiveRecord::Base.transaction do
       self.import_dialogues_dsl(dialogues, arcs)
-      Variable.where(name: nil).destroy_all
     end
 
     dialogues

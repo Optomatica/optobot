@@ -2,6 +2,7 @@ class Context < ApplicationRecord
   belongs_to :project
   has_many :user_chatbot_session, dependent: :restrict_with_exception
   has_many :dialogues, dependent: :destroy
+  has_many :variables, through: :dialogues
 
   validates :name, presence: true
 

@@ -43,9 +43,9 @@ namespace :optobot do
     task :destroy do
         puts "destroying...."
         project = Project.where.not(prod_project_id: nil).last
+        project.variables.destroy_all
         project.contexts.destroy_all
         project.dialogues.where(tag: nil).destroy_all
-        project.last.variables.destroy_all
 
         p "destroyed"
     end
@@ -56,9 +56,9 @@ namespace :optobot do
         puts "destroying...."
         project = Project.where.not(prod_project_id: nil).last
         project.user_projects.each{|up| up.user_chatbot_session && up.user_chatbot_session.destroy}
+        project.variables.destroy_all
         project.contexts.destroy_all
         project.dialogues.where(tag: nil).destroy_all
-        project.variables.destroy_all
         puts "Training task.... "
 
         Dir.foreach("train/") do |item|
