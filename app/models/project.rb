@@ -9,6 +9,9 @@ class Project < ApplicationRecord
   has_many :dialogues, dependent: :destroy
   has_many :problems, dependent: :destroy
 
+  has_many :children_arcs, through: :dialogues
+  has_many :parameters, through: :children_arcs
+
   after_create :fallback_dialogue
 
   belongs_to :prod_project, foreign_key: :prod_project_id, class_name: "Project", dependent: :destroy, optional: true
@@ -292,7 +295,7 @@ class Project < ApplicationRecord
     return variable_name, entity_type, storage_type, expire_after, save_text
   end
 
-  def get_arc_information(variable_options, condition, language, wit_token)
+  def get_arc_information(variable_options, condition, language, wit_token, parameter_values)
     arc = nil
     if condition[1].present?
       if variable_options.length == 0
@@ -305,7 +308,7 @@ class Project < ApplicationRecord
         end
       else
         intent_name = normalize_for_wit(condition[1])
-        train_wit_by_samples(condition[1].strip, { intent: intent_name }, wit_token)
+        train_wit_by_samples(condition[1].strip, { intent: intent_name }, wit_token) unless parameter_values.include?
         arc = {variable_name: condition[0], option: {response: get_response(condition[1].strip, language) }, parameter: {value: intent_name}}
       end
     else
@@ -315,6 +318,7 @@ class Project < ApplicationRecord
   end
 
   def import_context_dialogues_data (file , context_id , language)
+    parameter_values = self.parameters.where("conditions.option_id is not null").pluck(:value)
     self.user_projects.each{|up| up.user_chatbot_session&.destroy!}
     if context_id && context_id.to_i != -1
       raise "Invalid Context" unless Context.find_by(id: context_id)
@@ -463,7 +467,7 @@ class Project < ApplicationRecord
           condition[1].strip!  if condition[1].present?
           dialogues.each do |d_name , d_body|
             if !found && d_body[:variables] && d_body[:variables][condition[0]]
-              arc = get_arc_information(d_body[:variables][condition[0]][:options], condition, language, wit_token)
+              arc = get_arc_information(d_body[:variables][condition[0]][:options], condition, language, wit_token, parameter_values)
               arcs[prev_dialogue][child_name][:conditions].push(arc)
               found =true
             end
@@ -472,7 +476,7 @@ class Project < ApplicationRecord
           if !found # search in other project variables (created before import)
             self.variables.each do |v|
               if v.name == condition[0] and !found
-                arc = get_arc_information(v.options, condition, language, wit_token)
+                arc = get_arc_information(v.options, condition, language, wit_token, parameter_values)
                 arcs[prev_dialogue][child_name][:conditions].push(arc)
                 found =true
               end
