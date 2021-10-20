@@ -330,8 +330,9 @@ class ProjectsController < ApplicationController
             external_backend: @project.external_backend, is_private: @project.is_private,
             fallback_setting: @project.fallback_setting, facebook_page_id: @project.facebook_page_id,
             version: @project.version)
-          prod_project.variables.update_all(project_id: nil)
-          prod_project.dialogues.destroy_all
+          # prod_project.variables.update_all(project_id: nil)
+          prod_project.dialogues.destroy_all_immediately
+          prod_project.contexts.destroy_all
           prod_project.import_contexts(data[:contexts])
           prod_project.import_dialogues(data[:contexts], data[:dialogues_and_arcs])
           @project.version += 1
@@ -348,8 +349,8 @@ class ProjectsController < ApplicationController
 			  ActiveRecord::Base.transaction do
           prod_project = @project.prod_project
           #Delete all
-          prod_project.variables.update_all(project_id: nil)
-          prod_project.dialogues.destroy_all #245
+          # prod_project.variables.update_all(project_id: nil)
+          prod_project.dialogues.destroy_all_immediately #245
           prod_project.contexts.destroy_all
 
           #import

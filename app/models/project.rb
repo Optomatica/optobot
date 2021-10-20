@@ -323,18 +323,13 @@ class Project < ApplicationRecord
     if context_id && context_id.to_i != -1
       raise "Invalid Context" unless Context.find_by(id: context_id)
       raise "Invalid Context" if Context.find_by(id: context_id).project_id != self.id
-      Context.find_by(id: context_id).variables.update_all(project_id: nil)
-      Context.find_by(id: context_id).dialogues.destroy_all
+      Context.find_by(id: context_id).dialogues.destroy_all_immediately
     elsif context_id && context_id.to_i == -1
       newcontext = Context.find_or_create_by(project_id: self.id, name: "first_context")
-      dialogues = self.dialogues.where(tag: nil, context_id: newcontext.id)
-      self.variables.where(dialogue_id: dialogues.ids).update_all(project_id: nil)
-      dialogues.destroy_all
+      self.dialogues.where(tag: nil, context_id: newcontext.id).destroy_all_immediately
       context_id = newcontext.id
     elsif context_id.nil?
-      dialogues = self.dialogues.where(context_id: nil, tag: nil)
-      self.variables.where(dialogue_id: dialogues.ids).update_all(project_id: nil)
-      dialogues.destroy_all
+      self.dialogues.where(context_id: nil, tag: nil).destroy_all_immediately
     end
 
     file = file.force_encoding("utf-8")
