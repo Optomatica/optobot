@@ -308,7 +308,7 @@ class Project < ApplicationRecord
         end
       else
         intent_name = normalize_for_wit(condition[1])
-        train_wit_by_samples(condition[1].strip, { intent: intent_name }, wit_token) unless parameter_values.include?
+        train_wit_by_samples(condition[1].strip, { intent: intent_name }, wit_token) unless parameter_values.include?(intent_name)
         arc = {variable_name: condition[0], option: {response: get_response(condition[1].strip, language) }, parameter: {value: intent_name}}
       end
     else
