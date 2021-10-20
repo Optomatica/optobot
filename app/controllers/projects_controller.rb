@@ -367,6 +367,7 @@ class ProjectsController < ApplicationController
 			  return render plain: e.message, status: :bad_request
       end
     end
+    print "release finished Congratulations"
     render plain: "Congratulations", status: :ok
   end
 
