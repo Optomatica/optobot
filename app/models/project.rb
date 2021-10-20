@@ -446,7 +446,6 @@ class Project < ApplicationRecord
 
       elsif arr[i][1].upcase == 'C'
         child_name = arr[i].strip.slice(3..-2).gsub(/\s+/,'_')
-        p "child_name", child_name
         conditions = []
         arr[i+1].split('&').each {|x| conditions.push x.split('=')}
         arcs[prev_dialogue][child_name] = {}
@@ -455,8 +454,6 @@ class Project < ApplicationRecord
         conditions.each do |condition|
           found =false
           wit_token = self.nlp_engine[language]
-          p "condition[0] -> variable name"
-          p "condition[1] -> variable option"
           condition[0].strip!
           next if condition[0].downcase == 'true'
           if condition[0].downcase == 'false'

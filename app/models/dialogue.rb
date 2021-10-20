@@ -87,7 +87,7 @@ class Dialogue < ApplicationRecord
     p " in dialogue import_dsl with  associations_data === " , associations_data
 
     options_ids = {}
-    if (associations_data[:options])
+    if (associations_data[:options] && associations_data[:options].length > 0)
       variable = self.variables.create!(project_id: self.project_id, name: self.name + "_variable")
 
       associations_data[:options].each do |option|
