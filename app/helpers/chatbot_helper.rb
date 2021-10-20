@@ -297,7 +297,7 @@ module ChatbotHelper
 
   def new_intent_process_b
     return nil unless @intent
-    p " in new_intent_process_b ............."
+    p " in new_intent_process_b ............. #{@project.id}"
     # search in other contexts dialogues intents, return dialogue if found
     dialogues = @project.dialogues.get_dialogues_by(@intent)
     dialogues = dialogues.select{| dialogue | 

@@ -38,6 +38,7 @@ class Dialogue < ApplicationRecord
     return [] if intent.nil?
 
     intent_value = intent["name"]
+    p "project_id #{self.first.project_id}"
     p "in get_dialogues_by given intent #{intent} and intent value = #{intent_value} and context_id = #{context_id}"
 
     all_dialogues = self.joins(:intent).select("dialogues.*").where("intents.value =?", intent_value.downcase)
