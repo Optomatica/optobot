@@ -177,7 +177,15 @@ module ChatbotHelper
   end
 
   def call_wit_and_set_entities_and_intent (value = params[:text])
-    return unless @entities.nil?
+    return unless (@entities.nil? && @intent.nil?)
+    
+    dialogues = @project.dialogues.joins(:intent).select("dialogues.*").where("intents.value = ?", normalize_for_wit(value))
+    unless dialogues.empty?
+      @intent = {"name" => dialogues.first.intent.value} 
+      p " intent = " , @intent
+      return
+    end
+
     p " in call_wit_and_set_entities_and_intent  with value === #{value}"
 
     begin
@@ -188,11 +196,6 @@ module ChatbotHelper
       if !@entities && (true if Float(value) rescue false)
         @entities = {"number" => [{"value" => value}]}
       end  
-    end
-
-    if !(@intent)
-      dialogues = @project.dialogues.joins(:intent).select("dialogues.*").where("intents.value = ?", normalize_for_wit(value))
-      @intent = {"name" => dialogues.first.intent.value} unless dialogues.empty?
     end
     
     p 'entities = ' , @entities , " intent = " , @intent
