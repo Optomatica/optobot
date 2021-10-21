@@ -877,7 +877,7 @@ module ChatbotHelper
 
   def get_the_dialogue_with_max_number_of_conditions(children_arcs)
     p "in get_the_dialogue_with_max_number_of_conditions given children_arcs === " , children_arcs
-    return nil if children_arcs.blank? or @user_project.user_data.blank?
+    return nil if children_arcs.blank?
     p "children_arcs.class", children_arcs[0].class
     arcs = children_arcs.sort{|a,b| b.conditions.length <=> a.conditions.length }
     arcs.each do |arc|
