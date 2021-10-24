@@ -2,15 +2,15 @@
 # of editing this file, please use the migrations feature of Active Record to
 # incrementally modify your database, and then regenerate this schema definition.
 #
-# Note that this schema.rb definition is the authoritative source for your
-# database schema. If you need to create the application database on another
-# system, you should be using db:schema:load, not running all the migrations
-# from scratch. The latter is a flawed and unsustainable approach (the more migrations
-# you'll amass, the slower it'll run and the greater likelihood for issues).
+# This file is the source Rails uses to define your schema when running `bin/rails
+# db:schema:load`. When creating a new database, `bin/rails db:schema:load` tends to
+# be faster and is potentially less error prone than running all of your
+# migrations from scratch. Old migrations may fail to apply correctly if those
+# migrations use external dependencies or application code.
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20211019143416) do
+ActiveRecord::Schema.define(version: 2021_10_24_074653) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -18,8 +18,8 @@ ActiveRecord::Schema.define(version: 20211019143416) do
   create_table "arcs", id: :serial, force: :cascade do |t|
     t.integer "parent_id"
     t.integer "child_id"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+    t.datetime "created_at", default: -> { "now()" }, null: false
+    t.datetime "updated_at", default: -> { "now()" }, null: false
     t.boolean "is_and", default: true
     t.bigint "identifier"
     t.boolean "go_next", default: true
@@ -43,8 +43,8 @@ ActiveRecord::Schema.define(version: 20211019143416) do
     t.integer "option_id"
     t.integer "parameter_id"
     t.integer "arc_id", null: false
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+    t.datetime "created_at", default: -> { "now()" }, null: false
+    t.datetime "updated_at", default: -> { "now()" }, null: false
     t.bigint "variable_id", null: false
     t.bigint "identifier"
     t.index ["variable_id"], name: "index_conditions_on_variable_id"
@@ -72,8 +72,8 @@ ActiveRecord::Schema.define(version: 20211019143416) do
 
   create_table "dialogues", id: :serial, force: :cascade do |t|
     t.integer "context_id"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+    t.datetime "created_at", default: -> { "now()" }, null: false
+    t.datetime "updated_at", default: -> { "now()" }, null: false
     t.string "tag"
     t.string "name", null: false
     t.integer "project_id", null: false
@@ -86,16 +86,16 @@ ActiveRecord::Schema.define(version: 20211019143416) do
   create_table "intents", force: :cascade do |t|
     t.bigint "dialogue_id"
     t.string "value", null: false
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+    t.datetime "created_at", default: -> { "now()" }, null: false
+    t.datetime "updated_at", default: -> { "now()" }, null: false
     t.bigint "identifier"
     t.index ["dialogue_id"], name: "index_intents_on_dialogue_id"
   end
 
   create_table "options", id: :serial, force: :cascade do |t|
     t.integer "variable_id", null: false
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+    t.datetime "created_at", default: -> { "now()" }, null: false
+    t.datetime "updated_at", default: -> { "now()" }, null: false
     t.string "value"
     t.integer "display_count", default: 1
     t.bigint "identifier"
@@ -105,8 +105,8 @@ ActiveRecord::Schema.define(version: 20211019143416) do
     t.string "value"
     t.float "min"
     t.float "max"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+    t.datetime "created_at", default: -> { "now()" }, null: false
+    t.datetime "updated_at", default: -> { "now()" }, null: false
     t.string "unit"
     t.bigint "identifier"
     t.bigint "project_id"
@@ -146,15 +146,15 @@ ActiveRecord::Schema.define(version: 20211019143416) do
     t.json "content", null: false
     t.integer "content_type", default: 0, null: false
     t.integer "response_id", null: false
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+    t.datetime "created_at", default: -> { "now()" }, null: false
+    t.datetime "updated_at", default: -> { "now()" }, null: false
     t.bigint "identifier"
   end
 
   create_table "responses", id: :serial, force: :cascade do |t|
     t.integer "response_owner_id"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+    t.datetime "created_at", default: -> { "now()" }, null: false
+    t.datetime "updated_at", default: -> { "now()" }, null: false
     t.string "response_owner_type", limit: 20, null: false
     t.integer "order", default: 0, null: false
     t.bigint "identifier"
@@ -234,8 +234,8 @@ ActiveRecord::Schema.define(version: 20211019143416) do
 
   create_table "variables", id: :serial, force: :cascade do |t|
     t.string "name", null: false
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+    t.datetime "created_at", default: -> { "now()" }, null: false
+    t.datetime "updated_at", default: -> { "now()" }, null: false
     t.integer "dialogue_id"
     t.string "possible_values", array: true
     t.integer "expire_after"
