@@ -11,6 +11,7 @@ class Project < ApplicationRecord
 
   has_many :children_arcs, through: :dialogues
   has_many :parameters, through: :children_arcs
+  has_many :conditions, through: :children_arcs
 
   after_create :fallback_dialogue
 
@@ -87,33 +88,91 @@ class Project < ApplicationRecord
 
   def import_dialogues(contexts_data, dialogues_and_arcs_data)
     dialogues = {}
+    variables = {}
     dialogues_data = dialogues_and_arcs_data[:dialogues].map{|old_id, dialogue| 
       dialogue[:context_id] = contexts_data[dialogue[:context_id].to_s.to_sym][:new_id] if dialogue[:context_id]
       dialogue.except(:variables, :responses, :intent)
     }
     new_dialogues = self.dialogues.create!(dialogues_data)
     intents = []
+    variables_data = []
+    responses_data = []
+    response_contents_data = []
+    options_data = []
     dialogues_and_arcs_data[:dialogues].each_with_index do |(old_id, dialogue), i|
-      tmp = {
-        variables: dialogue[:variables],
-        responses: dialogue[:responses],
-        intent: dialogue[:intent]
+      dialogues[old_id] = new_dialogues[i].id
+      dialogue[:variables].each{ |old_id, variable|
+        variable[:project_id] = self.project_id
+        variable[:dialogue_id] = new_dialogues[i].id
+        variable[:old_id] = old_id
       }
-      dialogues[old_id] = {
-        new_dialogue: new_dialogues[i]
+      variables_data += dialogue[:variables].values
+      dialogue[:responses].each{ |response, i| 
+        response[:response_owner_id] = new_dialogues[i].id 
+        response[:response_owner_type] = "Dialogue"
       }
-      new_dialogues[i].import(tmp)
+      responses_data += dialogue[:responses]
+      end
       intents << {dialogue_id: new_dialogues[i].id, value: dialogue[:intent][:value]} if dialogue[:intent]
     end
     Intent.create!(intents)
+    new_variables = Variable.create!(variables_data.map{|v| v.except(:options, :responses, :old_id)})
+    variables_data.each_with_index do |variable, i|
+      variable[:new_id] = new_variables[i].id
+      variables[variable[:old_id]] = variable
+      variable[:responses].each{ |response| 
+        response[:response_owner_id] = new_variables[i].id
+        response[:response_owner_type] = "Variable"
+      }
+      responses_data += variable[:responses]
+      variable[:options].values.each{ |option| option[:variable_id] = new_variables[i].id}
+      options_data += variable[:options].values
+    end
+
+    Option.skip_callback(:create, :after, :add_response)
+    new_options = Option.create!(options_data.map{|o| o.except(:response)})
+    Option.set_callback(:create, :after, :add_response)
+    
+    options_data.each_with_index do |option, i|
+      option[:new_id] = new_variables[i].id
+      option[:response][:response_owner_id] = new_options[i].id
+      option[:response][:response_owner_type] = "Option"
+      responses_data << option[:response]
+    end
+
+    new_responses = Response.create!(responses_data.map{|r| r.except(:response_contents)})
+    responses_data.each_with_index do |response, i|
+      response[:response_contents].each{|rc| rc[:response_id] = new_responses[i].id}
+      response_contents_data += response[:response_contents]
+    end
+    ResponseContent.create!(response_contents_data)
+
     arcs_data = dialogues_and_arcs_data[:arcs].map do |arc|
-      parent_id = dialogues[arc[:parent_id].to_s.to_sym].nil? ? nil : dialogues[arc[:parent_id].to_s.to_sym][:new_dialogue].id
-      child_id = dialogues[arc[:child_id].to_s.to_sym][:new_dialogue].id
+      parent_id = dialogues[arc[:parent_id].to_s.to_sym].nil? ? nil : dialogues[arc[:parent_id].to_s.to_sym]
+      child_id = dialogues[arc[:child_id].to_s.to_sym]
       { parent_id: parent_id, child_id: child_id, go_next: arc[:go_next], is_and: arc[:is_and] }
     end
     new_arcs = Arc.create!(arcs_data)
+    conditions_data = []
     dialogues_and_arcs_data[:arcs].each_with_index do |arc, i|
-      new_arcs[i].import(arc[:conditions], dialogues_and_arcs_data)
+      next unless arc[:conditions]
+      arc[:conditions].each{|cond| cond[:arc_id] = new_arcs[i].id
+      conditions_data += arc[:conditions]
+    end
+    conditions_with_parameter = conditions_data.select{|cond| cond[:parameter]}
+    conditions_without_parameter = conditions_data.select{|cond| cond[:parameter].nil?}
+    new_parameters = Parameter.create!(conditions_with_parameter.map{|cond| cond[:parameter]})
+    conditions_db_data = (conditions_with_parameter + conditions_without_parameter).each_with_index.map do |cond, i|
+        param_id = (i < new_parameters.count) ? new_parameters[i].id : nil
+        cond_var_sym = cond[:variable_id].to_s.to_sym
+        cond_opt_sym = cond[:option_id].to_s.to_sym
+        var = variables[cond_var_sym]
+        var_id = var[:new_id]
+        opt_id = cond[:option_id].nil? ? nil : var[:options][cond_opt_sym][:new_id]
+        {parameter_id: param_id, variable_id: var_id,
+          option_id: opt_id, arc_id: cond[:arc_id]}
+      end
+      Condition.create!(conditions_db_data)
     end
   end
 
