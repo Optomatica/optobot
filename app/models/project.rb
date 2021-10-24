@@ -156,7 +156,7 @@ class Project < ApplicationRecord
     conditions_data = []
     dialogues_and_arcs_data[:arcs].each_with_index do |arc, i|
       next unless arc[:conditions]
-      arc[:conditions].each{|cond| cond[:arc_id] = new_arcs[i].id
+      arc[:conditions].each{|cond| cond[:arc_id] = new_arcs[i].id}
       conditions_data += arc[:conditions]
     end
     conditions_with_parameter = conditions_data.select{|cond| cond[:parameter]}
