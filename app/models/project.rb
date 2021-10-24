@@ -112,7 +112,6 @@ class Project < ApplicationRecord
         response[:response_owner_type] = "Dialogue"
       }
       responses_data += dialogue[:responses]
-      end
       intents << {dialogue_id: new_dialogues[i].id, value: dialogue[:intent][:value]} if dialogue[:intent]
     end
     Intent.create!(intents)
@@ -163,17 +162,15 @@ class Project < ApplicationRecord
     conditions_without_parameter = conditions_data.select{|cond| cond[:parameter].nil?}
     new_parameters = Parameter.create!(conditions_with_parameter.map{|cond| cond[:parameter]})
     conditions_db_data = (conditions_with_parameter + conditions_without_parameter).each_with_index.map do |cond, i|
-        param_id = (i < new_parameters.count) ? new_parameters[i].id : nil
-        cond_var_sym = cond[:variable_id].to_s.to_sym
-        cond_opt_sym = cond[:option_id].to_s.to_sym
-        var = variables[cond_var_sym]
-        var_id = var[:new_id]
-        opt_id = cond[:option_id].nil? ? nil : var[:options][cond_opt_sym][:new_id]
-        {parameter_id: param_id, variable_id: var_id,
-          option_id: opt_id, arc_id: cond[:arc_id]}
-      end
-      Condition.create!(conditions_db_data)
+      param_id = (i < new_parameters.count) ? new_parameters[i].id : nil
+      cond_var_sym = cond[:variable_id].to_s.to_sym
+      cond_opt_sym = cond[:option_id].to_s.to_sym
+      var = variables[cond_var_sym]
+      var_id = var[:new_id]
+      opt_id = cond[:option_id].nil? ? nil : var[:options][cond_opt_sym][:new_id]
+      {parameter_id: param_id, variable_id: var_id, option_id: opt_id, arc_id: cond[:arc_id]}
     end
+    Condition.create!(conditions_db_data)
   end
 
   def import_dialogues_dsl(dialogues, arcs)
