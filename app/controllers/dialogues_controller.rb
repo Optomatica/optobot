@@ -90,7 +90,7 @@ class DialoguesController < ApplicationController
     end
     begin
       ActiveRecord::Base.transaction do
-        @dialogue.update_attributes(dialogue_params)
+        @dialogue.update(dialogue_params)
         if params[:intent]
           dialogues = @dialogue.project.dialogues.joins(:intent).select("dialogues.*").where("intents.value =?", params[:intent].downcase)
           intent = dialogues.first.intent unless dialogues.empty?

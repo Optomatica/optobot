@@ -48,7 +48,7 @@ class UserDataController < ApplicationController
         if params[:variable_id] and @user_project.project.variables.find_by_id(params[:variable_id]).nil?
             render "variable not exist", status: :bad_request and return
         end
-        if @user_datum.update_attributes(user_datum_params)
+        if @user_datum.update(user_datum_params)
             render json: @user_datum, status: :ok
         else
             render json: @user_datum.errors, status: :unprocessable_entity

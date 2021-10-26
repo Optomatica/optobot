@@ -70,7 +70,7 @@ class ProjectsController < ApplicationController
 	def update
     ActiveRecord::Base.transaction do
       update_params = project_params.except(:facebook_page_access_token, :facebook_page_id)
-			if @project.update_attributes(update_params) && @project.prod_project.update_attributes(update_params)
+			if @project.update(update_params) && @project.prod_project.update(update_params)
 				render json: @project, status: :ok
 			else
 				ActiveRecord::Rollback
@@ -317,7 +317,7 @@ class ProjectsController < ApplicationController
 	def release
 		p @project
 		# export
-		data = {contexts: @project.export_contexts, dialogues_and_arcs: @project.export_dialogues}.to_json #163
+		data = {contexts: @project.export_contexts, dialogues_and_arcs: @project.export_dialogues}.to_json
 		data = JSON.parse(data,:symbolize_names => true)
     @project.delete_old_user_sessions
 
@@ -350,12 +350,12 @@ class ProjectsController < ApplicationController
           prod_project = @project.prod_project
           #Delete all
           # prod_project.variables.update_all(project_id: nil)
-          prod_project.dialogues.fast_destroy_all #245
+          prod_project.dialogues.fast_destroy_all
           prod_project.contexts.destroy_all
 
           #import
           prod_project.import_contexts(data[:contexts])
-          prod_project.import_dialogues(data[:contexts], data[:dialogues_and_arcs]) # 380
+          prod_project.import_dialogues(data[:contexts], data[:dialogues_and_arcs])
 
           prod_project.update!(version: @project.version)
           @project.version += 1

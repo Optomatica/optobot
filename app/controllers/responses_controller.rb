@@ -142,7 +142,7 @@ class ResponsesController < ApplicationController
           puts "params", params.to_json
           params[:response_ids_new_order].to_a.each do |response_id|
             response = Response.find(response_id)
-            if response.update_attributes(order: new_order)
+            if response.update(order: new_order)
               new_order += 1
             end
           end

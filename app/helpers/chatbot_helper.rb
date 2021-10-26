@@ -528,7 +528,7 @@ module ChatbotHelper
     elsif tmp and (tmp.variable.expire_after and tmp.variable.storage_type != "timeseries" and
       (Time.now - tmp.updated_at) >= tmp.variable.expire_after*60)
         # value exists but expired and not of type timeseries
-        tmp.update_attributes(value: value, option_id: option_id)
+        tmp.update(value: value, option_id: option_id)
     else
       p "creating new user data "
       @user_project.user_data.create!(variable_id: variable.id, value: value, option_id: option_id)

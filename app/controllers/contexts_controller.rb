@@ -50,7 +50,7 @@ class ContextsController < ApplicationController
     if params[:name].nil? or params[:name].blank?
       render body: "name should not be blanked", status: :bad_request and return
     end
-    if @context.update_attributes(name: params[:name])
+    if @context.update(name: params[:name])
       render json: @context, status: :ok
     else
       render json: @context.errors, status: :unprocessable_entity

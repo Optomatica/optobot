@@ -86,7 +86,7 @@ class ResponseContentsController < ApplicationController
         if params[:content].nil? or params[:content].keys.all?{|k| params[:content][k].nil? or params[:content][k].blank?}
           render body: "content doesn't accept null but given blank!", status: :bad_request and return
         end
-        if @response_content.update_attributes(response_content_params)
+        if @response_content.update(response_content_params)
           render json: @response_content, status: :ok
         else
           render json: @response_content.errors, status: :unprocessable_entity
