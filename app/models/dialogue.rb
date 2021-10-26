@@ -25,18 +25,18 @@ class Dialogue < ApplicationRecord
     variables = Variable.where(dialogue: all)
     options = Option.where(variable: variables)
     responses = Response.where(response_owner: all).or(Response.where(response_owner: variables)).or(Response.where(response_owner: options))
-    ResponseContent.where(response: responses).destroy_all
-    responses.destroy_all
-    options.destroy_all
-    variables.destroy_all
+    ResponseContent.where(response: responses).delete_all
+    responses.delete_all
+    options.delete_all
+    variables.delete_all
     arcs = Arc.where(child: all).or(Arc.where(parent: all))
     conditions = Condition.where(arc: arcs)
     parameters = Parameter.where(condition: conditions)
-    parameters.destroy_all
-    conditions.destroy_all
-    arcs.destroy_all
-    Intent.where(dialogue: all).destroy_all
-    all.destroy_all
+    parameters.delete_all
+    conditions.delete_all
+    arcs.delete_all
+    Intent.where(dialogue: all).delete_all
+    all.delete_all
   end
 
   def self.get_knowledge_base_dialogues(intent)
