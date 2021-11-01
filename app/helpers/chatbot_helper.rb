@@ -50,7 +50,7 @@ module ChatbotHelper
     @user_project = user_project
     @current_user = current_user if current_user
     @to_render = {}
-    p @user_project, @user_project.user_chatbot_session
+    p @current_user, @user_project, @user_project.user_chatbot_session
     @user_chatbot_session = @user_project.user_chatbot_session
 
     if @user_chatbot_session.present? && params[:debug_mode]
