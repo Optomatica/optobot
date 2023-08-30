@@ -77,7 +77,7 @@ GEM
       railties (>= 3, < 7)
     apipie-rails (0.5.19)
       rails (>= 4.1)
-    apitome (0.3.0)
+    apitome (0.3.1)
       kramdown
       railties
     ast (2.4.2)
@@ -174,10 +174,9 @@ GEM
     kaminari-core (1.2.1)
     kramdown (2.3.1)
       rexml
-    listen (3.1.5)
+    listen (3.0.8)
       rb-fsevent (~> 0.9, >= 0.9.4)
       rb-inotify (~> 0.9, >= 0.9.7)
-      ruby_dep (~> 1.2)
     loofah (2.19.1)
       crass (~> 1.0.2)
       nokogiri (>= 1.5.9)
@@ -202,7 +201,7 @@ GEM
     parallel (1.21.0)
     parser (3.0.2.0)
       ast (~> 2.4.1)
-    pg (1.2.3)
+    pg (1.5.3)
     pg_search (2.3.5)
       activerecord (>= 5.2)
       activesupport (>= 5.2)
@@ -324,7 +323,6 @@ GEM
       rexml
     ruby-progressbar (1.11.0)
     ruby-units (2.3.2)
-    ruby_dep (1.5.0)
     rubyzip (2.3.2)
     sass (3.7.4)
       sass-listen (~> 4.0.0)
@@ -415,7 +413,7 @@ DEPENDENCIES
   jwt
   listen (>= 3.0.5, < 3.2)
   mustache (~> 1.0)
-  pg (>= 0.18, < 2.0)
+  pg (>= 1.5.3, < 2.0)
   pg_search
   puma (~> 5.6)
   rack-cors
@@ -441,7 +439,7 @@ DEPENDENCIES
   wit (~> 7.0)!
 
 RUBY VERSION
-   ruby 2.6.5p114
+   ruby 3.2.2p53
 
 BUNDLED WITH
-   1.17.3
+   2.4.19
