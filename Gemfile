@@ -41,6 +41,10 @@ gem 'jbuilder', '~> 2.5'
 gem 'mustache', '~> 1.0'
 gem 'wit', '~> 7.0', :git => 'https://github.com/wit-ai/wit-ruby',branch: 'master'
 
+gem 'net-smtp', require: false
+gem 'net-imap', require: false
+gem 'net-pop', require: false
+
 group :development, :test do
   # Call 'byebug' anywhere in the code to stop execution and get a debugger console
   gem 'byebug', platforms: [:mri, :mingw, :x64_mingw]
