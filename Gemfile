@@ -11,7 +11,7 @@ gem 'vcr'
 gem 'webmock', '~> 3.7.6'
 
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
-gem 'rails', '~> 6.1.4'
+gem 'rails', '~> 6.1.7'
 # Use postgresql as the database for Active Record
 gem 'pg', '>= 1.5.3', '< 2.0'
 # Use Puma as the app server
